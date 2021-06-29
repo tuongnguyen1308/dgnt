@@ -1,0 +1,93 @@
+doctype html
+html(lang="en")
+	head
+		meta(charset="UTF-8")
+		meta(http-equiv="X-UA-Compatible" content="IE=edge")
+		meta(name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no")
+		meta(name='description' content='Đồ gỗ nội thất')
+		meta(name='author' content='Nguyễn Đình Tưởng')
+		link(rel="icon" href="img/icon/main-icon-sm.png")
+		link(rel="stylesheet" href="plugin/bootstrap/css/bootstrap.min.css")
+		link(rel="stylesheet" href="css/common.css")
+		script(src="plugin/jquery/js/jquery.min.js", defer)
+		script(src="plugin/bootstrap/js/bootstrap.bundle.min.js", defer)
+		script(src="plugin/bootstrap/js/popper.min.js", defer)
+		script(src="plugin/feather/js/feather.min.js", defer)
+		script(src="plugin/Chart/js/Chart.min.js", defer)
+		//- script(src="js/dashboard.js", defer)
+		script(src="js/common.js", defer)
+		title ĐGNT - Trang Quản lý
+	body
+		header.navbar.navbar-dark.sticky-top.bg-dark.flex-md-nowrap.p-0.shadow
+			a.navbar-brand.col-md-3.col-lg-2.me-0.px-3(href="#") ĐGNT
+			button.navbar-toggler.position-absolute.d-md-none.collapsed.d-flex.align-middle.my-1(type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation")
+				span.my-1(data-feather="menu")
+			span.form-control.invisible.d-md-block.w-100.p-0
+			//- input.form-control.form-control-dark.w-100(type="text" placeholder="Tìm kiếm nhanh" aria-label="Search")
+			.navbar-nav
+				.nav-item.text-nowrap
+					a.nav-link.px-3(href="/login-staff/logout") Đăng xuất
+		.container-fluid.position-relative
+			if messages
+				#toast.toast.position-absolute.m-2.top-0.end-0.z-index-3(role='alert' aria-live='assertive' aria-atomic='true' data-bs-animation="true")
+					.toast-header.text-white(class= `bg-${messages.color}`)
+						span.me-1(data-feather=messages.icon)
+						strong#message-title.me-auto= messages.title
+						//- small.text-muted just now
+						button.btn-close(type='button' data-bs-dismiss='toast' aria-label='Close' style="opacity:.8;filter:invert(1);")
+					#messages-text.toast-body= messages.text
+			.row
+				nav#sidebarMenu.col-md-3.col-lg-2.d-md-block.bg-light.sidebar.collapse
+					.position-sticky.pt-3
+						ul.nav.flex-column
+							li.nav-item
+								- let cp = curPage == "dashboard" ? "active" : ""
+								a.nav-link(class=cp href="/dashboard")
+									span(data-feather="home")
+									|  Trang chủ
+							li.nav-item
+								a.nav-link(href="#")
+									span(data-feather="file")
+									|  Orders
+							li.nav-item
+								a.nav-link(href="#")
+									span(data-feather="shopping-cart")
+									|  Products
+							li.nav-item
+								a.nav-link(href="#")
+									span(data-feather="users")
+									|  Customers
+							li.nav-item
+								a.nav-link(href="#")
+									span(data-feather="bar-chart-2")
+									|  Reports
+							li.nav-item
+								a.nav-link(href="#")
+									span(data-feather="layers")
+									|  Integrations
+							li.nav-item
+								a.nav-link(class=(curPage == "staff") ? "active" : "" href="/staff")
+									span(data-feather="users")
+									|  Nhân viên
+						h6.sidebar-heading.d-flex.justify-content-between.align-items-center.px-3.mt-4.mb-1.text-muted
+							span Saved reports
+							a.d-flex.align-items-center.text-muted(href="#" aria-label="Add a new report")
+								span(data-feather="plus-circle")
+						ul.nav.flex-column.mb-2
+							li.nav-item
+								a.nav-link(href="#")
+									span(data-feather="file-text")
+									|  Current month
+							li.nav-item
+								a.nav-link(href="#")
+									span(data-feather="file-text")
+									|  Last quarter
+							li.nav-item
+								a.nav-link(href="#")
+									span(data-feather="file-text")
+									|  Social engagement
+							li.nav-item
+								a.nav-link(href="#")
+									span(data-feather="file-text")
+									|  Year-end sale
+				block content

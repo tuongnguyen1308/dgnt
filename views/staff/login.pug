@@ -1,0 +1,41 @@
+doctype html
+html(lang="vi")
+    head
+        meta(charset="UTF-8")
+        meta(http-equiv="X-UA-Compatible" content="IE=edge")
+        meta(name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no')
+        meta(name='description' content='Đồ gỗ nội thất')
+        meta(name='author' content='Nguyễn Đình Tưởng')
+        link(rel="icon" href="img/icon/main-icon-sm.png")
+        link(rel="stylesheet" href="plugin/bootstrap/css/bootstrap.min.css")
+        script(src="plugin/bootstrap/js/bootstrap.bundle.min.js", defer)
+        link(rel="stylesheet" href="css/common.css")
+        script(src="plugin/jquery/js/jquery.min.js", defer)
+        link(rel="stylesheet" href="css/login.css")
+        script(src="js/login.js", defer)
+        title ĐGNT - Trang Quản lý
+    body
+        if messages
+            #toast.toast.position-absolute.m-2.top-0.end-0.z-index-3(role='alert' aria-live='assertive' aria-atomic='true' data-bs-animation="true")
+                .toast-header.text-white(class= `bg-${messages.color}`)
+                    span.me-1(data-feather=messages.icon)
+                    strong#message-title.me-auto= messages.title
+                    //- small.text-muted just now
+                    button.btn-close(type='button' data-bs-dismiss='toast' aria-label='Close' style="opacity:.8;filter:invert(1);")
+                #messages-text.toast-body= messages.text
+        form.form-signin.z-index-2(method="post" action="login-staff/auth")
+            .text-center.mb-4
+                img.mb-4(src='img/icon/main-icon-xl.png' alt='' width='72' height='72')
+                h1.h1.mb-3 Hệ thống quản lý
+                h1.h2.mb-3.font-weight-bold= title
+            .form-label-group
+                input#inputUsername.form-control(name="username" type='text' placeholder='Tên đăng nhập' required='true' value=username, onkeyup='removeAlert()')
+                label(for='inputUsername') Tên đăng nhập
+            .form-label-group
+                input#inputPassword.form-control(name="password" type='password' placeholder='Mật khẩu' required='true' onkeyup='removeAlert()')
+                label(for='inputPassword') Mật khẩu
+            if errMessage
+                #errMessage.alert.alert-danger= errMessage
+            .text-center
+                button.btn.btn-lg.btn-primary.btn-block(type='submit')= title
+            p.mt-5.mb-3.text-muted.text-center &copy; 2021 | Tưởng Nguyễn

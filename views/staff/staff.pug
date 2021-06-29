@@ -1,0 +1,60 @@
+extends ./layout.pug
+block content
+	main.col-md-9.ms-sm-auto.col-lg-10.px-md-4
+		.d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pt-3.pb-2.mb-3.border-bottom
+			h1.h3= title
+			.btn-toolbar.mb-2.mb-md-0
+				.btn-group.me-2
+				button.btn.btn-sm.btn-outline-secondary(type='button' data-bs-toggle='modal' data-bs-target='#modal-add-user')
+					span(data-feather='user-plus')
+					|  Thêm
+
+		each user in users
+			.d-flex.text-muted.py-3.border-bottom
+				img.bd-placeholder-img.flex-shrink-0.me-2.rounded(width='30' height='30' src=`img/users/${user.avatar}`)
+				.mb-0.small.lh-sm.w-100
+					.d-flex.justify-content-between
+						strong.text-gray-dark= user.fullname || user.username
+						a(href='#') Cật nhật
+					span.d-block #{user.phone || 'Chưa thêm SĐT'} | #{user.email || 'Chưa thêm email'}
+		else
+			h3.h4.font-weight-normal Chưa có nhân viên
+
+	form#modal-add-user.modal.fade(method="post" action="/staff/add" tabindex='-1' role='dialog' aria-hidden='true')
+		.modal-dialog.modal-dialog-centered
+			.modal-content
+				.modal-header
+					h5#exampleModalLongTitle.modal-title Thêm nhân viên
+					button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+				.modal-body
+					span.required Thông tin tài khoản
+					.form-label-group
+						input#inputUsername.form-control(name='username' type='text' placeholder='Tên đăng nhập' required='true')
+						label(for='inputUsername') Tên tài khoản
+					.form-label-group
+						input#inputPassword.form-control(name='password' type='password' placeholder='Mật khẩu' required='true')
+						label(for='inputPassword') Mật khẩu
+					.form-floating
+						select#inputRole.form-select(name='rNumber' required='true')
+							each role in roles
+								option(value=role.rNumber selected= role.rNumber == 2)= role.rTitle
+						label(for='inputRole') Quyền
+
+					details.mt-3
+						summary Thông tin cá nhân
+						.form-label-group
+							input#inputFullname.form-control(name='fullname' type='text' placeholder='Tên nhân viên')
+							label(for='inputFullname') Tên nhân viên
+						.form-label-group
+							input#inputPhone.form-control(name='phone' type='text' placeholder='Số điện thoại')
+							label(for='inputPhone') Số điện thoại
+						.form-label-group
+							input#inputEmail.form-control(name='email' type='email' placeholder='Email')
+							label(for='inputEmail') Email
+					if errMessage
+						#errMessage.alert.alert-danger= errMessage
+				.modal-footer
+					button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Đóng
+					button.btn.btn-primary(type='submit') Lưu
+
+
