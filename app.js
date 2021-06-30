@@ -35,7 +35,12 @@ app.set("view engine", "pug");
 //#region DB_CONNECTION
 mongoose.connect(
   process.env.DB_CONNECTION,
-  { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true },
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+  },
   (err) => {
     console.log(err || "Database connected!");
   }
