@@ -60,18 +60,18 @@ module.exports.add = (req, res) => {
         fullname: req.body.fullname,
         phone: req.body.phone,
         email: req.body.email,
+        avatar: req.file.filename,
         role: {
           rNumber: req.body.rNumber,
           rTitle: roles.find((role) => role.rNumber == req.body.rNumber).rTitle,
         },
       });
-      console.log(newUser);
       let result = await newUser.save();
       redirectFunc(
         "check-circle",
         "success",
         "Thành công",
-        "Đã thêm nhân viên",
+        "Đã thêm thành viên",
         rootRoute
       );
     }
@@ -89,6 +89,10 @@ module.exports.update = async (req, res) => {
       rTitle: roles.find((role) => role.rNumber == req.body.rNumber).rTitle,
     },
   };
+  let avatar = req.file?.filename || false;
+  if (avatar) {
+    updUser.avatar = avatar;
+  }
   let password = req.body.password;
   if (password) {
     const salt = await bcrypt.genSalt(10);
@@ -99,9 +103,21 @@ module.exports.update = async (req, res) => {
     icon: "check-circle",
     color: "success",
     title: "Thành công!",
-    text: "Đã cập nhât thông tin",
+    text: "Đã cập nhât thành viên",
   };
-  console.log(result);
   res.redirect(rootRoute);
   return;
+};
+
+module.exports.delete = async (req, res) => {
+  let result = await User.deleteOne({ _id: req.params.id }, function (err) {
+    err && res.json(err);
+  });
+  req.session.messages = {
+    icon: result ? "check-circle" : "alert-circle",
+    color: result ? "success" : "danger",
+    title: result ? "Thành công!" : "Thất bại",
+    text: result ? "Đã xoá thành viên" : "Đã có lỗi xảy ra",
+  };
+  res.json(result);
 };

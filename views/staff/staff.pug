@@ -5,61 +5,86 @@ block content
 			h1.h3= title
 			.btn-toolbar.mb-2.mb-md-0
 				.btn-group.me-2
-				button.btn.btn-sm.btn-outline-secondary(type="button" role="add-staff" data-bs-toggle="modal" data-bs-target="#modal-staff")
+				button.btn.btn-sm.btn-outline-success(type="button" role="add-staff" data-bs-toggle="modal" data-bs-target="#modal-staff")
 					span(data-feather="user-plus")
 					|  Thêm
-
+		//- UserList
 		.d-flex.flex-wrap.justify-content-around
 			each user in users
 				.card.mb-2(style="max-width: 320px;")
-					img.bd-placeholder-img.card-img-top.me-2(width="100%" height="auto" src=`img/users/${user.avatar}`)
+					img.bd-placeholder-img.card-img-top(width="100%" height="318px" src=`img/users/${user.avatar}`)
 					.card-body.text-center
 						h5.card-title= user.fullname || user.username
 						p.card-text
-							div #{user.phone || "Chưa thêm SĐT"}
-							div #{user.email || "Chưa thêm email"}
+							| #{user.phone || "Chưa thêm SĐT"}
+							br
+							| #{user.email || "Chưa thêm email"}
 						if sess.role.rNumber == 1
-							p.card-text
-								button.btn.btn-primary(type="button" role="edit-staff" data-id=user._id data-fullname=user.fullname data-username=user.username data-phone=user.phone data-email=user.email data-rnumber=user.role.rNumber data-bs-toggle="modal" data-bs-target="#modal-staff") Cập nhật
+							.card-text.text-center
+								.btn-group(role="group")
+									button.btn.btn-sm.btn-outline-primary(type="button" role="edit-staff" data-id=user._id data-fullname=user.fullname data-username=user.username data-phone=user.phone data-email=user.email data-rnumber=user.role.rNumber data-avatar=user.avatar data-bs-toggle="modal" data-bs-target="#modal-staff" rel="tooltip" data-bs-placement="top" title="Cập nhật thông tin")
+										span(data-feather="edit-3")
+									button.btn.btn-sm.btn-outline-danger(role="delete-staff" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Xoá")
+										span(data-feather="x")
+									ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset")
+										li
+											a.dropdown-item.p-2.text-danger(href='#' data-id=user._id role="confirm-delete-staff") Xác nhận
+										li
+											span.dropdown-item.p-2(role="button" rel="cancel-delete-staff") Huỷ
+
+
+
 								//- button.btn.btn-danger(type="button" role="delete-staff" data-id=user._id)
 			else
 				h3.h4.font-weight-normal Chưa có nhân viên
-
-	form#modal-staff.modal.fade(method="post" action="/staff/add" tabindex="-1" role="dialog" aria-hidden="true")
-		.modal-dialog.modal-dialog-centered
-			.modal-content
-				.modal-header
-					h5#modal-staff-title.modal-title Thêm nhân viên
-					button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
-				.modal-body
-					span.required Thông tin tài khoản
-					.form-label-group
-						input#username.form-control(name="username" type="text" placeholder="Tên đăng nhập" required="true")
-						label(for="username") Tên tài khoản
-					.form-label-group
-						input#password.form-control(name="password" type="password" placeholder="Mật khẩu" required="true")
-						label(for="password") Mật khẩu
-					.form-floating
-						select#rNumber.form-select(name="rNumber" required="true")
-							each role in roles
-								option(value=role.rNumber selected= role.rNumber == 2)= role.rTitle
-						label(for="rNumber") Quyền
-
-					details#details.mt-3
-						summary Thông tin cá nhân
-						.form-label-group
-							input#fullname.form-control(name="fullname" type="text" placeholder="Tên nhân viên")
-							label(for="fullname") Tên nhân viên
-						.form-label-group
-							input#phone.form-control(name="phone" type="text" placeholder="Số điện thoại")
-							label(for="phone") Số điện thoại
-						.form-label-group
-							input#email.form-control(name="email" type="email" placeholder="Email")
-							label(for="email") Email
-					if errMessage
-						#errMessage.alert.alert-danger= errMessage
-				.modal-footer.d-grid.gap-2(style="justify-content: unset")
-					button.btn.btn-primary(type="submit") Lưu
-
+		//- End UserList
+		//- Modal add/update
+		form#modal-staff.modal.fade(method="post" action="/staff/add" tabindex="-1" role="dialog" aria-hidden="true" enctype="multipart/form-data")
+			.modal-dialog.modal-dialog-centered.modal-xl
+				.modal-content
+					.modal-header
+						h5#modal-staff-title.modal-title Thêm nhân viên
+						button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
+					.modal-body.d-flex.flex-lg-row.flex-column
+						.flex-fill.w-100
+							.form.pe-0.pe-lg-3
+								span.required Thông tin tài khoản
+								.form-label-group
+									input#username.form-control(name="username" type="text" placeholder="Tên đăng nhập" required="true")
+									label(for="username") Tên tài khoản
+								.form-label-group
+									input#password.form-control(name="password" type="password" placeholder="Mật khẩu" required="true")
+									label(for="password") Mật khẩu
+								.form-floating.mb-2
+									select#rNumber.form-select(name="rNumber" required="true")
+										each role in roles
+											option(value=role.rNumber selected= role.rNumber == 2)= role.rTitle
+									label(for="rNumber") Quyền
+								span Thông tin cá nhân
+								.form-label-group
+									input#fullname.form-control(name="fullname" type="text" placeholder="Tên nhân viên")
+									label(for="fullname") Tên nhân viên
+								.form-label-group
+									input#phone.form-control(name="phone" type="text" placeholder="Số điện thoại")
+									label(for="phone") Số điện thoại
+								.form-label-group
+									input#email.form-control(name="email" type="email" placeholder="Email")
+									label(for="email") Email
+								if errMessage
+									#errMessage.alert.alert-danger= errMessage
+						.flex-fill.w-100
+							label#avatar-preview.avatar-preview.w-100.align-middle(for="avatar" style="height:423px").d-flex.justify-content-center.align-items-center.p-3
+								input#avatar.btn.btn-success(type="file" name="avatar" accept="image/*")
+								.title.h-100.d-flex.justify-content-center.align-items-center
+									span(data-feather="upload")
+									span.ms-2 Chọn ảnh
+								img#img-preview.d-none(src="" height="389px")
+							span.file_remove.d-none(data-feather="x")
+							.alert.alert-danger.d-none(role="errMessage")
+								span
+								button.btn-close(type="button" data-bs-dismiss="alert" aria-label="Close")
+					.modal-footer.d-grid.gap-2(style="justify-content: unset")
+						button.btn.btn-primary(type="submit") Lưu
+		//- End Modal add/update
 
 
