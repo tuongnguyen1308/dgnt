@@ -9,7 +9,6 @@ module.exports.Auth = async (req, res, next) => {
       text,
     };
     res.redirect(dir);
-    return;
   };
   if (!req.session.user) {
     redirectFunc(
@@ -28,6 +27,15 @@ module.exports.Auth = async (req, res, next) => {
       "warning",
       "Thông báo!",
       "Tài khoản không tồn tại trong hệ thống!",
+      rootRoute
+    );
+    return;
+  } else if (!user.workingState) {
+    redirectFunc(
+      "alert-circle",
+      "warning",
+      "Thông báo!",
+      "Bạn đã nghỉ việc!",
       rootRoute
     );
     return;

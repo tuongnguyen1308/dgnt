@@ -1,20 +1,21 @@
 extends ./layout.pug
 block content
 	main.col-md-9.ms-sm-auto.col-lg-10.px-md-4
-		.d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pt-3.pb-2.mb-3.border-bottom
-			h1.h3= title
-			.btn-toolbar.mb-2.mb-md-0
-				.btn-group.me-2
+		.d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pt-3.pb-2.mb-3.border-bottom.flex-column.flex-lg-row
+			h1.h3.mb-0= title
+			.btn-toolbar.mt-2.mb-mt-0
 				button.btn.btn-sm.btn-outline-success(type="button" role="add-staff" data-bs-toggle="modal" data-bs-target="#modal-staff")
 					span(data-feather="user-plus")
 					|  Thêm
 		//- UserList
 		.d-flex.flex-wrap.justify-content-around
 			each user in users
-				.card.mb-2(style="max-width: 320px;")
+				.card.mb-3(style="max-width: 320px;")
 					img.bd-placeholder-img.card-img-top(width="100%" height="318px" src=`img/users/${user.avatar}`)
 					.card-body.text-center
-						h5.card-title= user.fullname || user.username
+						h5.card-title.position-relative(class= !user.workingState ? 'text-secondary': '')= user.fullname || user.username
+							if !user.workingState
+								small.small.fw-normal  (Đã nghỉ)
 						p.card-text
 							| #{user.phone || "Chưa thêm SĐT"}
 							br
@@ -22,7 +23,7 @@ block content
 						if sess.role.rNumber == 1
 							.card-text.text-center
 								.btn-group(role="group")
-									button.btn.btn-sm.btn-outline-primary(type="button" role="edit-staff" data-id=user._id data-fullname=user.fullname data-username=user.username data-phone=user.phone data-email=user.email data-rnumber=user.role.rNumber data-avatar=user.avatar data-bs-toggle="modal" data-bs-target="#modal-staff" rel="tooltip" data-bs-placement="top" title="Cập nhật thông tin")
+									button.btn.btn-sm.btn-outline-primary(type="button" role="edit-staff" data-id=user._id data-fullname=user.fullname data-username=user.username data-phone=user.phone data-email=user.email data-rnumber=user.role.rNumber data-avatar=user.avatar data-working-state=user.workingState data-bs-toggle="modal" data-bs-target="#modal-staff" rel="tooltip" data-bs-placement="top" title="Cập nhật thông tin")
 										span(data-feather="edit-3")
 									button.btn.btn-sm.btn-outline-danger(role="delete-staff" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Xoá")
 										span(data-feather="x")
@@ -36,7 +37,7 @@ block content
 
 								//- button.btn.btn-danger(type="button" role="delete-staff" data-id=user._id)
 			else
-				h3.h4.font-weight-normal Chưa có nhân viên
+				h3.h4.fw-normal Chưa có nhân viên
 		//- End UserList
 		//- Modal add/update
 		form#modal-staff.modal.fade(method="post" action="/staff/add" tabindex="-1" role="dialog" aria-hidden="true" enctype="multipart/form-data")
@@ -70,15 +71,16 @@ block content
 								.form-label-group
 									input#email.form-control(name="email" type="email" placeholder="Email")
 									label(for="email") Email
-								if errMessage
-									#errMessage.alert.alert-danger= errMessage
-						.flex-fill.w-100
-							label#avatar-preview.avatar-preview.w-100.align-middle(for="avatar" style="height:423px").d-flex.justify-content-center.align-items-center.p-3
+								.form-check.form-switch.fs-6
+									input#workingState.form-check-input(name="workingState" type='checkbox' checked='true' role="button")
+									label.form-check-label(for='workingState') Đang làm việc
+						.flex-fill.w-100.position-relative
+							label#avatar-preview.img-box.w-100.align-middle(for="avatar" style="height:464px").d-flex.justify-content-center.align-items-center
 								input#avatar.btn.btn-success(type="file" name="avatar" accept="image/*")
 								.title.h-100.d-flex.justify-content-center.align-items-center
 									span(data-feather="upload")
 									span.ms-2 Chọn ảnh
-								img#img-preview.d-none(src="" height="389px")
+								img#img-preview.d-none(src="" height="465px")
 							span.file_remove.d-none(data-feather="x")
 							.alert.alert-danger.d-none(role="errMessage")
 								span

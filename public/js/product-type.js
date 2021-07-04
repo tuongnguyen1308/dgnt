@@ -1,80 +1,74 @@
 $(document).ready(() => {
-  const ip_username = document.getElementById("username");
-  const formModal = document.getElementById("modal-staff");
-  const modalTitle = document.getElementById("modal-staff-title");
+  const curPage = "product-type";
+  const formModal = document.getElementById("modal-product-type");
+  const modalTitle = document.getElementById("modal-product-type-title");
   $('[rel="tooltip"]').tooltip({ trigger: "hover" });
   //#region func
   let removeImg = () => {
     $("#img-preview").attr("src", "#").addClass("d-none");
-    $("#avatar-preview .title").removeClass("d-none");
+    $("#tImg-preview .title").removeClass("d-none");
     $(".file_remove").addClass("d-none");
   };
 
   let changeImgWhenModalOpen = (con, src) => {
     if (con) {
       $("#img-preview").attr("src", src).removeClass("d-none");
-      $("#avatar-preview .title").addClass("d-none");
+      $("#tImg-preview .title").addClass("d-none");
       $(".file_remove").removeClass("d-none");
     } else removeImg();
   };
   let prepareModal = ($btn = null) => {
-    $("#modal-staff input#id").remove();
+    $("#modal-product-type input#id").remove();
     if ($btn) {
-      ip_username.removeAttribute("name");
-      ip_username.disabled = true;
       let inputID = document.createElement("input");
       inputID.id = "id";
       inputID.name = "id";
       inputID.value = $btn.data("id");
       inputID.type = "hidden";
       formModal.appendChild(inputID);
-    } else {
-      ip_username.removeAttribute("disabled");
-      ip_username.setAttribute("name", "username");
     }
-    formModal.action = $btn ? "/staff/update" : "/staff/add";
-    modalTitle.innerText = $btn ? "Sửa thành viên" : "Thêm thành viên";
-    ip_username.value = $btn?.data("username") || "";
-    document.getElementById("rNumber").value = $btn?.data("rnumber") || 2;
-    document.getElementById("fullname").value = $btn?.data("fullname") || "";
-    document.getElementById("phone").value = $btn?.data("phone") || "";
-    document.getElementById("email").value = $btn?.data("email") || "";
-    document.getElementById("workingState").checked =
-      $btn?.data("workingState") === "";
-    $("#workingState").trigger("change");
+    formModal.action = $btn ? "/product-type/update" : "/product-type/add";
+    modalTitle.innerText = $btn ? "Sửa loại sản phẩm" : "Thêm loại sản phẩm";
+    document.getElementById("tName").value = $btn?.data("tName") || "";
+    document.getElementById("tState").checked = $btn?.data("tState") === "";
+    $("#tState").trigger("change");
     changeImgWhenModalOpen(
-      $btn?.data("avatar") && $btn.data("avatar") != "default.png",
-      `img/users/${$btn?.data("avatar")}`
+      $btn?.data("tImg") && $btn.data("tImg") != "",
+      `img/${curPage}/${$btn?.data("tImg")}`
     );
   };
-  let changeWorkingState = () => {
-    let state = $("#workingState").is(":checked") ? "Đang làm việc" : "Đã nghỉ";
-    $("#workingState").next().text(state);
+  let changetState = () => {
+    let state = $("#tState").is(":checked") ? "Hiện" : "Ẩn";
+    $("#tState").next().text(state);
+  };
+  let findProductType = (keyword) => {
+    $(`.card:contains(${keyword})`).removeClass("d-none");
+    $(`.card:not(:contains(${keyword}))`).addClass("d-none");
   };
   //#endregion
 
   //#region events
-  $(".btn[role=add-staff]").on("click", function () {
+  $(".btn[role=add-product-type]").on("click", function () {
     prepareModal();
   });
 
-  $(".btn[role=edit-staff]").on("click", function () {
+  $(".btn[role=edit-product-type]").on("click", function () {
     prepareModal($(this));
   });
 
-  $(".btn[role=delete-staff]").on("click", function () {
+  $(".btn[role=delete-product-type]").on("click", function () {
     $(this).next().toggleClass("show");
   });
 
-  $("[role=confirm-delete-staff]").on("click", function (e) {
+  $("[role=confirm-delete-product-type]").on("click", function (e) {
     $target = $(e.target);
     const id = $target.data("id");
     $.ajax({
       type: "DELETE",
-      url: "/staff/" + id,
+      url: "/product-type/" + id,
       success: function (res) {
         console.log(res);
-        window.location.replace("/staff");
+        window.location.replace("/product-type");
       },
       error: function (err) {
         console.error(err);
@@ -82,7 +76,7 @@ $(document).ready(() => {
     });
   });
 
-  $("[rel=cancel-delete-staff]").on("click", function () {
+  $("[rel=cancel-delete-product-type]").on("click", function () {
     $(this).parent().parent().removeClass("show");
   });
   $(document).click((e) => {
@@ -91,11 +85,11 @@ $(document).ready(() => {
     }
   });
 
-  $("#workingState").on("change", function () {
-    changeWorkingState();
+  $("#tState").on("change", function () {
+    changetState();
   });
 
-  $("#avatar").on("change", function (e) {
+  $("#tImg").on("change", function (e) {
     var ext = $(this).val().split(".").pop().toLowerCase();
     if ($.inArray(ext, ["gif", "png", "jpg", "jpeg"]) == -1) {
       $("[role=errMessage]")
@@ -111,6 +105,10 @@ $(document).ready(() => {
 
   $(".file_remove").on("click", function (e) {
     removeImg();
+  });
+
+  $("#search").on("keyup", function () {
+    findProductType($(this).val());
   });
   //#endregion
 });

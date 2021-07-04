@@ -52,6 +52,7 @@ module.exports.add = (req, res) => {
         rootRoute
       );
     } else {
+      console.log(req.body);
       const salt = await bcrypt.genSalt(10);
       const hashPassword = await bcrypt.hash(req.body.password, salt);
       let newUser = new User({
@@ -60,7 +61,8 @@ module.exports.add = (req, res) => {
         fullname: req.body.fullname,
         phone: req.body.phone,
         email: req.body.email,
-        avatar: req.file.filename,
+        avatar: req.file?.filename,
+        workingState: req.body.workingState == "on",
         role: {
           rNumber: req.body.rNumber,
           rTitle: roles.find((role) => role.rNumber == req.body.rNumber).rTitle,
@@ -84,6 +86,7 @@ module.exports.update = async (req, res) => {
     fullname: req.body.fullname,
     phone: req.body.phone,
     email: req.body.email,
+    workingState: req.body.workingState == "on",
     role: {
       rNumber: req.body.rNumber,
       rTitle: roles.find((role) => role.rNumber == req.body.rNumber).rTitle,

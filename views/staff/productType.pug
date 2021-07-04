@@ -1,0 +1,66 @@
+extends ./layout.pug
+block content
+	main.col-md-9.ms-sm-auto.col-lg-10.px-md-4
+		.d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pt-3.pb-2.mb-3.border-bottom.flex-column.flex-lg-row
+			h1.h3.mb-0= title
+			.input-group.my-2.my-lg-0(style="max-width:300px")
+				span.input-group-text
+					span(data-feather="search")
+				input#search.form-control(role="search-box" placeholder="Tìm kiếm")
+			.btn-toolbar.mb-2.mb-md-0
+				button.btn.btn-sm.btn-outline-success(type="button" role="add-product-type" data-bs-toggle="modal" data-bs-target="#modal-product-type")
+					span(data-feather="plus")
+					|  Thêm
+		//- productTypes
+		.d-flex.flex-wrap.justify-content-around
+			each productType in productTypes
+				.card.mb-3(style="max-width: 320px;")
+					img.bd-placeholder-img.card-img-top(width="100%" height="318px" src=`img/${curPage}/${productType.tImg}`)
+					.card-body.text-center
+						h5.card-title.position-relative(class= !productType.tState ? 'text-secondary': '')= productType.tName
+							if !productType.tState
+								small.small.fw-normal  (Đã Ẩn)
+						.card-text.text-center
+							.btn-group(role="group")
+								button.btn.btn-sm.btn-outline-primary(type="button" role="edit-product-type" data-id=productType._id data-t-name=productType.tName data-t-img=productType.tImg data-t-state=productType.tState data-bs-toggle="modal" data-bs-target="#modal-product-type" rel="tooltip" data-bs-placement="top" title="Cập nhật thông tin")
+									span(data-feather="edit-3")
+								button.btn.btn-sm.btn-outline-danger(role="delete-product-type" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Xoá")
+									span(data-feather="x")
+								ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset")
+									li
+										a.dropdown-item.p-2.text-danger(href='#' data-id=productType._id role="confirm-delete-product-type") Xác nhận
+									li
+										span.dropdown-item.p-2(role="button" rel="cancel-delete-product-type") Huỷ
+			else
+				h3.h4.fw-normal Chưa có loại sản phẩm nào
+		//- End productTypes
+		//- Modal add/update
+		form#modal-product-type.modal.fade(method="post" action="/product-type/add" tabindex="-1" role="dialog" aria-hidden="true" enctype="multipart/form-data")
+			.modal-dialog.modal-dialog-centered.modal-md
+				.modal-content
+					.modal-header
+						h5#modal-product-type-title.modal-title Thêm loại sản phẩm
+						button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
+					.modal-body
+						.form-label-group
+							input#tName.form-control(name="tName" type="text" placeholder="Tên loại sản phẩm" required="true")
+							label(for="tName") Tên loại sản phẩm
+						.form.position-relative.mb-2
+							label#tImg-preview.img-box.w-100.align-middle.d-flex.justify-content-center.align-items-center(for="tImg" style="height:464px")
+								input#tImg.btn.btn-success(type="file" name="tImg" accept="image/*")
+								.title.h-100.d-flex.justify-content-center.align-items-center
+									span(data-feather="upload")
+									span.ms-2 Chọn ảnh
+								img#img-preview.d-none(src="" height="465px")
+							span.file_remove.d-none(data-feather="x")
+						.form-check.form-switch.fs-6
+							input#tState.form-check-input(name="tState" type='checkbox' checked='true' role="button")
+							label.form-check-label(for='tState') Hiện
+						.alert.alert-danger.d-none(role="errMessage")
+							span
+							button.btn-close(type="button" data-bs-dismiss="alert" aria-label="Close")
+					.modal-footer.d-grid.gap-2(style="justify-content: unset")
+						button.btn.btn-primary(type="submit") Lưu
+		//- End Modal add/update
+
+

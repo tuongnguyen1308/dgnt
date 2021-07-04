@@ -230,16 +230,22 @@ body {
 .z-index-3 {
   z-index: 3;
 }
-.avatar-preview {
+
+.modal .flex-fill {
+  max-width: 50%;
+}
+
+.img-box {
   text-align: center;
   transition: 0.2s;
   position: relative;
   border: 1px solid #ddd;
   border-radius: 0.35rem;
   cursor: pointer;
+  overflow: hidden;
 }
 
-.avatar-preview input {
+.img-box input {
   position: absolute;
   width: 100%;
   left: 0;
@@ -258,15 +264,12 @@ body {
   color: #fff;
   font-size: 12px;
   cursor: pointer;
-  right: 16px;
-  top: 16px;
+  right: 0px;
+  top: 0px;
 }
 .file_remove:hover {
   background: #222;
   transition: 0.2s;
-}
-.avatar-preview img {
-  max-width: 100%;
 }
 
 img {

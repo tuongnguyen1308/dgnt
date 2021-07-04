@@ -56,10 +56,12 @@ app.get("/", (req, res) => {
 
 const staffLoginRoute = require("./routes/staff/rLogin");
 const dashboardRoute = require("./routes/staff/rDashboard");
-const staffList = require("./routes/staff/rStaff");
+const staffListRoute = require("./routes/staff/rStaff");
+const productTypeRoute = require("./routes/staff/rProductType");
 
 app.use("/dashboard", mwAuth.Auth, dashboardRoute);
-app.use("/staff", mwAuth.Auth, staffList);
+app.use("/staff", mwAuth.Auth, staffListRoute);
+app.use("/product-type", mwAuth.Auth, productTypeRoute);
 app.use("/login-staff", staffLoginRoute);
 
 //#endregion

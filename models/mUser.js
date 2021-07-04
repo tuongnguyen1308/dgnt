@@ -39,6 +39,10 @@ let UserSchema = mongoose.Schema(
         dafault: "Khách hàng",
       },
     },
+    workingState: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
