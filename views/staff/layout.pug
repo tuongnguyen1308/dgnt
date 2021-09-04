@@ -22,11 +22,15 @@ html(lang="en")
 			a.navbar-brand.col-md-3.col-lg-2.me-0.px-3(href="#") ĐGNT
 			button.navbar-toggler.position-absolute.d-md-none.collapsed.d-flex.align-middle.my-1(type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation")
 				span.my-1(data-feather="menu")
-			span.form-control.invisible.d-md-block.w-100.p-0
-			//- input.form-control.form-control-dark.w-100(type="text" placeholder="Tìm kiếm nhanh" aria-label="Search")
+			input.form-control.form-control-dark.w-100(type="text" placeholder="Tìm kiếm nhanh đơn hàng" aria-label="Search")
 			.navbar-nav
 				.nav-item.text-nowrap
-					a.nav-link.px-3(href="/login-staff/logout") Đăng xuất
+					a.nav-link.px-3(href="#" rel="logout-request") Đăng xuất
+					ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset; width:100%;")
+						li
+							a.dropdown-item.p-2.text-danger(href="/login-staff/logout") Xác nhận
+						li
+							span.dropdown-item.p-2(role="button" rel="logout-cancel") Huỷ
 		.container-fluid.position-relative
 			if messages
 				#toast.toast.position-absolute.m-2.top-0.end-0.z-index-3(role='alert' aria-live='assertive' aria-atomic='true' data-bs-animation="true")
@@ -50,9 +54,9 @@ html(lang="en")
 									span(data-feather="file")
 									|  Orders
 							li.nav-item
-								a.nav-link(href="#")
-									span(data-feather="shopping-cart")
-									|  Products
+								a.nav-link(class=(curPage == "products") ? "active" : "" href="/products")
+									span(data-feather="box")
+									|  Sản phẩm
 							li.nav-item
 								a.nav-link(href="#")
 									span(data-feather="users")
@@ -61,10 +65,6 @@ html(lang="en")
 								a.nav-link(href="#")
 									span(data-feather="bar-chart-2")
 									|  Reports
-							li.nav-item
-								a.nav-link(href="#")
-									span(data-feather="layers")
-									|  Integrations
 							li.nav-item
 								a.nav-link(class=(curPage == "product-type") ? "active" : "" href="/product-type")
 									span(data-feather="list")

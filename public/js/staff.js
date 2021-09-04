@@ -1,24 +1,25 @@
 $(document).ready(() => {
-  const ip_username = document.getElementById("username");
+  const ip_username = document.getElementById("aUsername");
   const formModal = document.getElementById("modal-staff");
   const modalTitle = document.getElementById("modal-staff-title");
   $('[rel="tooltip"]').tooltip({ trigger: "hover" });
   //#region func
   let removeImg = () => {
     $("#img-preview").attr("src", "#").addClass("d-none");
-    $("#avatar-preview .title").removeClass("d-none");
+    $("#simg-preview .title").removeClass("d-none");
     $(".file_remove").addClass("d-none");
   };
 
   let changeImgWhenModalOpen = (con, src) => {
     if (con) {
       $("#img-preview").attr("src", src).removeClass("d-none");
-      $("#avatar-preview .title").addClass("d-none");
+      $("#simg-preview .title").addClass("d-none");
       $(".file_remove").removeClass("d-none");
     } else removeImg();
   };
   let prepareModal = ($btn = null) => {
     $("#modal-staff input#id").remove();
+    $("#modal-staff input#aid").remove();
     if ($btn) {
       ip_username.removeAttribute("name");
       ip_username.disabled = true;
@@ -28,28 +29,38 @@ $(document).ready(() => {
       inputID.value = $btn.data("id");
       inputID.type = "hidden";
       formModal.appendChild(inputID);
+      let inputaId = document.createElement("input");
+      inputaId.id = "aid";
+      inputaId.name = "aid";
+      inputaId.value = $btn.data("aid");
+      inputaId.type = "hidden";
+      formModal.appendChild(inputaId);
     } else {
       ip_username.removeAttribute("disabled");
-      ip_username.setAttribute("name", "username");
+      ip_username.setAttribute("name", "aUsername");
     }
     formModal.action = $btn ? "/staff/update" : "/staff/add";
     modalTitle.innerText = $btn ? "Sửa thành viên" : "Thêm thành viên";
-    ip_username.value = $btn?.data("username") || "";
-    document.getElementById("rNumber").value = $btn?.data("rnumber") || 2;
-    document.getElementById("fullname").value = $btn?.data("fullname") || "";
-    document.getElementById("phone").value = $btn?.data("phone") || "";
-    document.getElementById("email").value = $btn?.data("email") || "";
-    document.getElementById("workingState").checked =
-      $btn?.data("workingState") === "";
-    $("#workingState").trigger("change");
+    console.log($btn?.data("ausername"));
+    ip_username.value = $btn?.data("ausername") || "";
+    $btn?.data("rid")
+      ? (document.getElementById("rId").value = $btn?.data("rid"))
+      : "";
+    document.getElementById("sName").value = $btn?.data("sname") || "";
+    let dofb = $btn?.data("sdofb") || "";
+    document.getElementById("sDofB").value = dofb?.slice(0, 10) || "";
+    document.getElementById("sNumber").value = $btn?.data("snumber") || "";
+    document.getElementById("sEmail").value = $btn?.data("semail") || "";
+    document.getElementById("sState").checked = $btn?.data("sstate") === "";
+    $("#sState").trigger("change");
     changeImgWhenModalOpen(
-      $btn?.data("avatar") && $btn.data("avatar") != "default.png",
-      `img/users/${$btn?.data("avatar")}`
+      $btn?.data("simg") && $btn.data("simg") != "default.png",
+      `img/users/${$btn?.data("simg")}`
     );
   };
   let changeWorkingState = () => {
-    let state = $("#workingState").is(":checked") ? "Đang làm việc" : "Đã nghỉ";
-    $("#workingState").next().text(state);
+    let state = $("#sState").is(":checked") ? "Đang làm việc" : "Đã nghỉ";
+    $("#sState").next().text(state);
   };
   //#endregion
 
@@ -85,17 +96,12 @@ $(document).ready(() => {
   $("[rel=cancel-delete-staff]").on("click", function () {
     $(this).parent().parent().removeClass("show");
   });
-  $(document).click((e) => {
-    if (!["BUTTON", "line", "svg"].includes(e.target.tagName)) {
-      $(".dropdown-menu.show").removeClass("show");
-    }
-  });
 
-  $("#workingState").on("change", function () {
+  $("#sState").on("change", function () {
     changeWorkingState();
   });
 
-  $("#avatar").on("change", function (e) {
+  $("#sImg").on("change", function (e) {
     var ext = $(this).val().split(".").pop().toLowerCase();
     if ($.inArray(ext, ["gif", "png", "jpg", "jpeg"]) == -1) {
       $("[role=errMessage]")

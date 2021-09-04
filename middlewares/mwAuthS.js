@@ -1,4 +1,5 @@
-const User = require("../models/mUser");
+const Account = require("../models/mAccount");
+const Staff = require("../models/mStaff");
 const rootRoute = "/login-staff";
 module.exports.Auth = async (req, res, next) => {
   let redirectFunc = (icon, color, title, text, dir) => {
@@ -20,8 +21,10 @@ module.exports.Auth = async (req, res, next) => {
     );
     return;
   }
-  const user = await User.findOne({ username: req.session.user.username });
-  if (!user) {
+  const accFound = await Account.findOne({
+    aUsername: req.session.user.aUsername,
+  }).populate("rId");
+  if (!accFound) {
     redirectFunc(
       "alert-circle",
       "warning",
@@ -30,15 +33,21 @@ module.exports.Auth = async (req, res, next) => {
       rootRoute
     );
     return;
-  } else if (!user.workingState) {
-    redirectFunc(
-      "alert-circle",
-      "warning",
-      "Thông báo!",
-      "Bạn đã nghỉ việc!",
-      rootRoute
-    );
-    return;
+  }
+  if (accFound.rId.rName != "Quản lý") {
+    if (accFound.rId.rName != "Khách hàng") {
+      const staffInfo = await Staff.findOne({ aId: accFound._id });
+      if (!staffInfo.sState) {
+        redirectFunc(
+          "alert-circle",
+          "warning",
+          "Thông báo!",
+          "Bạn đã nghỉ việc!",
+          rootRoute
+        );
+        return;
+      }
+    }
   }
   next();
 };

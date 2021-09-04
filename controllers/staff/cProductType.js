@@ -1,14 +1,14 @@
 const ProductType = require("../../models/mProductType");
-const rootRoute = "/product-type";
+const curPage = "product-type";
+const rootRoute = `/${curPage}`;
 
 module.exports.index = async (req, res) => {
   const title = "Quản lý Loại sản phẩm";
-  const curPage = "product-type";
   const messages = req.session?.messages || null;
   const sess = req.session.user;
   req.session.messages = null;
   let productTypes = await ProductType.find({});
-  res.render("./staff/productType", {
+  res.render(`./staff/productType`, {
     title,
     curPage,
     messages,

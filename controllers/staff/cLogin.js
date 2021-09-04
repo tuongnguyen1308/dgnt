@@ -1,4 +1,4 @@
-const User = require("../../models/mUser");
+const Account = require("../../models/mAccount");
 const bcrypt = require("bcrypt");
 module.exports.index = async (req, res) => {
   const title = "Đăng nhập";
@@ -25,21 +25,23 @@ module.exports.auth = async (req, res, next) => {
   };
 
   try {
-    const user = await User.findOne({ username: req.body.username });
-    if (!user) {
+    const accFound = await Account.findOne({
+      aUsername: req.body.username,
+    }).populate("rId");
+    if (!accFound) {
       redirectFunc("Tài khoản không tồn tại!", "/login-staff");
       return;
     }
     const isCorrectPassword = await bcrypt.compare(
       req.body.password,
-      user.password
+      accFound.aPassword
     );
     if (!isCorrectPassword) {
       redirectFunc("Mật khẩu không đúng!", "/login-staff");
       return;
     }
     // đúng user
-    req.session.user = user;
+    req.session.user = accFound;
     req.session.messages = {
       icon: "check-circle",
       color: "success",

@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 const session = require("express-session");
 const cors = require("cors");
 const path = require("path");
-const mwAuth = require("./middlewares/mwAuth");
+const mwAuth = require("./middlewares/mwAuthS");
 require("dotenv/config");
 //#endregion
 
@@ -58,10 +58,12 @@ const staffLoginRoute = require("./routes/staff/rLogin");
 const dashboardRoute = require("./routes/staff/rDashboard");
 const staffListRoute = require("./routes/staff/rStaff");
 const productTypeRoute = require("./routes/staff/rProductType");
+const productsRoute = require("./routes/staff/rProducts");
 
 app.use("/dashboard", mwAuth.Auth, dashboardRoute);
 app.use("/staff", mwAuth.Auth, staffListRoute);
 app.use("/product-type", mwAuth.Auth, productTypeRoute);
+app.use("/products", mwAuth.Auth, productsRoute);
 app.use("/login-staff", staffLoginRoute);
 
 //#endregion

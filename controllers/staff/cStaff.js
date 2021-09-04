@@ -1,30 +1,29 @@
-const User = require("../../models/mUser");
+const Account = require("../../models/mAccount");
+const Staff = require("../../models/mStaff");
+const Role = require("../../models/mRole");
 const bcrypt = require("bcrypt");
-const roles = [
-  { rNumber: 1, rTitle: "Admin" },
-  { rNumber: 2, rTitle: "Nhân viên" },
-];
-const rootRoute = "/staff";
+const curPage = "staff";
+const rootRoute = `/${curPage}`;
 
 module.exports.index = async (req, res) => {
   const title = "Quản lý Thành viên";
-  const curPage = "staff";
   const messages = req.session?.messages || null;
+  const roles = await Role.find({ rName: { $ne: "Khách hàng" } });
   const sess = req.session.user;
   req.session.messages = null;
-  let users = await User.find({});
-  res.render("./staff/staff", {
+  let staff = await Staff.find({}).populate("aId");
+  res.render(`./staff/${curPage}`, {
     title,
     curPage,
     messages,
-    users,
+    staff,
     roles,
     sess,
   });
 };
 
 module.exports.add = (req, res) => {
-  User.find({ username: req.body.username }, async (err, users_found) => {
+  Staff.find({ username: req.body.aUsername }, async (err, users_found) => {
     let redirectFunc = (icon, color, title, text, dir) => {
       req.session.messages = {
         icon,
@@ -52,68 +51,103 @@ module.exports.add = (req, res) => {
         rootRoute
       );
     } else {
-      console.log(req.body);
       const salt = await bcrypt.genSalt(10);
-      const hashPassword = await bcrypt.hash(req.body.password, salt);
-      let newUser = new User({
-        username: req.body.username,
-        password: hashPassword,
-        fullname: req.body.fullname,
-        phone: req.body.phone,
-        email: req.body.email,
-        avatar: req.file?.filename,
-        workingState: req.body.workingState == "on",
-        role: {
-          rNumber: req.body.rNumber,
-          rTitle: roles.find((role) => role.rNumber == req.body.rNumber).rTitle,
-        },
+      const hashPassword = await bcrypt.hash(req.body.aPassword, salt);
+      let newAcc = new Account({
+        aUsername: req.body.aUsername,
+        aPassword: hashPassword,
+        rId: req.body.rId,
       });
-      let result = await newUser.save();
-      redirectFunc(
-        "check-circle",
-        "success",
-        "Thành công",
-        "Đã thêm thành viên",
-        rootRoute
-      );
+      try {
+        let accSaved = await newAcc.save();
+        let newStaff = new Staff({
+          sName: req.body.sName,
+          sDofB: req.body.sDofB,
+          sNumber: req.body.sNumber,
+          sEmail: req.body.sEmail,
+          sImg: req.file?.filename,
+          sState: req.body.sState == "on",
+          aId: accSaved._id,
+        });
+        let staffSaved = await newStaff.save();
+        redirectFunc(
+          "check-circle",
+          "success",
+          "Thành công",
+          "Đã thêm thành viên",
+          rootRoute
+        );
+      } catch (error) {
+        redirectFunc(
+          "alert-circle",
+          "danger",
+          "Thất bại!",
+          "Có lỗi xảy ra khi cấp tài khoản!",
+          rootRoute
+        );
+      }
     }
   });
   return;
 };
 
 module.exports.update = async (req, res) => {
-  let updUser = {
-    fullname: req.body.fullname,
-    phone: req.body.phone,
-    email: req.body.email,
-    workingState: req.body.workingState == "on",
-    role: {
-      rNumber: req.body.rNumber,
-      rTitle: roles.find((role) => role.rNumber == req.body.rNumber).rTitle,
-    },
+  let updStaff = {
+    sName: req.body.sName,
+    sDofB: req.body.sDofB,
+    sNumber: req.body.sNumber,
+    sEmail: req.body.sEmail,
+    sState: req.body.sState == "on",
   };
-  let avatar = req.file?.filename || false;
-  if (avatar) {
-    updUser.avatar = avatar;
+  let sImg = req.file?.filename || false;
+  if (sImg) {
+    updStaff.sImg = sImg;
   }
-  let password = req.body.password;
-  if (password) {
+  let updAcc = {
+    rId: req.body.rId,
+  };
+  let aPassword = req.body.aPassword;
+  if (aPassword) {
     const salt = await bcrypt.genSalt(10);
-    updUser.password = await bcrypt.hash(req.body.password, salt);
+    const aPassword = await bcrypt.hash(req.body.aPassword, salt);
+    updAcc.aPassword = aPassword;
   }
-  let result = await User.findByIdAndUpdate(req.body.id, { $set: updUser });
-  req.session.messages = {
-    icon: "check-circle",
-    color: "success",
-    title: "Thành công!",
-    text: "Đã cập nhât thành viên",
-  };
-  res.redirect(rootRoute);
-  return;
+  try {
+    let accSave = await Account.findByIdAndUpdate(req.body.aid, {
+      $set: updAcc,
+    });
+  } catch (error) {
+    redirectFunc(
+      "alert-circle",
+      "danger",
+      "Thất bại!",
+      "Có lỗi xảy ra khi đổi mật khẩu cho tài khoản!",
+      rootRoute
+    );
+  }
+  try {
+    let result = await Staff.findByIdAndUpdate(req.body.id, { $set: updStaff });
+    req.session.messages = {
+      icon: "check-circle",
+      color: "success",
+      title: "Thành công!",
+      text: "Đã cập nhât thành viên",
+    };
+    res.redirect(rootRoute);
+    return;
+  } catch (error) {
+    redirectFunc(
+      "alert-circle",
+      "danger",
+      "Thất bại!",
+      "Có lỗi xảy ra khi cập nhật tài khoản!",
+      rootRoute
+    );
+  }
 };
 
 module.exports.delete = async (req, res) => {
-  let result = await User.deleteOne({ _id: req.params.id }, function (err) {
+  let result = await Staff.deleteOne({ _id: req.params.id }, function (err) {
     err && res.json(err);
   });
   req.session.messages = {
