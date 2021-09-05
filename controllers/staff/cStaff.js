@@ -4,6 +4,7 @@ const Role = require("../../models/mRole");
 const bcrypt = require("bcrypt");
 const curPage = "staff";
 const rootRoute = `/${curPage}`;
+const imgViewSize = 300;
 
 module.exports.index = async (req, res) => {
   const title = "Quản lý Thành viên";
@@ -11,12 +12,21 @@ module.exports.index = async (req, res) => {
   const roles = await Role.find({ rName: { $ne: "Khách hàng" } });
   const sess = req.session.user;
   req.session.messages = null;
-  let staff = await Staff.find({}).populate("aId");
+  let staff = await Staff.find({}).populate({
+    path: "aId",
+    select: "aUsername rId",
+    populate: { path: "rId" },
+  });
+  let grpByRole = staff.reduce((grpByRole, s) => {
+    (grpByRole[s.aId.rId.rName] = grpByRole[s.aId.rId.rName] || []).push(s);
+    return grpByRole;
+  }, {});
   res.render(`./staff/${curPage}`, {
     title,
     curPage,
     messages,
-    staff,
+    grpByRole,
+    imgViewSize,
     roles,
     sess,
   });
@@ -147,14 +157,33 @@ module.exports.update = async (req, res) => {
 };
 
 module.exports.delete = async (req, res) => {
-  let result = await Staff.deleteOne({ _id: req.params.id }, function (err) {
-    err && res.json(err);
-  });
-  req.session.messages = {
-    icon: result ? "check-circle" : "alert-circle",
-    color: result ? "success" : "danger",
-    title: result ? "Thành công!" : "Thất bại",
-    text: result ? "Đã xoá thành viên" : "Đã có lỗi xảy ra",
-  };
-  res.json(result);
+  try {
+    let staffDeleted = await Staff.deleteOne(
+      { aId: req.params.id },
+      function (err) {
+        err && res.json(err);
+      }
+    );
+    let result = await Account.deleteOne(
+      { _id: req.params.id },
+      function (err) {
+        err && res.json(err);
+      }
+    );
+    req.session.messages = {
+      icon: result ? "check-circle" : "alert-circle",
+      color: result ? "success" : "danger",
+      title: result ? "Thành công!" : "Thất bại",
+      text: result ? "Đã xoá thành viên" : "Đã có lỗi xảy ra",
+    };
+    res.json(result);
+  } catch (error) {
+    redirectFunc(
+      "alert-circle",
+      "danger",
+      "Thất bại!",
+      "Có lỗi xảy ra khi xóa tài khoản!",
+      rootRoute
+    );
+  }
 };

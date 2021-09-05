@@ -41,10 +41,10 @@ $(document).ready(() => {
     }
     formModal.action = $btn ? "/staff/update" : "/staff/add";
     modalTitle.innerText = $btn ? "Sửa thành viên" : "Thêm thành viên";
-    console.log($btn?.data("ausername"));
     ip_username.value = $btn?.data("ausername") || "";
+    console.log($btn?.data("rid"));
     $btn?.data("rid")
-      ? (document.getElementById("rId").value = $btn?.data("rid"))
+      ? (document.getElementById("rId").value = $btn.data("rid"))
       : "";
     document.getElementById("sName").value = $btn?.data("sname") || "";
     let dofb = $btn?.data("sdofb") || "";

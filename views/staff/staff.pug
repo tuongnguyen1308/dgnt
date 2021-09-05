@@ -8,36 +8,35 @@ block content
 					span(data-feather="user-plus")
 					|  Thêm
 		//- UserList
-		.d-flex.flex-wrap
-			each user in staff
-				.card.mb-3.me-3(style="max-width: 320px;")
-					img.bd-placeholder-img.card-img-top(width="100%" height="318px" src=`img/users/${user.sImg}`)
-					.card-body.text-center
-						h5.card-title.position-relative(class= !user.sState ? 'text-secondary': '')= user.sName || user.aUsername
-							if !user.sState
-								small.small.fw-normal  (Đã nghỉ)
-						p.card-text
-							| #{user.sNumber || "Chưa thêm SĐT"}
-							br
-							| #{user.sEmail || "Chưa thêm email"}
-						if sess.rId.rName == "Quản lý"
-							.card-text.text-center
-								.btn-group(role="group")
-									button.btn.btn-sm.btn-outline-primary(type="button" role="edit-staff" data-id=user._id data-aid=user.aId._id data-ausername=user.aId.aUsername data-sname=user.sName data-sdofb=user.sDofB data-snumber=user.sNumber data-semail=user.sEmail data-rid=user.aId.rId data-simg=user.sImg data-sstate=user.sState data-bs-toggle="modal" data-bs-target="#modal-staff" rel="tooltip" data-bs-placement="top" title="Cập nhật thông tin")
-										span(data-feather="edit-3")
-									button.btn.btn-sm.btn-outline-danger(role="delete-staff" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Xoá")
-										span(data-feather="x")
-									ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset")
-										li
-											a.dropdown-item.p-2.text-danger(href='#' data-id=user._id role="confirm-delete-staff") Xác nhận
-										li
-											span.dropdown-item.p-2(role="button" rel="cancel-delete-staff") Huỷ
 
-
-
-								//- button.btn.btn-danger(type="button" role="delete-staff" data-id=user._id)
-			else
-				h3.h4.fw-normal Chưa có nhân viên
+		each staff, roleName in grpByRole
+			p.fs-5.badge.bg-dark= roleName
+			.d-flex.flex-wrap
+				each user in staff
+					.card.mb-3.me-3(style="max-width: 320px;")
+						img.bd-placeholder-img.card-img-top(style=`width:${imgViewSize}px;` height=`${imgViewSize}px` src=`img/users/${user.sImg}`)
+						.card-body.text-center
+							h5.card-title.position-relative(class= !user.sState ? 'text-secondary': '')= user.sName || user.aId.aUsername
+								if !user.sState
+									small.small.fw-normal  (Đã nghỉ)
+							p.card-text
+								| #{user.sNumber || "Chưa thêm SĐT"}
+								br
+								| #{user.sEmail || "Chưa thêm email"}
+							if sess.rId.rName == "Quản lý" && user.aId.rId.rName != "Quản lý"
+								.card-text.text-center
+									.btn-group(role="group")
+										button.btn.btn-sm.btn-outline-primary(type="button" role="edit-staff" data-id=user._id data-aid=user.aId._id data-ausername=user.aId.aUsername data-sname=user.sName data-sdofb=user.sDofB data-snumber=user.sNumber data-semail=user.sEmail data-rid=user.aId.rId._id data-simg=user.sImg data-sstate=user.sState data-bs-toggle="modal" data-bs-target="#modal-staff" rel="tooltip" data-bs-placement="top" title="Cập nhật thông tin")
+											span(data-feather="edit-3")
+										button.btn.btn-sm.btn-outline-danger(role="delete-staff" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Xoá")
+											span(data-feather="x")
+										ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset")
+											li
+												a.dropdown-item.p-2.text-danger(href='#' data-id=user.aId._id role="confirm-delete-staff") Xác nhận
+											li
+												span.dropdown-item.p-2(role="button" rel="cancel-delete-staff") Huỷ
+		else
+			h3.h4.fw-normal Chưa có nhân viên
 		//- End UserList
 		//- Modal add/update
 		form#modal-staff.modal.fade(method="post" action="/staff/add" tabindex="-1" role="dialog" aria-hidden="true" enctype="multipart/form-data")
