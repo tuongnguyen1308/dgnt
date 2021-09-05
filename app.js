@@ -57,11 +57,13 @@ app.get("/", (req, res) => {
 const staffLoginRoute = require("./routes/staff/rLogin");
 const dashboardRoute = require("./routes/staff/rDashboard");
 const staffListRoute = require("./routes/staff/rStaff");
+const staffProfileRoute = require("./routes/staff/rProfile");
 const productTypeRoute = require("./routes/staff/rProductType");
 const productsRoute = require("./routes/staff/rProducts");
 
 app.use("/dashboard", mwAuth.Auth, dashboardRoute);
 app.use("/staff", mwAuth.Auth, staffListRoute);
+app.use("/profile", mwAuth.Auth, staffProfileRoute);
 app.use("/product-type", mwAuth.Auth, productTypeRoute);
 app.use("/products", mwAuth.Auth, productsRoute);
 app.use("/login-staff", staffLoginRoute);

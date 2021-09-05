@@ -5,6 +5,18 @@ const bcrypt = require("bcrypt");
 const curPage = "staff";
 const rootRoute = `/${curPage}`;
 const imgViewSize = 300;
+const imgPreviewSize = 465;
+
+let redirectFunc = (icon, color, title, text, dir, req, res) => {
+  req.session.messages = {
+    icon,
+    color,
+    title,
+    text,
+  };
+  res.redirect(dir);
+  return;
+};
 
 module.exports.index = async (req, res) => {
   const title = "Quản lý Thành viên";
@@ -18,7 +30,8 @@ module.exports.index = async (req, res) => {
     populate: { path: "rId" },
   });
   let grpByRole = staff.reduce((grpByRole, s) => {
-    (grpByRole[s.aId.rId.rName] = grpByRole[s.aId.rId.rName] || []).push(s);
+    (grpByRole[!s.sState ? "Đã nghỉ làm" : s.aId.rId.rName] =
+      grpByRole[!s.sState ? "Đã nghỉ làm" : s.aId.rId.rName] || []).push(s);
     return grpByRole;
   }, {});
   res.render(`./staff/${curPage}`, {
@@ -27,6 +40,7 @@ module.exports.index = async (req, res) => {
     messages,
     grpByRole,
     imgViewSize,
+    imgPreviewSize,
     roles,
     sess,
   });
@@ -34,23 +48,15 @@ module.exports.index = async (req, res) => {
 
 module.exports.add = (req, res) => {
   Staff.find({ username: req.body.aUsername }, async (err, users_found) => {
-    let redirectFunc = (icon, color, title, text, dir) => {
-      req.session.messages = {
-        icon,
-        color,
-        title,
-        text,
-      };
-      res.redirect(dir);
-      return;
-    };
     if (err) {
       redirectFunc(
         "alert-circle",
         "danger",
         "Thất bại!",
         "Có lỗi xảy ra trong quá trình thêm!",
-        rootRoute
+        rootRoute,
+        req,
+        res
       );
     } else if (users_found.length) {
       redirectFunc(
@@ -58,7 +64,9 @@ module.exports.add = (req, res) => {
         "danger",
         "Thất bại!",
         "Tên đăng nhập này đã tồn tại!",
-        rootRoute
+        rootRoute,
+        req,
+        res
       );
     } else {
       const salt = await bcrypt.genSalt(10);
@@ -77,6 +85,7 @@ module.exports.add = (req, res) => {
           sEmail: req.body.sEmail,
           sImg: req.file?.filename,
           sState: req.body.sState == "on",
+          sJoinAt: new Date(),
           aId: accSaved._id,
         });
         let staffSaved = await newStaff.save();
@@ -85,7 +94,9 @@ module.exports.add = (req, res) => {
           "success",
           "Thành công",
           "Đã thêm thành viên",
-          rootRoute
+          rootRoute,
+          req,
+          res
         );
       } catch (error) {
         redirectFunc(
@@ -93,7 +104,9 @@ module.exports.add = (req, res) => {
           "danger",
           "Thất bại!",
           "Có lỗi xảy ra khi cấp tài khoản!",
-          rootRoute
+          rootRoute,
+          req,
+          res
         );
       }
     }
@@ -132,7 +145,9 @@ module.exports.update = async (req, res) => {
       "danger",
       "Thất bại!",
       "Có lỗi xảy ra khi đổi mật khẩu cho tài khoản!",
-      rootRoute
+      rootRoute,
+      req,
+      res
     );
   }
   try {
@@ -151,7 +166,9 @@ module.exports.update = async (req, res) => {
       "danger",
       "Thất bại!",
       "Có lỗi xảy ra khi cập nhật tài khoản!",
-      rootRoute
+      rootRoute,
+      req,
+      res
     );
   }
 };
@@ -183,7 +200,9 @@ module.exports.delete = async (req, res) => {
       "danger",
       "Thất bại!",
       "Có lỗi xảy ra khi xóa tài khoản!",
-      rootRoute
+      rootRoute,
+      req,
+      res
     );
   }
 };

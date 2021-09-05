@@ -24,6 +24,10 @@ let StaffSchema = Schema({
     type: Boolean,
     default: false,
   },
+  sJoinAt: {
+    type: Date,
+    required: true,
+  },
   aId: {
     type: Schema.Types.ObjectId,
     ref: "col_account",
