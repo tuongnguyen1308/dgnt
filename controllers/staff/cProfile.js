@@ -6,11 +6,11 @@ const rootRoute = `/${curPage}`;
 const imgViewSize = 300;
 const imgPreviewSize = 350;
 
-let redirectFunc = (icon, color, title, text, dir, req, res) => {
+let redirectFunc = (state, text, dir, req, res) => {
   req.session.messages = {
-    icon,
-    color,
-    title,
+    icon: state ? "check-circle" : "alert-circle",
+    color: state ? "success" : "danger",
+    title: state ? "Thành công" : "Thất bại",
     text,
   };
   res.redirect(dir);
@@ -52,14 +52,12 @@ module.exports.index = async (req, res) => {
 };
 module.exports.update = async (req, res) => {
   const sess = req.session.user;
-  console.log(sess);
   let updStaff = {
     sName: req.body.sName,
     sDofB: req.body.sDofB,
     sNumber: req.body.sNumber,
     sEmail: req.body.sEmail,
   };
-  console.log(updStaff);
   let sImg = req.file?.filename || false;
   if (sImg) {
     updStaff.sImg = sImg;
@@ -69,57 +67,38 @@ module.exports.update = async (req, res) => {
       { aId: sess._id },
       { $set: updStaff }
     );
-    redirectFunc(
-      "check-circle",
-      "success",
-      "Thành công",
-      "Cập nhật thành công!",
-      rootRoute,
-      req,
-      res
-    );
+    redirectFunc(true, "Cập nhật thành công!", rootRoute, req, res);
   } catch (error) {
-    redirectFunc(
-      "alert-circle",
-      "danger",
-      "Thất bại!",
-      "Cập nhật thất bại!",
-      rootRoute,
-      req,
-      res
-    );
+    redirectFunc(false, "Cập nhật thất bại!", rootRoute, req, res);
   }
 };
-
 module.exports.changePassword = async (req, res) => {
   const sess = req.session.user;
-  const salt = await bcrypt.genSalt(10);
-  const aPassword = await bcrypt.hash(req.body.newPassword, salt);
-  let updAcc = {
-    aPassword,
-  };
-  try {
-    let accSave = await Account.findByIdAndUpdate(sess._id, {
-      $set: updAcc,
-    });
-    redirectFunc(
-      "check-circle",
-      "success",
-      "Thành công",
-      "Đổi mật khẩu thành công!",
-      rootRoute,
-      req,
-      res
-    );
-  } catch (error) {
-    redirectFunc(
-      "alert-circle",
-      "danger",
-      "Thất bại!",
-      "Đổi mật khẩu thất bại!",
-      rootRoute,
-      req,
-      res
-    );
-  }
+  Account.findById(sess._id, async (err, accFound) => {
+    if (err) {
+      redirectFunc(false, "Không tìm thấy tài khoản!", rootRoute, req, res);
+    } else {
+      const isCorrectPassword = await bcrypt.compare(
+        req.body.oldPassword,
+        accFound.aPassword
+      );
+      if (!isCorrectPassword) {
+        redirectFunc(false, "Mật khẩu cũ không đúng!", rootRoute, req, res);
+        return;
+      } else {
+        const salt = await bcrypt.genSalt(10);
+        const aPassword = await bcrypt.hash(req.body.newPassword, salt);
+        let updAcc = { aPassword };
+        try {
+          let accSave = await Account.findByIdAndUpdate(sess._id, {
+            $set: updAcc,
+          });
+          redirectFunc(true, "Đổi mật khẩu thành công!", rootRoute, req, res);
+        } catch (error) {
+          redirectFunc(false, "Đổi mật khẩu thất bại!", rootRoute, req, res);
+        }
+      }
+    }
+  });
+  return;
 };

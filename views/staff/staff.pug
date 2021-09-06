@@ -4,9 +4,10 @@ block content
 		.d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pt-3.pb-2.mb-3.border-bottom.flex-column.flex-lg-row
 			h1.h3.mb-0= title
 			.btn-toolbar.mt-2.mb-mt-0
-				button.btn.btn-sm.btn-outline-success(type="button" role="add-staff" data-bs-toggle="modal" data-bs-target="#modal-staff")
-					span(data-feather="user-plus")
-					|  Thêm
+				if sess.rId.rName == "Quản lý"
+					button.btn.btn-sm.btn-outline-success(type="button" role="add-staff" data-bs-toggle="modal" data-bs-target="#modal-staff")
+						span(data-feather="user-plus")
+						|  Thêm
 		//- UserList
 
 		each staff, roleName in grpByRole
@@ -39,7 +40,7 @@ block content
 			h3.h4.fw-normal Chưa có nhân viên
 		//- End UserList
 		//- Modal add/update
-		form#modal-staff.modal.fade(method="post" action="/staff/add" tabindex="-1" role="dialog" aria-hidden="true" enctype="multipart/form-data")
+		form#modal-staff.needs-validation.modal.fade(method="post" action="/staff/add" tabindex="-1" role="dialog" aria-hidden="true" enctype="multipart/form-data" novalidate)
 			.modal-dialog.modal-dialog-centered.modal-xl
 				.modal-content
 					.modal-header
@@ -50,11 +51,13 @@ block content
 							.form.pe-0.pe-lg-3
 								span.required Thông tin tài khoản
 								.form-label-group
-									input#aUsername.form-control(name="aUsername" type="text" placeholder="Tên tài khoản" required="true")
+									input#aUsername.form-control(name="aUsername" type="text" placeholder="Tên tài khoản" required="true" maxlength="50")
 									label(for="aUsername") Tên tài khoản
+									.invalid-feedback Tên tài khoản không được để trống
 								.form-label-group
-									input#aPassword.form-control(name="aPassword" type="password" placeholder="Mật khẩu" required="true")
+									input#aPassword.form-control(name="aPassword" type="password" placeholder="Mật khẩu" required="true" maxlength="50")
 									label(for="aPassword") Mật khẩu
+									.invalid-feedback Mật khẩu phải chứa ít nhất 6 kí tự
 								.form-floating.mb-2
 									select#rId.form-select(name="rId" required="true")
 										each role in roles
@@ -62,14 +65,14 @@ block content
 									label(for="rId") Quyền
 								span Thông tin cá nhân
 								.form-label-group
-									input#sName.form-control(name="sName" type="text" placeholder="Tên nhân viên")
+									input#sName.form-control(name="sName" type="text" placeholder="Tên nhân viên" maxlength="50")
 									label(for="sName") Tên nhân viên
 								.d-flex
 									.flex-fill.form-label-group.pe-2
 										input#sDofB.form-control(name="sDofB" type="date")
 										label(for="sDofB") Ngày sinh
 									.flex-fill.form-label-group
-										input#sNumber.form-control(name="sNumber" type="text" placeholder="Số điện thoại")
+										input#sNumber.form-control(name="sNumber" type="text" placeholder="Số điện thoại" maxlength="10")
 										label(for="sNumber") Số điện thoại
 								.form-label-group
 									input#sEmail.form-control(name="sEmail" type="email" placeholder="Email")
@@ -79,7 +82,7 @@ block content
 									label.form-check-label(for='sState') Đang làm việc
 						.flex-fill.w-100.position-relative
 							label#simg-preview.img-box.w-100.align-middle(for="sImg" style=`height:${imgPreviewSize-1}px`).d-flex.justify-content-center.align-items-center
-								input#sImg.btn.btn-success(type="file" name="sImg" accept="image/*")
+								input#sImg.btn.btn-success(type="file" name="sImg" accept="image/png, image/jpeg")
 								.title.h-100.d-flex.justify-content-center.align-items-center
 									span(data-feather="upload")
 									span.ms-2 Chọn ảnh

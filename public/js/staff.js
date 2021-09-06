@@ -9,7 +9,6 @@ $(document).ready(() => {
     $("#simg-preview .title").removeClass("d-none");
     $(".file_remove").addClass("d-none");
   };
-
   let changeImgWhenModalOpen = (con, src) => {
     if (con) {
       $("#img-preview").attr("src", src).removeClass("d-none");
@@ -18,6 +17,10 @@ $(document).ready(() => {
     } else removeImg();
   };
   let prepareModal = ($btn = null) => {
+    $(".was-validated .is-valid, .was-validated .is-invalid").removeClass(
+      "is-valid is-invalid"
+    );
+    $(".was-validated").removeClass("was-validated");
     $("#modal-staff input#id").remove();
     $("#modal-staff input#aid").remove();
     if ($btn) {
@@ -42,7 +45,6 @@ $(document).ready(() => {
     formModal.action = $btn ? "/staff/update" : "/staff/add";
     modalTitle.innerText = $btn ? "Sửa thành viên" : "Thêm thành viên";
     ip_username.value = $btn?.data("ausername") || "";
-    console.log($btn?.data("rid"));
     $btn?.data("rid")
       ? (document.getElementById("rId").value = $btn.data("rid"))
       : "";
@@ -65,6 +67,10 @@ $(document).ready(() => {
   //#endregion
 
   //#region events
+  $("#aPassword").on("keyup", function () {
+    this.setCustomValidity($(this).val().length >= 6 ? "" : "error");
+  });
+
   $(".btn[role=add-staff]").on("click", function () {
     prepareModal();
   });
@@ -103,7 +109,7 @@ $(document).ready(() => {
 
   $("#sImg").on("change", function (e) {
     var ext = $(this).val().split(".").pop().toLowerCase();
-    if ($.inArray(ext, ["gif", "png", "jpg", "jpeg"]) == -1) {
+    if ($.inArray(ext, ["png", "jpg", "jpeg"]) == -1) {
       $("[role=errMessage]")
         .removeClass("d-none")
         .find("span")
