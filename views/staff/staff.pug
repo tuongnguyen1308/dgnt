@@ -29,13 +29,13 @@ block content
 									.btn-group(role="group")
 										button.btn.btn-sm.btn-outline-primary(type="button" role="edit-staff" data-id=user._id data-aid=user.aId._id data-ausername=user.aId.aUsername data-sname=user.sName data-sdofb=user.sDofB data-snumber=user.sNumber data-semail=user.sEmail data-rid=user.aId.rId._id data-simg=user.sImg data-sstate=user.sState data-bs-toggle="modal" data-bs-target="#modal-staff" rel="tooltip" data-bs-placement="top" title="Cập nhật thông tin")
 											span(data-feather="edit-3")
-										button.btn.btn-sm.btn-outline-danger(role="delete-staff" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Xoá")
+										button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Xoá")
 											span(data-feather="x")
 										ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset")
 											li
 												a.dropdown-item.p-2.text-danger(href='#' data-id=user.aId._id role="confirm-delete-staff") Xác nhận
 											li
-												span.dropdown-item.p-2(role="button" rel="cancel-delete-staff") Huỷ
+												span.dropdown-item.p-2(role="button" rel="close-dropdown") Huỷ
 		else
 			h3.h4.fw-normal Chưa có nhân viên
 		//- End UserList

@@ -28,12 +28,19 @@ let generateToast = (state, text) => {
   }
 };
 $(document).ready(function () {
+  // show current activated tab
+  let curTab = localStorage.getItem("cur-tab");
+  if (document.getElementById(curTab)) $(`#${curTab}`).click();
+  else $("#nav-tab button:first-child").click();
   // toast
   const toastElement = document.getElementById("toast");
   if (toastElement) {
     const toast = new bootstrap.Toast(toastElement);
     toast.show();
   }
+
+  // tooltip
+  $('[rel="tooltip"]').tooltip({ trigger: "hover" });
 
   // feather
   feather.replace({ "aria-hidden": "true" });
@@ -47,11 +54,16 @@ $(document).ready(function () {
     }
   });
 
+  // tab active
+  $("[role=tab]").on("click", function (e) {
+    localStorage.setItem("cur-tab", $(this).attr("id"));
+  });
+
   // logout show
-  $("[rel=logout-request]").on("click", function () {
+  $("[role=open-dropdown]").on("click", function () {
     $(this).next().toggleClass("show");
   });
-  $("[rel=logout-cancel]").on("click", function () {
+  $("[rel=close-dropdown]").on("click", function () {
     $(this).parent().parent().removeClass("show");
   });
   $(document).click((e) => {

@@ -16,4 +16,8 @@ router.post("/banner-add", upload.single("bImg"), controller.bannerAdd);
 router.post("/banner-update", controller.bannerUpdate);
 router.delete("/banner-delete/:id", controller.bannerDelete);
 
+router.post("/pm-add", controller.pmAdd);
+router.post("/pm-update", controller.pmUpdate);
+router.delete("/pm-delete/:id", controller.pmDelete);
+
 module.exports = router;

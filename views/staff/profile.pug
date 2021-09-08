@@ -6,10 +6,10 @@ block content
 			.btn-toolbar.mt-2.mb-mt-0
 		nav
 			#nav-tab.nav.nav-tabs(role='tablist')
-				button#nav-profile-tab.nav-link.text-secondary.active(data-bs-toggle='tab' data-bs-target='#nav-profile' type='button' role='tab' aria-controls='nav-profile' aria-selected='true') Thông tin cá nhân
+				button#nav-profile-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-profile' type='button' role='tab' aria-controls='nav-profile' aria-selected='true') Thông tin cá nhân
 				button#nav-changepassword-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-changepassword' type='button' role='tab' aria-controls='nav-changepassword' aria-selected='false') Đổi mật khẩu
 			#nav-tabContent.tab-content
-				#nav-profile.tab-pane.fade.p-3.show.active(role='tabpanel' aria-labelledby='nav-profile-tab')
+				#nav-profile.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-profile-tab')
 					form.needs-validation(method="post" action="/profile/update" enctype="multipart/form-data" novalidate)
 						.d-flex.flex-lg-row.flex-column.w-100.m-auto(style="max-width:800px")
 							.flex-fill.w-100.position-relative

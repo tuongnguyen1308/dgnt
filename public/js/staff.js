@@ -2,7 +2,6 @@ $(document).ready(() => {
   const ip_username = document.getElementById("aUsername");
   const formModal = document.getElementById("modal-staff");
   const modalTitle = document.getElementById("modal-staff-title");
-  $('[rel="tooltip"]').tooltip({ trigger: "hover" });
   //#region func
   let removeImg = () => {
     $("#img-preview").attr("src", "#").addClass("d-none");
@@ -79,10 +78,6 @@ $(document).ready(() => {
     prepareModal($(this));
   });
 
-  $(".btn[role=delete-staff]").on("click", function () {
-    $(this).next().toggleClass("show");
-  });
-
   $("[role=confirm-delete-staff]").on("click", function (e) {
     $target = $(e.target);
     const id = $target.data("id");
@@ -97,10 +92,6 @@ $(document).ready(() => {
         console.error(err);
       },
     });
-  });
-
-  $("[rel=cancel-delete-staff]").on("click", function () {
-    $(this).parent().parent().removeClass("show");
   });
 
   $("#sState").on("change", function () {

@@ -1,6 +1,5 @@
 $(document).ready(() => {
-  $('[rel="tooltip"]').tooltip({ trigger: "hover" });
-  // sortable list
+  const listTitle = ["Thêm", "Cập nhật"];
 
   //#region func
   let changeImg = (con, src) => {
@@ -14,6 +13,33 @@ $(document).ready(() => {
     $("#img-preview").attr("src", "#").addClass("d-none");
     $("#bImg-preview .title").removeClass("d-none");
     $(".file_remove").addClass("d-none");
+  };
+
+  let changePMState = () => {
+    let state = $("#pmState").is(":checked") ? "Hiện" : "Ẩn";
+    $("#pmState").next().text(state);
+  };
+
+  let prepareForm = ($btn) => {
+    const pmForm = document.getElementById("pm-form");
+    $("#pmId").remove();
+    if ($btn) {
+      let inputID = document.createElement("input");
+      inputID.id = "pmId";
+      inputID.name = "id";
+      inputID.value = $btn.data("id");
+      inputID.type = "hidden";
+      pmForm.appendChild(inputID);
+      $("#pm-btn_cancel").removeClass("d-none");
+    } else {
+      $("#pm-btn_cancel").addClass("d-none");
+    }
+    pmForm.action = $btn ? "/about/pm-update" : "/about/pm-add";
+    document.getElementById("pmName").value = $btn?.data("pmname") || "";
+    document.getElementById("pmDesc").value = $btn?.data("pmdesc") || "";
+    document.getElementById("pmState").checked = $btn?.data("pmstate") === "";
+    $("#pm-title").text(`${listTitle[$btn ? 1 : 0]} hình thức`);
+    $("#pm-btn_submit").text(listTitle[$btn ? 1 : 0]);
   };
 
   //#endregion
@@ -51,9 +77,6 @@ $(document).ready(() => {
       });
     },
   });
-  $(".btn[role=delete-banner]").on("click", function () {
-    $(this).next().toggleClass("show");
-  });
   $("[role=confirm-delete-banner]").on("click", function (e) {
     $target = $(e.target);
     const id = $target.data("id");
@@ -74,10 +97,45 @@ $(document).ready(() => {
       },
     });
   });
-  $("[rel=cancel-delete-banner]").on("click", function () {
-    $(this).parent().parent().removeClass("show");
+  //#endregion
+
+  //#region payment method
+  $("#pmState").on("change", function () {
+    changePMState();
   });
 
+  $(".btn[role=edit-pm]").on("click", function () {
+    prepareForm($(this));
+  });
+
+  $("#pm-btn_cancel").on("click", function () {
+    prepareForm();
+    $(".was-validated .is-valid, .was-validated .is-invalid").removeClass(
+      "is-valid is-invalid"
+    );
+    $(".was-validated").removeClass("was-validated");
+  });
+
+  $("[role=confirm-delete-pm]").on("click", function (e) {
+    $target = $(e.target);
+    const id = $target.data("id");
+    $.ajax({
+      type: "DELETE",
+      url: "/about/pm-delete/" + id,
+      success: function (res) {
+        if (res.result && !res.err) {
+          window.location.replace("/about");
+          // $(`#${id}`).remove();
+          // generateToast(res.result, "Xóa thành công!");
+        } else {
+          generateToast(res.result, res.err);
+        }
+      },
+      error: function (err) {
+        generateToast(false, err);
+      },
+    });
+  });
   //#endregion
 
   //#region Profile

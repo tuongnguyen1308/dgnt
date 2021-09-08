@@ -6,11 +6,11 @@ block content
 			.btn-toolbar.mt-2.mb-mt-0
 		nav
 			#nav-tab.nav.nav-tabs(role='tablist')
-				button#nav-banner-tab.nav-link.text-secondary.active(data-bs-toggle='tab' data-bs-target='#nav-banner' type='button' role='tab' aria-controls='nav-banner' aria-selected='true') Banner
+				button#nav-banner-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-banner' type='button' role='tab' aria-controls='nav-banner' aria-selected='true') Banner
 				button#nav-paymentmethod-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-paymentmethod' type='button' role='tab' aria-controls='nav-paymentmethod' aria-selected='false') Hình thức thanh toán
 				button#nav-shopinfo-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-shopinfo' type='button' role='tab' aria-controls='nav-shopinfo' aria-selected='false') Thông tin cửa hàng
 			#nav-tabContent.tab-content
-				#nav-banner.tab-pane.fade.p-3.show.active(role='tabpanel' aria-labelledby='nav-banner-tab')
+				#nav-banner.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-banner-tab')
 					.m-auto(style="max-width:900px")
 						ul.list-group.sortable-list
 							each banner in banners
@@ -21,13 +21,13 @@ block content
 											.btn-group(role="group")
 												.panel-handle.btn.btn-sm.btn-outline-primary(rel="tooltip" data-bs-placement="top" title="Sắp xếp")
 													span(data-feather="move")
-												button.btn.btn-sm.btn-outline-danger(role="delete-banner" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Xoá")
+												button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Xoá")
 													span(data-feather="x")
 												ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset")
 													li
 														a.dropdown-item.p-2.text-danger(href='#' data-id=`${banner._id}` data-bimg=`${banner.bImg}` role="confirm-delete-banner") Xác nhận
 													li
-														span.dropdown-item.p-2(role="button" rel="cancel-delete-banner") Huỷ
+														span.dropdown-item.p-2(role="button" rel="close-dropdown") Huỷ
 						form.w-100.mx-auto.my-2.needs-validation(method="post" action="/about/banner-add" enctype="multipart/form-data" style="max-width:900px")
 							.fs-4 Thêm ảnh
 							.position-relative.mb-3
@@ -42,22 +42,58 @@ block content
 									span
 							button.btn.btn-primary(type="submit") Xác nhận
 				#nav-paymentmethod.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-paymentmethod-tab')
-					form.needs-validation(method="post" action="/profile/change-password" novalidate)
-						.d-grid.m-auto(style="max-width:400px")
-							.form-label-group
-								input#newPassword.form-control(name="newPassword" type="password" placeholder="Mật khẩu mới" autocomplete="off" minlength="6" maxlength="50" required)
-								label(for="newPassword") Mật khẩu mới
-								.invalid-feedback Mật khẩu phải có ít nhất 6 kí tự
-							.form-label-group
-								input#newPassword2.form-control(name="newPassword2" type="password" placeholder="Nhập lại mật khẩu mới" autocomplete="off" maxlength="50" required)
-								label(for="newPassword2") Nhập lại mật khẩu mới
-								.invalid-feedback Mật khẩu mới không khớp
-							.form-label-group
-								input#oldPassword.form-control(name="oldPassword" type="password" placeholder="Xác nhận bằng mật khẩu cũ" autocomplete="off" maxlength="50" required)
-								label(for="oldPassword") Xác nhận bằng mật khẩu cũ
-								.invalid-feedback Mật khẩu cũ không được để trống
-						.d-grid.gap-2.m-auto(style="max-width:400px")
-							button.btn.btn-block.btn-primary(type="submit") Cập nhật
+					.row
+						.col-12.col-lg-4.mb-3.mb-lg-0
+							form#pm-form.needs-validation(method="post" action="/about/pm-add" novalidate)
+								.d-grid.m-auto
+									#pm-title.fs-4 Thêm hình thức
+									.form-label-group
+										input#pmName.form-control(name="pmName" type="text" placeholder="Tên hình thức" autocomplete="off" minlength="0" maxlength="50" required)
+										label(for="pmName") Tên hình thức
+										.invalid-feedback Tên hình thức không được để trống
+									.form-label-group
+										input#pmDesc.form-control(name="pmDesc" type="text" placeholder="Mô tả" autocomplete="off" maxlength="256")
+										label(for="pmDesc") Mô tả
+									fieldset.form-control
+										legend.small.text-secondary Trạng thái
+										.form-check.form-switch.fs-6
+											input#pmState.form-check-input(name="pmState" type='checkbox' checked='true' role="button")
+											label.form-check-label(for='pmState') Hiện
+								.mt-2
+									button#pm-btn_submit.btn.btn-primary.me-2(type="submit") Thêm
+									button#pm-btn_cancel.btn.btn-secondary.d-none(type="button") Hủy
+						.col-12.col-lg-8
+							.fs-4 Danh sách hình thức
+							table.table.table-responsive.table-bordered(width="100%")
+								thead.text-center
+									tr
+										th(width="1%").align-middle STT
+										th(width="10%").align-middle Tên Hình thức
+										th(width="50%").align-middle Mô tả
+										th(width="7%").align-middle Trạng thái
+										th(width="5%").align-middle Tác vụ
+								tbody
+									each pm, index in paymentMethods
+										tr.align-items-center
+											td.align-middle.text-center= index+1
+											td.align-middle= pm.pmName
+											td.align-middle= pm.pmDesc
+											td.align-middle.text-center
+												if pm.pmState
+													.badge.bg-success Hiện
+												else
+													.badge.bg-secondary Ẩn
+											td.text-center
+												.btn-group(role="group")
+													button.btn.btn-sm.btn-outline-primary(role="edit-pm" data-id=pm._id data-pmname=pm.pmName data-pmdesc=pm.pmDesc data-pmstate=pm.pmState type='button' rel="tooltip" data-bs-placement="top" title="Sửa")
+														span(data-feather="edit-3")
+													button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Xoá")
+														span(data-feather="x")
+													ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset")
+														li
+															a.dropdown-item.p-2.text-danger(href='#' data-id=pm._id role="confirm-delete-pm") Xác nhận
+														li
+															span.dropdown-item.p-2(role="button" rel="close-dropdown") Huỷ
 				#nav-shopinfo.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-shopinfo-tab')
 					form.needs-validation(method="post" action="/profile/change-password" novalidate)
 						.d-grid.m-auto(style="max-width:400px")

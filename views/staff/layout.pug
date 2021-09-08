@@ -27,12 +27,12 @@ html(lang="en")
 			input.form-control.form-control-dark.w-100(type="text" placeholder="Tìm kiếm nhanh đơn hàng" aria-label="Search")
 			.navbar-nav
 				.nav-item.text-nowrap
-					a.nav-link.px-3(href="#" rel="logout-request") Đăng xuất
+					a.nav-link.px-3(href="#" role="open-dropdown") Đăng xuất
 					ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset; width:100%;")
 						li
 							a.dropdown-item.p-2.text-danger(href="/login-staff/logout") Xác nhận
 						li
-							span.dropdown-item.p-2(role="button" rel="logout-cancel") Huỷ
+							span.dropdown-item.p-2(role="button" rel="close-dropdown") Huỷ
 		.container-fluid.position-relative
 			template#toast-template
 				.toast.position-absolute.m-2.top-0.end-0.z-index-3(role='alert' aria-live='assertive' aria-atomic='true' data-bs-animation="true")

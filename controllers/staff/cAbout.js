@@ -104,7 +104,51 @@ module.exports.bannerDelete = async (req, res) => {
 //#endregion
 
 //#region payment method
+module.exports.pmAdd = async (req, res) => {
+  const sess = req.session.user;
+  let newPM = new PaymentMethod({
+    pmName: req.body.pmName,
+    pmDesc: req.body.pmDesc,
+    pmState: req.body.pmState == "on",
+    sId: sess.sId,
+  });
+  try {
+    await newPM.save();
+    redirectFunc(true, "Thêm thành công!", rootRoute, req, res);
+  } catch (error) {
+    redirectFunc(false, "Thêm thất bại!", rootRoute, req, res);
+  }
+};
 
+module.exports.pmUpdate = async (req, res) => {
+  let sess = req.session.user;
+  let updPM = {
+    pmName: req.body.pmName,
+    pmDesc: req.body.pmDesc,
+    pmState: req.body.pmState == "on",
+    sId: sess.sId,
+  };
+  await PaymentMethod.findByIdAndUpdate(req.body.id, { $set: updPM }, (err) => {
+    redirectFunc(
+      !err,
+      !err ? "Cập nhật thành công!" : "Cập nhật thất bại!",
+      rootRoute,
+      req,
+      res
+    );
+  });
+};
+module.exports.pmDelete = async (req, res) => {
+  await PaymentMethod.findByIdAndDelete(req.params.id, (err) => {
+    req.session.messages = {
+      icon: !err ? "check-circle" : "alert-circle",
+      color: !err ? "success" : "danger",
+      title: !err ? "Thành công!" : "Thất bại",
+      text: !err ? "Xóa thành công!" : "Xóa thất bại!",
+    };
+    res.json({ result: !err, err });
+  });
+};
 //#endregion
 
 //#region shop info
