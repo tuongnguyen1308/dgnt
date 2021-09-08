@@ -34,6 +34,14 @@ html(lang="en")
 						li
 							span.dropdown-item.p-2(role="button" rel="logout-cancel") Huỷ
 		.container-fluid.position-relative
+			template#toast-template
+				.toast.position-absolute.m-2.top-0.end-0.z-index-3(role='alert' aria-live='assertive' aria-atomic='true' data-bs-animation="true")
+					.toast-header.text-white
+						span.me-1
+						strong.me-auto
+						//- small.text-muted just now
+						button.btn-close(type='button' data-bs-dismiss='toast' aria-label='Close' style="opacity:.8;filter:invert(1);")
+					.toast-body
 			if messages
 				#toast.toast.position-absolute.m-2.top-0.end-0.z-index-3(role='alert' aria-live='assertive' aria-atomic='true' data-bs-animation="true")
 					.toast-header.text-white(class= `bg-${messages.color}`)

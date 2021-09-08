@@ -15,6 +15,7 @@ $(document).ready(() => {
     $("#bImg-preview .title").removeClass("d-none");
     $(".file_remove").addClass("d-none");
   };
+
   //#endregion
 
   //#region events
@@ -41,8 +42,10 @@ $(document).ready(() => {
         success: function (res) {
           res?.result && console.log("Update Success!");
           res?.err && console.log(res.err);
+          generateToast(res.result, "Cập nhật thành công!");
         },
         error: function (err) {
+          generateToast(false, "Cập nhật thất bại!");
           console.error(err);
         },
       });
@@ -54,15 +57,20 @@ $(document).ready(() => {
   $("[role=confirm-delete-banner]").on("click", function (e) {
     $target = $(e.target);
     const id = $target.data("id");
+    const bimg = $target.data("bimg");
     $.ajax({
       type: "DELETE",
-      url: "/about/banner-delete/" + id,
+      url: "/about/banner-delete/" + bimg,
       success: function (res) {
-        res.result && $(`#${id}`).remove();
-        res.err && console.log(res.err);
+        if (res.result && !res.err) {
+          $(`#${id}`).remove();
+          generateToast(res.result, "Xóa thành công!");
+        } else {
+          generateToast(res.result, res.err);
+        }
       },
       error: function (err) {
-        console.error(err);
+        generateToast(false, err);
       },
     });
   });

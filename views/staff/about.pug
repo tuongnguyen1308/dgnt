@@ -25,27 +25,9 @@ block content
 													span(data-feather="x")
 												ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset")
 													li
-														a.dropdown-item.p-2.text-danger(href='#' data-id=`${banner.id}` role="confirm-delete-banner") Xác nhận
+														a.dropdown-item.p-2.text-danger(href='#' data-id=`${banner._id}` data-bimg=`${banner.bImg}` role="confirm-delete-banner") Xác nhận
 													li
 														span.dropdown-item.p-2(role="button" rel="cancel-delete-banner") Huỷ
-
-
-							//- li.list-group-item(href='#' aria-current='true')
-							//- 	.d-flex.w-100.justify-content-between
-							//- 		img(src="img/banner/fb-cover2.jpg" style=`max-width: ${imgViewWeight}px; max-height: ${imgViewHeight}px;`)
-							//- 		.d-flex
-							//- 			.panel-handle.d-flex.align-items-center
-							//- 				i(data-feather="move")
-							//- 			.ms-2.d-flex.align-items-center
-							//- 				i(data-feather="trash")
-							//- li.list-group-item(href='#' aria-current='true')
-							//- 	.d-flex.w-100.justify-content-between
-							//- 		img(src="img/banner/black-pink.png" style=`max-width: ${imgViewWeight}px; max-height: ${imgViewHeight}px;`)
-							//- 		.d-flex
-							//- 			.panel-handle.d-flex.align-items-center
-							//- 				i(data-feather="move")
-							//- 			.ms-2.d-flex.align-items-center
-							//- 				i(data-feather="trash")
 						form.w-100.mx-auto.my-2.needs-validation(method="post" action="/about/banner-add" enctype="multipart/form-data" style="max-width:900px")
 							.fs-4 Thêm ảnh
 							.position-relative.mb-3

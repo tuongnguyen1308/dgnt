@@ -84,8 +84,21 @@ module.exports.bannerUpdate = async (req, res) => {
 };
 
 module.exports.bannerDelete = async (req, res) => {
-  await Banner.findByIdAndDelete(req.params.id, (err) =>
-    res.json({ result: !err, err })
+  let numOfBanner = await Banner.countDocuments();
+  let bannerDeleted = await Banner.findOne(
+    { bImg: req.params.id },
+    async (err) => {
+      await Banner.findOneAndDelete({ bImg: req.params.id }, async (err) => {
+        for (let i = bannerDeleted.bNumber; i <= numOfBanner; i++) {
+          await Banner.findOneAndUpdate(
+            { bNumber: i },
+            { $set: { bNumber: i - 1 } },
+            (err) => err && console.log(err)
+          );
+        }
+        res.json({ result: !err, err });
+      });
+    }
   );
 };
 //#endregion
