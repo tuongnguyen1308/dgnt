@@ -3,7 +3,6 @@ const Staff = require("../../models/mStaff");
 const bcrypt = require("bcrypt");
 const curPage = "profile";
 const rootRoute = `/${curPage}`;
-const imgViewSize = 300;
 const imgPreviewSize = 350;
 
 let redirectFunc = (state, text, dir, req, res) => {
@@ -45,7 +44,6 @@ module.exports.index = async (req, res) => {
     curPage,
     messages,
     profile,
-    imgViewSize,
     imgPreviewSize,
     sess,
   });

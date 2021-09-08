@@ -1,4 +1,5 @@
 const Account = require("../../models/mAccount");
+const Staff = require("../../models/mStaff");
 const bcrypt = require("bcrypt");
 module.exports.index = async (req, res) => {
   const title = "Đăng nhập";
@@ -41,7 +42,16 @@ module.exports.auth = async (req, res, next) => {
       return;
     }
     // đúng user
-    req.session.user = accFound;
+    let staff = await Staff.findOne({ aId: accFound._id }, "_id sState");
+    let user = {
+      _id: accFound._id,
+      aUsername: accFound.aUsername,
+      aPassword: accFound.aPassword,
+      rId: accFound.rId,
+      sId: staff._id,
+      sState: staff.sState,
+    };
+    req.session.user = user;
     req.session.messages = {
       icon: "check-circle",
       color: "success",

@@ -5,7 +5,6 @@ $(document).ready(function () {
     const toast = new bootstrap.Toast(toastElement);
     toast.show();
   }
-
   // feather
   feather.replace({ "aria-hidden": "true" });
 

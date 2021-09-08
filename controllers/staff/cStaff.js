@@ -7,11 +7,11 @@ const rootRoute = `/${curPage}`;
 const imgViewSize = 300;
 const imgPreviewSize = 465;
 
-let redirectFunc = (icon, color, title, text, dir, req, res) => {
+let redirectFunc = (state, text, dir, req, res) => {
   req.session.messages = {
-    icon,
-    color,
-    title,
+    icon: state ? "check-circle" : "alert-circle",
+    color: state ? "success" : "danger",
+    title: state ? "Thành công" : "Thất bại",
     text,
   };
   res.redirect(dir);
@@ -49,25 +49,9 @@ module.exports.index = async (req, res) => {
 module.exports.add = (req, res) => {
   Staff.find({ username: req.body.aUsername }, async (err, users_found) => {
     if (err) {
-      redirectFunc(
-        "alert-circle",
-        "danger",
-        "Thất bại!",
-        "Có lỗi xảy ra trong quá trình thêm!",
-        rootRoute,
-        req,
-        res
-      );
+      redirectFunc(false, "Thêm tài khoản thất bại!", rootRoute, req, res);
     } else if (users_found.length) {
-      redirectFunc(
-        "alert-circle",
-        "danger",
-        "Thất bại!",
-        "Tên đăng nhập này đã tồn tại!",
-        rootRoute,
-        req,
-        res
-      );
+      redirectFunc(false, "Tên đăng nhập này đã tồn tại!", rootRoute, req, res);
     } else {
       const salt = await bcrypt.genSalt(10);
       const hashPassword = await bcrypt.hash(req.body.aPassword, salt);
@@ -88,26 +72,10 @@ module.exports.add = (req, res) => {
           sJoinAt: new Date(),
           aId: accSaved._id,
         });
-        let staffSaved = await newStaff.save();
-        redirectFunc(
-          "check-circle",
-          "success",
-          "Thành công",
-          "Đã thêm thành viên",
-          rootRoute,
-          req,
-          res
-        );
+        await newStaff.save();
+        redirectFunc(true, "Đã thêm thành viên", rootRoute, req, res);
       } catch (error) {
-        redirectFunc(
-          "alert-circle",
-          "danger",
-          "Thất bại!",
-          "Có lỗi xảy ra khi cấp tài khoản!",
-          rootRoute,
-          req,
-          res
-        );
+        redirectFunc(false, "Cấp tài khoản thất bại!", rootRoute, req, res);
       }
     }
   });
@@ -136,73 +104,43 @@ module.exports.update = async (req, res) => {
     updAcc.aPassword = aPassword;
   }
   try {
-    let accSave = await Account.findByIdAndUpdate(req.body.aid, {
+    await Account.findByIdAndUpdate(req.body.aid, {
       $set: updAcc,
     });
   } catch (error) {
-    redirectFunc(
-      "alert-circle",
-      "danger",
-      "Thất bại!",
-      "Có lỗi xảy ra khi đổi mật khẩu cho tài khoản!",
-      rootRoute,
-      req,
-      res
-    );
+    redirectFunc(false, "Đổi mật khẩu thất bại!", rootRoute, req, res);
   }
   try {
-    let result = await Staff.findByIdAndUpdate(req.body.id, { $set: updStaff });
-    req.session.messages = {
-      icon: "check-circle",
-      color: "success",
-      title: "Thành công!",
-      text: "Đã cập nhât thành viên",
-    };
-    res.redirect(rootRoute);
-    return;
+    await Staff.findByIdAndUpdate(req.body.id, { $set: updStaff });
+    redirectFunc(true, "Cập nhật thành công!", rootRoute, req, res);
   } catch (error) {
-    redirectFunc(
-      "alert-circle",
-      "danger",
-      "Thất bại!",
-      "Có lỗi xảy ra khi cập nhật tài khoản!",
-      rootRoute,
-      req,
-      res
-    );
+    redirectFunc(false, "Cập nhật thất bại!", rootRoute, req, res);
   }
+  return;
 };
 
 module.exports.delete = async (req, res) => {
   try {
-    let staffDeleted = await Staff.deleteOne(
-      { aId: req.params.id },
-      function (err) {
-        err && res.json(err);
-      }
-    );
+    await Staff.deleteOne({ aId: req.params.id }, function (err) {
+      err && res.json(err);
+    });
     let result = await Account.deleteOne(
       { _id: req.params.id },
-      function (err) {
-        err && res.json(err);
-      }
+      (err) => err && res.json(err)
     );
     req.session.messages = {
       icon: result ? "check-circle" : "alert-circle",
       color: result ? "success" : "danger",
       title: result ? "Thành công!" : "Thất bại",
-      text: result ? "Đã xoá thành viên" : "Đã có lỗi xảy ra",
+      text: result ? "Xóa thành viên thành công!" : "Xóa thành viên thất bại!",
     };
     res.json(result);
   } catch (error) {
-    redirectFunc(
-      "alert-circle",
-      "danger",
-      "Thất bại!",
-      "Có lỗi xảy ra khi xóa tài khoản!",
-      rootRoute,
-      req,
-      res
-    );
+    req.session.messages = {
+      icon: "alert-circle",
+      color: "danger",
+      title: "Thất bại",
+      text: "Xóa thành viên thất bại!",
+    };
   }
 };

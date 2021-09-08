@@ -8,8 +8,10 @@ html(lang="en")
 		meta(name='author' content='Nguyễn Đình Tưởng')
 		link(rel="icon" href="img/icon/main-icon-sm.png")
 		link(rel="stylesheet" href="plugin/bootstrap/css/bootstrap.min.css")
+		link(rel="stylesheet" href="plugin/jquery-ui/jquery-ui.min.css")
 		link(rel="stylesheet" href="css/common.css")
 		script(src="plugin/jquery/js/jquery.min.js", defer)
+		script(src="plugin/jquery-ui/jquery-ui.min.js" defer)
 		script(src="plugin/bootstrap/js/bootstrap.bundle.min.js", defer)
 		script(src="plugin/bootstrap/js/popper.min.js", defer)
 		script(src="plugin/feather/js/feather.min.js", defer)
@@ -69,6 +71,11 @@ html(lang="en")
 								a.nav-link(class=(curPage == "product-type") ? "active" : "" href="/product-type")
 									span(data-feather="list")
 									|  Loại sản phẩm
+							if sess.rId.rName == "Quản lý"
+							li.nav-item
+								a.nav-link(class=(curPage == "about") ? "active" : "" href="/about")
+									span(data-feather="info")
+									|  Quản lý danh mục
 							li.nav-item
 								a.nav-link(class=(curPage == "staff") ? "active" : "" href="/staff")
 									span(data-feather="users")
