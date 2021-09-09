@@ -38,7 +38,7 @@ module.exports.index = async (req, res) => {
     .sort({ bNumber: "asc" })
     .populate({ path: "aId" });
   let paymentMethods = await PaymentMethod.find({}).populate({ path: "aId" });
-  let shopInfo = await ShopInfo.find({}).populate({ path: "aId" });
+  let shopInfo = await ShopInfo.findOne({}).populate({ path: "aId" });
   res.render(`./staff/${curPage}`, {
     title,
     curPage,
@@ -119,7 +119,6 @@ module.exports.pmAdd = async (req, res) => {
     redirectFunc(false, "Thêm thất bại!", rootRoute, req, res);
   }
 };
-
 module.exports.pmUpdate = async (req, res) => {
   let sess = req.session.user;
   let updPM = {
@@ -152,5 +151,39 @@ module.exports.pmDelete = async (req, res) => {
 //#endregion
 
 //#region shop info
+module.exports.siUpdate = async (req, res) => {
+  let sess = req.session.user;
+  let updSI = {
+    siName: req.body.siName,
+    siAddress: req.body.siAddress,
+    siHotline: req.body.siHotline,
+    siFacebook: req.body.siFacebook,
+    siZalo: req.body.siZalo,
+    sId: sess.sId,
+  };
+  let siLogo = req.file?.filename || false;
+  if (siLogo) {
+    updSI.siLogo = siLogo;
+  }
+  if ((await ShopInfo.countDocuments()) > 0) {
+    await ShopInfo.findOneAndUpdate({}, { $set: updSI }, (err) => {
+      redirectFunc(
+        !err,
+        !err ? "Cập nhật thành công!" : "Cập nhật thất bại!",
+        rootRoute,
+        req,
+        res
+      );
+    });
+  } else {
+    let newSI = new ShopInfo(updSI);
+    try {
+      await newSI.save();
+      redirectFunc(true, "Thêm thành công!", rootRoute, req, res);
+    } catch (error) {
+      redirectFunc(false, "Thêm thất bại!", rootRoute, req, res);
+    }
+  }
+};
 
 //#endregion

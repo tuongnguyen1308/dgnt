@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const controller = require("../../controllers/staff/cAbout");
 const multer = require("multer");
-const storage = multer.diskStorage({
+const bstorage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "public/img/banner/");
   },
@@ -9,15 +9,28 @@ const storage = multer.diskStorage({
     cb(null, Date.now() + "-" + file.originalname);
   },
 });
-const upload = multer({ storage: storage });
+const bupload = multer({ storage: bstorage });
+
+const sistorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public/img/logo/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+const siupload = multer({ storage: sistorage });
 
 router.get("/", controller.index);
-router.post("/banner-add", upload.single("bImg"), controller.bannerAdd);
+// banner
+router.post("/banner-add", bupload.single("bImg"), controller.bannerAdd);
 router.post("/banner-update", controller.bannerUpdate);
 router.delete("/banner-delete/:id", controller.bannerDelete);
-
+// payment method
 router.post("/pm-add", controller.pmAdd);
 router.post("/pm-update", controller.pmUpdate);
 router.delete("/pm-delete/:id", controller.pmDelete);
+// shopinfo
+router.post("/si-update", siupload.single("siLogo"), controller.siUpdate);
 
 module.exports = router;

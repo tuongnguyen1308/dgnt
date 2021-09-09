@@ -2,17 +2,17 @@ $(document).ready(() => {
   const listTitle = ["Thêm", "Cập nhật"];
 
   //#region func
-  let changeImg = (con, src) => {
+  let changeImg = (con, src, tab) => {
     if (con) {
-      $("#img-preview").attr("src", src).removeClass("d-none");
-      $("#bImg-preview .title").addClass("d-none");
-      $(".file_remove").removeClass("d-none");
+      $(`${tab} #img-preview`).attr("src", src).removeClass("d-none");
+      $(`${tab} .upload-before .title`).addClass("d-none");
+      $(`${tab} .file_remove`).removeClass("d-none");
     } else removeImg();
   };
   let removeImg = () => {
-    $("#img-preview").attr("src", "#").addClass("d-none");
-    $("#bImg-preview .title").removeClass("d-none");
-    $(".file_remove").addClass("d-none");
+    $(`${tab} #img-preview`).attr("src", "#").addClass("d-none");
+    $(`${tab} .upload-before .title`).removeClass("d-none");
+    $(`${tab} .file_remove`).addClass("d-none");
   };
 
   let changePMState = () => {
@@ -47,6 +47,23 @@ $(document).ready(() => {
   //#region events
 
   //#region banner
+  $("#bImg").on("change", function (e) {
+    var ext = $(this).val().split(".").pop().toLowerCase();
+    if ($.inArray(ext, ["png", "jpg", "jpeg"]) == -1) {
+      $("[role=errMessage]")
+        .removeClass("d-none")
+        .find("span")
+        .text("Không đúng định dạng!");
+    } else {
+      $("[role=errMessage]").addClass("d-none").find("span").text("");
+      var uploadedFile = URL.createObjectURL(e.target.files[0]);
+      changeImg(true, uploadedFile, "#nav-banner");
+    }
+  });
+
+  $(".file_remove").on("click", function (e) {
+    removeImg();
+  });
   $(".sortable-list").sortable({
     handle: ".panel-handle",
     update: function () {
@@ -138,8 +155,8 @@ $(document).ready(() => {
   });
   //#endregion
 
-  //#region Profile
-  $("#bImg").on("change", function (e) {
+  //#region shop info
+  $("#siLogo").on("change", function (e) {
     var ext = $(this).val().split(".").pop().toLowerCase();
     if ($.inArray(ext, ["png", "jpg", "jpeg"]) == -1) {
       $("[role=errMessage]")
@@ -149,12 +166,8 @@ $(document).ready(() => {
     } else {
       $("[role=errMessage]").addClass("d-none").find("span").text("");
       var uploadedFile = URL.createObjectURL(e.target.files[0]);
-      changeImg(true, uploadedFile);
+      changeImg(true, uploadedFile, "#nav-shopinfo");
     }
-  });
-
-  $(".file_remove").on("click", function (e) {
-    removeImg();
   });
   //#endregion
 
