@@ -1,16 +1,14 @@
 const Product = require("../../models/mProduct");
-const curPage = "products";
-const rootRoute = `/${curPage}`;
+const pI = { title: "Quản lý sản phẩm", url: "products" };
+const rootRoute = `/${pI.url}`;
 
 module.exports.index = async (req, res) => {
-  const title = "Quản lý sản phẩm";
   const messages = req.session?.messages || null;
   const sess = req.session.user;
   req.session.messages = null;
   let products = await Product.find({});
-  res.render(`./staff/${curPage}`, {
-    title,
-    curPage,
+  res.render(`./staff/${pI.url}`, {
+    pI,
     messages,
     products,
     sess,

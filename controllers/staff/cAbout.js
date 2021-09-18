@@ -2,8 +2,8 @@ const Account = require("../../models/mAccount");
 const Banner = require("../../models/mBanner");
 const PaymentMethod = require("../../models/mPaymentMethod");
 const ShopInfo = require("../../models/mShopInfo");
-const curPage = "about";
-const rootRoute = `/${curPage}`;
+const pI = { title: "Quản lý danh mục", url: "about" };
+const rootRoute = `/${pI.url}`;
 const imgViewWeight = 970;
 const imgViewHeight = 250;
 
@@ -19,7 +19,6 @@ let redirectFunc = (state, text, dir, req, res) => {
 };
 
 module.exports.index = async (req, res) => {
-  const title = "Quản lý danh mục";
   const messages = req.session?.messages || null;
   const sess = req.session.user;
   req.session.messages = null;
@@ -39,9 +38,8 @@ module.exports.index = async (req, res) => {
     .populate({ path: "aId" });
   let paymentMethods = await PaymentMethod.find({}).populate({ path: "aId" });
   let shopInfo = await ShopInfo.findOne({}).populate({ path: "aId" });
-  res.render(`./staff/${curPage}`, {
-    title,
-    curPage,
+  res.render(`./staff/${pI.url}`, {
+    pI,
     messages,
     banners,
     paymentMethods,

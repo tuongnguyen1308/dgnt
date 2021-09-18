@@ -1,7 +1,7 @@
 const Account = require("../../models/mAccount");
-const Staff = require("../../models/mStaff");
+const Customer = require("../../models/mCustomer");
 const bcrypt = require("bcrypt");
-const pI = { title: "Cá nhân", url: "profile" };
+const pI = { title: "Thông tin cá nhân", url: "personal" };
 const rootRoute = `/${pI.url}`;
 const imgPreviewSize = 350;
 
@@ -20,48 +20,44 @@ module.exports.index = async (req, res) => {
   const messages = req.session?.messages || null;
   const sess = req.session.user;
   req.session.messages = null;
-  let staff = await Staff.findOne({ aId: sess._id }).populate({
+  let customer = await Customer.findOne({ aId: sess._id }).populate({
     path: "aId",
     select: "aUsername rId",
-    populate: { path: "rId" },
   });
-  let dofb = JSON.stringify(staff.sDofB);
-  let joinat = JSON.stringify(staff.sJoinAt);
-  let profile = {
-    sImg: staff.sImg,
-    sState: staff.sState,
-    _id: staff._id,
-    sName: staff.sName,
-    sDofB: dofb?.slice(1, 11) || "",
-    sNumber: staff.sNumber,
-    sEmail: staff.sEmail,
-    aId: staff.aId,
-    sJoinAt: joinat?.slice(1, 11).split("-").reverse().join("/") || "",
+  let dofb = customer.cDofB ? JSON.stringify(customer.cDofB) : "";
+  let personal = {
+    cImg: customer.cImg,
+    _id: customer._id,
+    cName: customer.cName,
+    cDofB: dofb?.slice(1, 11) || "",
+    cNumber: customer.cNumber,
+    cEmail: customer.cEmail,
+    aId: customer.aId,
   };
-  res.render(`./staff/${pI.url}`, {
+  res.render(`./customer/${pI.url}`, {
     pI,
     messages,
     sess,
-    profile,
     imgPreviewSize,
+    personal,
   });
 };
 module.exports.update = async (req, res) => {
   const sess = req.session.user;
-  let updStaff = {
-    sName: req.body.sName,
-    sDofB: req.body.sDofB,
-    sNumber: req.body.sNumber,
-    sEmail: req.body.sEmail,
+  let updCustomer = {
+    cName: req.body.cName,
+    cDofB: req.body.cDofB,
+    cNumber: req.body.cNumber,
+    cEmail: req.body.cEmail,
   };
-  let sImg = req.file?.filename || false;
-  if (sImg) {
-    updStaff.sImg = sImg;
+  let cImg = req.file?.filename || false;
+  if (cImg) {
+    updCustomer.cImg = cImg;
   }
   try {
-    let staffSaved = await Staff.findOneAndUpdate(
+    let cusSaved = await Customer.findOneAndUpdate(
       { aId: sess._id },
-      { $set: updStaff }
+      { $set: updCustomer }
     );
     redirectFunc(true, "Cập nhật thành công!", rootRoute, req, res);
   } catch (error) {

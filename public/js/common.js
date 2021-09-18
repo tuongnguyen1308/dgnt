@@ -71,4 +71,66 @@ $(document).ready(function () {
       $(".dropdown-menu.show").removeClass("show");
     }
   });
+
+  //#region customer
+  // set height cho banner
+  if (document.getElementsByClassName("carousel-item"))
+    $(".carousel-item").height($(".carousel-item img").width() * 0.38);
+
+  // scroll handle
+  let last_scroll_y = window.scrollY;
+  $(window).on("scroll", function () {
+    let current_scroll_y = this.scrollY;
+    if (current_scroll_y < last_scroll_y) {
+      $("nav.navbar").addClass("scrolled-up").removeClass("scrolled-down");
+    } else {
+      $("nav.navbar").addClass("scrolled-down").removeClass("scrolled-up");
+    }
+    last_scroll_y = current_scroll_y;
+  });
+
+  // modal-signup
+  const removeImg = () => {
+    $("#img-preview").attr("src", "#").addClass("d-none");
+    $("#cimg-preview .title").removeClass("d-none");
+    $(".file_remove").addClass("d-none");
+  };
+  $("#cImg").on("change", function (e) {
+    var ext = $(this).val().split(".").pop().toLowerCase();
+    if ($.inArray(ext, ["png", "jpg", "jpeg"]) == -1) {
+      $("[role=errMessage]")
+        .removeClass("d-none")
+        .find("span")
+        .text("Không đúng định dạng!");
+      removeImg();
+    } else {
+      $("[role=errMessage]").addClass("d-none").find("span").text("");
+      var uploadedFile = URL.createObjectURL(e.target.files[0]);
+      $("#img-preview").attr("src", uploadedFile).removeClass("d-none");
+      $("#cimg-preview .title").addClass("d-none");
+      $(".file_remove").removeClass("d-none");
+    }
+  });
+  $(".file_remove").on("click", function (e) {
+    removeImg();
+  });
+
+  let checkPassword = (con, inp) => inp.setCustomValidity(con ? "" : "error");
+  //#region Change Password
+  $("#su_password").on("keyup", function () {
+    checkPassword($(this).val().length >= 6, this);
+  });
+
+  $("#su_repassword").on("keyup", function () {
+    checkPassword($(this).val() == $("#su_password").val(), this);
+  });
+  //#endregion
+  $("[rel=call-modal]").on("click", function () {
+    $(".was-validated .is-valid, .was-validated .is-invalid").removeClass(
+      "is-valid is-invalid"
+    );
+    $(".was-validated").removeClass("was-validated");
+  });
+
+  //#endregion
 });

@@ -43,6 +43,13 @@ module.exports.auth = async (req, res, next) => {
     }
     // đúng user
     let staff = await Staff.findOne({ aId: accFound._id }, "_id sState");
+    if (!staff) {
+      redirectFunc(
+        "Bạn không có quyền truy cập chức năng này!",
+        "/login-staff"
+      );
+      return;
+    }
     let user = {
       _id: accFound._id,
       aUsername: accFound.aUsername,

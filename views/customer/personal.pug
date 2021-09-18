@@ -1,0 +1,59 @@
+extends ./layout.pug
+block content
+	nav.mt-3.mx-auto(style="max-width:1200px;")
+		#nav-tab.nav.nav-tabs(role='tablist')
+			button#nav-personal-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-personal' type='button' role='tab' aria-controls='nav-personal' aria-selected='true') Thông tin cá nhân
+			button#nav-changepassword-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-changepassword' type='button' role='tab' aria-controls='nav-changepassword' aria-selected='false') Đổi mật khẩu
+		#nav-tabContent.tab-content
+			#nav-personal.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-personal-tab')
+				form.needs-validation(method="post" action="/personal/update" enctype="multipart/form-data" novalidate)
+					.d-flex.flex-lg-row.flex-column.w-100.m-auto(style="max-width:800px")
+						.flex-fill.w-100.position-relative
+							label#cimg-preview.img-box.w-100.align-middle(for="cImg" style=`height:${imgPreviewSize-1}px`).d-flex.justify-content-center.align-items-center
+								input#cImg.btn.btn-success(type="file" name="cImg" accept="image/png, image/jpeg")
+								.title.h-100.d-flex.justify-content-center.align-items-center.d-none
+									span(data-feather="upload")
+									span.ms-2 Chọn ảnh
+								img#img-preview(src=`img/users/${personal? personal.cImg : ''}` style="max-width:398px;" height=`${imgPreviewSize}px`)
+							span.file_remove(data-feather="x")
+							.text-danger.mb-3.d-none(role="errMessage")
+								span
+						.flex-fill.w-100
+							.form.pe-0.ps-lg-3.pt-3.pt-lg-0
+								.my-2.fs-6 Tên tài khoản: 
+									b= sess.aUsername
+								.form-label-group
+									input#cName.form-control(name="cName" type="text" placeholder="Họ tên" value= personal? personal.cName : '' maxlength="50")
+									label(for="cName") Họ tên
+								.form-label-group
+									input#cDofB.form-control(name="cDofB" type="date" value= personal? personal.cDofB : '')
+									label(for="cDofB") Ngày sinh
+								.form-label-group
+									input#cNumber.form-control(name="cNumber" type="text" placeholder="Số điện thoại" value=personal? personal.cNumber : '' maxlength="10")
+									label(for="cNumber") Số điện thoại
+								.form-label-group
+									input#cEmail.form-control(name="cEmail" type="email" placeholder="Email" value= personal? personal.cEmail : '' maxlength="50")
+									label(for="cEmail") Email
+									.invalid-feedback Email không hợp lệ
+					.d-grid.mt-3.mx-auto(style="max-width:800px")
+						button.btn.btn-block.btn-primary(type="submit") Cập nhật
+			#nav-changepassword.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-changepassword-tab')
+				form.needs-validation(method="post" action="/personal/change-password" novalidate)
+					.d-grid.m-auto(style="max-width:400px")
+						.form-label-group
+							input#newPassword.form-control(name="newPassword" type="password" placeholder="Mật khẩu mới" autocomplete="off" minlength="6" maxlength="50" required)
+							label(for="newPassword") Mật khẩu mới
+							.invalid-feedback Mật khẩu phải có ít nhất 6 kí tự
+						.form-label-group
+							input#newPassword2.form-control(name="newPassword2" type="password" placeholder="Nhập lại mật khẩu mới" autocomplete="off" maxlength="50" required)
+							label(for="newPassword2") Nhập lại mật khẩu mới
+							.invalid-feedback Mật khẩu mới không khớp
+						.form-label-group
+							input#oldPassword.form-control(name="oldPassword" type="password" placeholder="Xác nhận bằng mật khẩu cũ" autocomplete="off" maxlength="50" required)
+							label(for="oldPassword") Xác nhận bằng mật khẩu cũ
+							.invalid-feedback Mật khẩu cũ không được để trống
+					.d-grid.m-auto(style="max-width:400px")
+						button.btn.btn-block.btn-primary(type="submit") Cập nhật
+
+
+

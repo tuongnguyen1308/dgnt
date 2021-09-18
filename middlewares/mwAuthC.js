@@ -1,10 +1,11 @@
-const rootRoute = "/login-staff";
+const rootRoute = "/";
 module.exports.Auth = async (req, res, next) => {
   let redirectFunc = (state, text, dir) => {
     req.session.messages = {
       icon: state ? "check-circle" : "alert-circle",
       color: state ? "success" : "warning",
       title: state ? "Thành công" : "Thông báo",
+      text,
       text,
     };
     res.redirect(dir);
@@ -16,11 +17,8 @@ module.exports.Auth = async (req, res, next) => {
     redirectFunc(false, "Vui lòng đăng nhập!", rootRoute);
     return;
   }
-  if (sess.rId.rName == "Khách hàng") {
-    redirectFunc(false, "Tài khoản không tồn tại trong hệ thống!", rootRoute);
-    return;
-  } else if (!sess.sState) {
-    redirectFunc(false, "Bạn đã nghỉ việc!", rootRoute);
+  if (!sess || sess.rId.rName != "Khách hàng") {
+    redirectFunc(false, "Bạn cần đăng nhập với quyền khách hàng!", rootRoute);
     return;
   }
   next();

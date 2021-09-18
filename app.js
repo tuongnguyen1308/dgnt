@@ -5,7 +5,8 @@ const bodyParser = require("body-parser");
 const session = require("express-session");
 const cors = require("cors");
 const path = require("path");
-const mwAuth = require("./middlewares/mwAuthS");
+const mwAuthS = require("./middlewares/mwAuthS");
+const mwAuthC = require("./middlewares/mwAuthC");
 require("dotenv/config");
 //#endregion
 
@@ -48,29 +49,40 @@ mongoose.connect(
 //#endregion
 
 //#region ROUTERS
-app.get("/", (req, res) => {
-  res.render("home", {
-    title: "Trang chủ",
-  });
-});
+// app.get("/", (req, res) => {
+//   res.render("home", {
+//     title: "Trang chủ",
+//   });
+// });
 
-const staffLoginRoute = require("./routes/staff/rLogin");
-const staffDashboardRoute = require("./routes/staff/rDashboard");
-const staffListRoute = require("./routes/staff/rStaff");
-const staffProfileRoute = require("./routes/staff/rProfile");
-const staffAboutRoute = require("./routes/staff/rAbout");
+const sLoginR = require("./routes/staff/rLogin");
+const sDashboardR = require("./routes/staff/rDashboard");
+const sListR = require("./routes/staff/rStaff");
+const sProfileR = require("./routes/staff/rProfile");
+const sAboutR = require("./routes/staff/rAbout");
 
 const productTypeRoute = require("./routes/staff/rProductType");
 const productsRoute = require("./routes/staff/rProducts");
 
-app.use("/login-staff", staffLoginRoute);
-app.use("/dashboard", mwAuth.Auth, staffDashboardRoute);
-app.use("/staff", mwAuth.Auth, staffListRoute);
-app.use("/profile", mwAuth.Auth, staffProfileRoute);
-app.use("/about", mwAuth.Auth, staffAboutRoute);
+const cHomeR = require("./routes/customer/rHome");
+const cLoginR = require("./routes/customer/rLogin");
+const cPersonalR = require("./routes/customer/rPersonal");
+const cAboutR = require("./routes/customer/rAbout");
 
-app.use("/product-type", mwAuth.Auth, productTypeRoute);
-app.use("/products", mwAuth.Auth, productsRoute);
+app.use("/login-staff", sLoginR);
+app.use("/dashboard", mwAuthS.Auth, sDashboardR);
+app.use("/staff", mwAuthS.Auth, sListR);
+app.use("/profile", mwAuthS.Auth, sProfileR);
+app.use("/about", mwAuthS.Auth, sAboutR);
+
+app.use("/product-type", mwAuthS.Auth, productTypeRoute);
+app.use("/products", mwAuthS.Auth, productsRoute);
+
+app.use("/", cHomeR);
+app.use("/login", cLoginR);
+app.use("/personal", mwAuthC.Auth, cPersonalR);
+
+app.use("/shop-about", cAboutR);
 
 //#endregion
 

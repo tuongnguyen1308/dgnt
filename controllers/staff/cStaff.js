@@ -2,8 +2,8 @@ const Account = require("../../models/mAccount");
 const Staff = require("../../models/mStaff");
 const Role = require("../../models/mRole");
 const bcrypt = require("bcrypt");
-const curPage = "staff";
-const rootRoute = `/${curPage}`;
+const pI = { title: "Quản lý Thành viên", url: "staff" };
+const rootRoute = `/${pI.url}`;
 const imgViewSize = 300;
 const imgPreviewSize = 465;
 
@@ -19,7 +19,6 @@ let redirectFunc = (state, text, dir, req, res) => {
 };
 
 module.exports.index = async (req, res) => {
-  const title = "Quản lý Thành viên";
   const messages = req.session?.messages || null;
   const roles = await Role.find({ rName: { $ne: "Khách hàng" } });
   const sess = req.session.user;
@@ -34,9 +33,8 @@ module.exports.index = async (req, res) => {
       grpByRole[!s.sState ? "Đã nghỉ làm" : s.aId.rId.rName] || []).push(s);
     return grpByRole;
   }, {});
-  res.render(`./staff/${curPage}`, {
-    title,
-    curPage,
+  res.render(`./staff/${pI.url}`, {
+    pI,
     messages,
     grpByRole,
     imgViewSize,

@@ -17,10 +17,10 @@ html(lang="en")
 		script(src="plugin/feather/js/feather.min.js", defer)
 		script(src="plugin/Chart/js/Chart.min.js", defer)
 		script(src="js/common.js", defer)
-		script(src=`js/${curPage}.js`, defer)
+		script(src=`js/${pI.url}.js`, defer)
 		title ĐGNT - Trang Quản lý
 	body
-		header.navbar.navbar-dark.sticky-top.bg-dark.flex-md-nowrap.p-0.shadow
+		header#navbar-admin.navbar.navbar-dark.sticky-top.bg-dark.flex-md-nowrap.p-0.shadow
 			a.navbar-brand.col-md-3.col-lg-2.me-0.px-3(href="#") ĐGNT
 			button.navbar-toggler.position-absolute.d-md-none.collapsed.d-flex.align-middle.my-1(type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation")
 				span.my-1(data-feather="menu")
