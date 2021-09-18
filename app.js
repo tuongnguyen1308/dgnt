@@ -65,7 +65,7 @@ const productTypeRoute = require("./routes/staff/rProductType");
 const productsRoute = require("./routes/staff/rProducts");
 
 const cHomeR = require("./routes/customer/rHome");
-const cLoginR = require("./routes/customer/rLogin");
+const cCustomerR = require("./routes/customer/rCustomer");
 const cPersonalR = require("./routes/customer/rPersonal");
 const cAboutR = require("./routes/customer/rAbout");
 
@@ -79,7 +79,7 @@ app.use("/product-type", mwAuthS.Auth, productTypeRoute);
 app.use("/products", mwAuthS.Auth, productsRoute);
 
 app.use("/", cHomeR);
-app.use("/login", cLoginR);
+app.use("/customer", cCustomerR);
 app.use("/personal", mwAuthC.Auth, cPersonalR);
 
 app.use("/shop-about", cAboutR);

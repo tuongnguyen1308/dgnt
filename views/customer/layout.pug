@@ -57,7 +57,7 @@ html(lang="en")
                                 li
                                     a.dropdown-item(href='#') Đơn đặt hàng
                                 li
-                                    a.dropdown-item(href='/login/logout') Đăng xuất
+                                    a.dropdown-item(href='/customer/logout') Đăng xuất
                     else
                         li.nav-item.mx-2(rel="tooltip" data-bs-placement="bottom" title="Đăng nhập/Đăng ký")
                             a.nav-link(role="button" data-bs-toggle="modal" data-bs-target="#modal-signin" rel="call-modal")
@@ -94,7 +94,7 @@ html(lang="en")
                                     button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
                             #nav-tabContent.tab-content
                                 #nav-signin.tab-pane.fade.pt-3(role='tabpanel' aria-labelledby='nav-signin-tab')
-                                    form.d-grid.needs-validation(method="post" action="/login/auth" tabindex="-1" role="dialog" aria-hidden="true" novalidate)
+                                    form.d-grid.needs-validation(method="post" action="/customer/auth" tabindex="-1" role="dialog" aria-hidden="true" novalidate)
                                         input(type="hidden" name="curPage" value=pI.url)
                                         .form-label-group
                                             input#si_username.form-control(name="si_username" type="text" placeholder="Tên tài khoản" required="true" maxlength="50")
@@ -106,7 +106,7 @@ html(lang="en")
                                             .invalid-feedback Mật khẩu không được để trống
                                         button.btn.btn-block.btn-primary(type="submit") Đăng nhập
                                 #nav-signup.tab-pane.fade.pt-3(role='tabpanel' aria-labelledby='nav-signup-tab')
-                                    form.needs-validation(method="post" action="/login/signup" tabindex="-1" role="dialog" aria-hidden="true" enctype="multipart/form-data" novalidate)
+                                    form.needs-validation(method="post" action="/customer/signup" tabindex="-1" role="dialog" aria-hidden="true" enctype="multipart/form-data" novalidate)
                                         input(type="hidden" name="curPage" value=pI.url)
                                         span.required Thông tin tài khoản
                                         .form-label-group

@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const controller = require("../../controllers/customer/cLogin");
+const controller = require("../../controllers/customer/cCustomer");
 const multer = require("multer");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
