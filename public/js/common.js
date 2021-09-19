@@ -89,19 +89,19 @@ $(document).ready(function () {
     last_scroll_y = current_scroll_y;
   });
 
-  // modal-signup
+  //#region modal-signup
   const removeImg = () => {
     $("#img-preview").attr("src", "#").addClass("d-none");
     $("#cimg-preview .title").removeClass("d-none");
     $(".file_remove").addClass("d-none");
   };
   $("#cImg").on("change", function (e) {
-    var ext = $(this).val().split(".").pop().toLowerCase();
-    if ($.inArray(ext, ["png", "jpg", "jpeg"]) == -1) {
+    const filename = $(this).val();
+    if (!filename.match(/\.(jpg|jpeg|png)$/i)) {
       $("[role=errMessage]")
         .removeClass("d-none")
         .find("span")
-        .text("Không đúng định dạng!");
+        .text("Ảnh không hợp lệ");
       removeImg();
     } else {
       $("[role=errMessage]").addClass("d-none").find("span").text("");
@@ -115,22 +115,87 @@ $(document).ready(function () {
     removeImg();
   });
 
-  let checkPassword = (con, inp) => inp.setCustomValidity(con ? "" : "error");
-  //#region Change Password
+  //#region validate
+  let checkValidate = (cases, inp) => {
+    let invailArr = cases.filter((cs) => cs.con);
+    if (invailArr.length > 0) {
+      inp.setCustomValidity("error");
+      $(inp).next().next().text(invailArr[0].mess);
+    } else {
+      inp.setCustomValidity("");
+    }
+  };
+  $("#su_username").on("keyup", function () {
+    const title = "Tên tài khoản";
+    const maxVal = 50;
+    let val = $.trim($(this).val());
+    $(this).val(val);
+    let cases = [
+      { con: val.length == 0, mess: `${title} là bắt buộc` },
+      { con: val.includes(" "), mess: `${title} không được chứa khoảng trắng` },
+      { con: val.length >= maxVal, mess: `${title} tối đa ${maxVal} ký tự` },
+    ];
+    checkValidate(cases, this);
+  });
   $("#su_password").on("keyup", function () {
-    checkPassword($(this).val().length >= 6, this);
+    const title = "Mật khẩu";
+    const minVal = 6;
+    const maxVal = 50;
+    let val = $.trim($(this).val());
+    $(this).val(val);
+    let cases = [
+      { con: val.length == 0, mess: `${title} là bắt buộc` },
+      { con: val.length < minVal, mess: `${title} tối thiểu ${minVal} ký tự` },
+      { con: val.includes(" "), mess: `${title} không được chứa khoảng trắng` },
+      { con: val.length > maxVal, mess: `${title} tối đa ${maxVal} ký tự` },
+    ];
+    checkValidate(cases, this);
   });
 
   $("#su_repassword").on("keyup", function () {
-    checkPassword($(this).val() == $("#su_password").val(), this);
+    const title = "Nhập lại mật khẩu";
+    let val = $.trim($(this).val());
+    $(this).val(val);
+    let cases = [
+      { con: val.length == 0, mess: `${title} là bắt buộc` },
+      { con: val !== $("#su_password").val(), mess: `${title} không đúng` },
+    ];
+    checkValidate(cases, this);
   });
+
+  $("#cName").on("keyup", function () {
+    const title = "Họ tên";
+    const maxVal = 50;
+    let val = $(this).val();
+    let cases = [
+      { con: val.length == 0, mess: `${title} là bắt buộc` },
+      { con: val.length > maxVal, mess: `${title} tối đa ${maxVal} ký tự` },
+    ];
+    checkValidate(cases, this);
+  });
+
+  $("#cNumber").on("keyup", function () {
+    const title = "Số điện thoại";
+    const lengthVal = 10;
+    let val = $(this).val();
+    let cases = [
+      { con: val.length == 0, mess: `${title} là bắt buộc` },
+      { con: isNaN(val), mess: `${title} không hợp lệ` },
+      { con: val.length != lengthVal, mess: `${title} gồm ${lengthVal} ký tự` },
+    ];
+    checkValidate(cases, this);
+  });
+
   //#endregion
+
   $("[rel=call-modal]").on("click", function () {
     $(".was-validated .is-valid, .was-validated .is-invalid").removeClass(
       "is-valid is-invalid"
     );
     $(".was-validated").removeClass("was-validated");
   });
+
+  //#endregion
 
   //#endregion
 });

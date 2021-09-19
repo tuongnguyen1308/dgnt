@@ -99,42 +99,43 @@ html(lang="en")
                                         .form-label-group
                                             input#si_username.form-control(name="si_username" type="text" placeholder="Tên tài khoản" required="true" maxlength="50")
                                             label(for="si_username") Tên tài khoản
-                                            .invalid-feedback Tên tài khoản không được để trống
+                                            .invalid-feedback Tên tài khoản là bắt buộc
                                         .form-label-group
                                             input#si_password.form-control(name="si_password" type="password" placeholder="Mật khẩu" required="true" maxlength="50")
                                             label(for="si_password") Mật khẩu
-                                            .invalid-feedback Mật khẩu không được để trống
+                                            .invalid-feedback Mật khẩu là bắt buộc
                                         button.btn.btn-block.btn-primary(type="submit") Đăng nhập
                                 #nav-signup.tab-pane.fade.pt-3(role='tabpanel' aria-labelledby='nav-signup-tab')
                                     form.needs-validation(method="post" action="/customer/signup" tabindex="-1" role="dialog" aria-hidden="true" enctype="multipart/form-data" novalidate)
                                         input(type="hidden" name="curPage" value=pI.url)
-                                        span.required Thông tin tài khoản
+                                        span Thông tin tài khoản
                                         .form-label-group
                                             input#su_username.form-control(name="su_username" type="text" placeholder="Tên tài khoản" required="true" maxlength="50")
-                                            label(for="su_username") Tên tài khoản
-                                            .invalid-feedback Tên tài khoản không được để trống
+                                            label.required(for="su_username") Tên tài khoản
+                                            .invalid-feedback Tên tài khoản là bắt buộc
                                         .row
                                             .col-12.col-md-6.form-label-group
                                                 input#su_password.form-control(name="su_password" type="password" placeholder="Mật khẩu" required="true" maxlength="50")
-                                                label.ms-2.ps-3(for="su_password") Mật khẩu
-                                                .invalid-feedback Mật khẩu phải chứa ít nhất 6 kí tự
+                                                label.ms-2.ps-3.required(for="su_password") Mật khẩu
+                                                .invalid-feedback Mật khẩu là bắt buộc
                                             .col-12.col-md-6.form-label-group
                                                 input#su_repassword.form-control(name="su_repassword" type="password" placeholder="Nhập lại mật khẩu" required="true" maxlength="50")
-                                                label.ms-2.ps-3(for="su_repassword") Nhập lại mật khẩu
-                                                .invalid-feedback Nhập lại mật khẩu không khớp
+                                                label.ms-2.ps-3.required(for="su_repassword") Nhập lại mật khẩu
+                                                .invalid-feedback Nhập lại mật khẩu không đúng
                                         span Thông tin cá nhân
                                         .row
                                             .col-12.col-md-6.form-label-group
-                                                input#cName.form-control(name="cName" type="text" placeholder="Tên khách hàng" required maxlength="50")
-                                                label.ms-2.ps-3(for="cName") Tên khách hàng*
-                                                .invalid-feedback Tên khách hàng không được để trống
+                                                input#cName.form-control(name="cName" type="text" placeholder="Họ tên" required maxlength="50")
+                                                label.ms-2.ps-3.required(for="cName") Họ tên
+                                                .invalid-feedback Họ tên là bắt buộc
                                             .col-12.col-md-6.form-label-group
                                                 input#cNumber.form-control(name="cNumber" type="text" placeholder="Số điện thoại" required maxlength="10")
-                                                label.ms-2.ps-3(for="cNumber") Số điện thoại*
-                                                .invalid-feedback Số điện thoại không được để trống
+                                                label.ms-2.ps-3.required(for="cNumber") Số điện thoại
+                                                .invalid-feedback Số điện thoại là bắt buộc
                                             .col-12.col-md-6.form-label-group
                                                 input#cDofB.form-control(name="cDofB" type="date")
                                                 label.ms-2.ps-3(for="cDofB") Ngày sinh
+                                                .invalid-feedback Ngày sinh không hợp lệ
                                             .col-12.col-md-6.form-label-group
                                                 input#cEmail.form-control(name="cEmail" type="email" placeholder="Email")
                                                 label.ms-2.ps-3(for="cEmail") Email
@@ -147,9 +148,8 @@ html(lang="en")
                                                     span.ms-2 Chọn ảnh
                                                 img#img-preview.d-none(src="" height=`400px`)
                                             span.file_remove.d-none(data-feather="x")
-                                            .alert.alert-danger.d-none(role="errMessage")
-                                                span
-                                                button.btn-close(type="button" data-bs-dismiss="alert" aria-label="Close")
+                                            .text-danger.d-none(role="errMessage")
+                                                span.small
                                         .d-grid
                                             button.btn.btn-block.btn-primary(type="submit") Đăng ký
         //- End Modal add/update

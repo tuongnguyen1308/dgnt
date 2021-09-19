@@ -71,13 +71,7 @@ module.exports.signup = async (req, res, next) => {
     rId: customerRole._id,
   };
   if (newAccount.aUsername.length == 0) {
-    redirectFunc(
-      false,
-      "Tên tài khoản không được để trống!",
-      prevPage,
-      req,
-      res
-    );
+    redirectFunc(false, "Tên tài khoản là bắt buộc!", prevPage, req, res);
     return;
   }
   try {
@@ -90,7 +84,7 @@ module.exports.signup = async (req, res, next) => {
     }
 
     if (newAccount.aPassword.length == 0) {
-      redirectFunc(false, "Mật khẩu không được để trống!", prevPage, req, res);
+      redirectFunc(false, "Mật khẩu là bắt buộc!", prevPage, req, res);
       return;
     }
     const salt = await bcrypt.genSalt(10);
@@ -105,30 +99,27 @@ module.exports.signup = async (req, res, next) => {
     };
 
     if (newCustomer.cName.length == 0) {
-      redirectFunc(
-        false,
-        "Tên khách hàng không được để trống!",
-        prevPage,
-        req,
-        res
-      );
+      redirectFunc(false, "Tên khách hàng là bắt buộc!", prevPage, req, res);
       return;
     }
     if (newCustomer.cNumber.length == 0) {
-      redirectFunc(
-        false,
-        "Số điện thoại không được để trống!",
-        prevPage,
-        req,
-        res
-      );
+      redirectFunc(false, "Số điện thoại là bắt buộc!", prevPage, req, res);
       return;
     } else {
-      const numberFound = await Customer.findOne({
+      const cFound = await Customer.findOne({
         cNumber: newCustomer.cNumber,
       });
-      if (numberFound) {
+      if (cFound) {
         redirectFunc(false, "Số điện thoại đã bị trùng!", prevPage, req, res);
+        return;
+      }
+    }
+    if (newCustomer.cEmail.length != 0) {
+      const cFound = await Customer.findOne({
+        cEmail: newCustomer.cEmail,
+      });
+      if (cFound) {
+        redirectFunc(false, "Email đã bị trùng!", prevPage, req, res);
         return;
       }
     }
