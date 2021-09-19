@@ -74,6 +74,10 @@ module.exports.signup = async (req, res, next) => {
     redirectFunc(false, "Tên tài khoản là bắt buộc!", prevPage, req, res);
     return;
   }
+  if (newAccount.aUsername.length >= 50) {
+    redirectFunc(false, "Tên tài khoản tốt đa 50 ký tự!", prevPage, req, res);
+    return;
+  }
   try {
     const accFound = await Account.findOne({
       aUsername: newAccount.aUsername,
@@ -102,10 +106,24 @@ module.exports.signup = async (req, res, next) => {
       redirectFunc(false, "Tên khách hàng là bắt buộc!", prevPage, req, res);
       return;
     }
+    if (newCustomer.cName.length > 50) {
+      redirectFunc(
+        false,
+        "Tên khách hàng tối đa 50 ký tự!",
+        prevPage,
+        req,
+        res
+      );
+      return;
+    }
     if (newCustomer.cNumber.length == 0) {
       redirectFunc(false, "Số điện thoại là bắt buộc!", prevPage, req, res);
       return;
     } else {
+      if (newCustomer.cNumber.length != 10) {
+        redirectFunc(false, "Số điện thoại gồm 10 ký tự!", prevPage, req, res);
+        return;
+      }
       const cFound = await Customer.findOne({
         cNumber: newCustomer.cNumber,
       });
@@ -114,7 +132,20 @@ module.exports.signup = async (req, res, next) => {
         return;
       }
     }
+
+    if (typeof newCustomer.cDofB.getMonth !== "function") {
+      redirectFunc(false, "Ngày sinh không hợp lệ!", prevPage, req, res);
+      return;
+    }
+
     if (newCustomer.cEmail.length != 0) {
+      const re =
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      if (!re.test(String(newCustomer.cEmail).toLowerCase())) {
+        redirectFunc(false, "Email không hợp lệ!", prevPage, req, res);
+        return;
+      }
+
       const cFound = await Customer.findOne({
         cEmail: newCustomer.cEmail,
       });
@@ -123,6 +154,13 @@ module.exports.signup = async (req, res, next) => {
         return;
       }
     }
+    if (newCustomer.cImg) {
+      if (!newCustomer.cImg.match(/\.(jpg|jpeg|png)$/i)) {
+        redirectFunc(false, "Ảnh không hợp lệ!", prevPage, req, res);
+        return;
+      }
+    }
+
     let newAcc = new Account(newAccount);
     let newCus = new Customer(newCustomer);
     let accSaved = await newAcc.save();
