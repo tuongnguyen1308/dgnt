@@ -133,9 +133,12 @@ module.exports.signup = async (req, res, next) => {
       }
     }
 
-    if (typeof newCustomer.cDofB.getMonth !== "function") {
-      redirectFunc(false, "Ngày sinh không hợp lệ!", prevPage, req, res);
-      return;
+    if (newCustomer.cDofB) {
+      let ns = new Date(newCustomer.cDofB);
+      if (!(ns > 0)) {
+        redirectFunc(false, "Ngày sinh không hợp lệ!", prevPage, req, res);
+        return;
+      }
     }
 
     if (newCustomer.cEmail.length != 0) {
