@@ -1,3 +1,4 @@
+//#region global function
 let generateToast = (state, text) => {
   if ("content" in document.createElement("template")) {
     let toastTemplate = document.querySelector("#toast-template");
@@ -27,6 +28,20 @@ let generateToast = (state, text) => {
     console.log("không hỗ trợ toast");
   }
 };
+
+let checkValidate = (cases, inp, immidiate_check = true) => {
+  let invailArr = cases.filter((cs) => cs.con);
+  if (invailArr.length > 0) {
+    immidiate_check && $(inp).parent().addClass("was-validated");
+    inp.setCustomValidity("error");
+    $(inp).parent().find(".invalid-feedback").text(invailArr[0].mess);
+  } else {
+    inp.setCustomValidity("");
+  }
+};
+
+//#endregion
+
 $(document).ready(function () {
   // show current activated tab
   let curTab = localStorage.getItem("cur-tab");
@@ -116,15 +131,6 @@ $(document).ready(function () {
   });
 
   //#region validate
-  let checkValidate = (cases, inp) => {
-    let invailArr = cases.filter((cs) => cs.con);
-    if (invailArr.length > 0) {
-      inp.setCustomValidity("error");
-      $(inp).next().next().text(invailArr[0].mess);
-    } else {
-      inp.setCustomValidity("");
-    }
-  };
   $("#su_username").on("keyup", function () {
     const title = "Tên tài khoản";
     const maxVal = 50;

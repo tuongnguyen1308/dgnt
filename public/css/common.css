@@ -293,3 +293,16 @@ img {
   transform: translateY(0);
   transition: all 0.3s ease-in-out;
 }
+
+.btn-round {
+  border-radius: 50%;
+}
+
+.btn-42 {
+  width: 42px;
+  height: 42px;
+}
+
+.btn-hover_danger:hover {
+  color: #dc3545 !important;
+}

@@ -1,0 +1,98 @@
+extends ./layout.pug
+block content
+	main.col-md-9.ms-sm-auto.col-lg-10.px-md-4
+		.d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pt-3.pb-2.mb-3.border-bottom.flex-column.flex-lg-row
+			h1.h3.mb-0= pI.title
+			.btn-toolbar.mt-2.mb-mt-0
+		nav
+			#nav-tab.nav.nav-tabs(role='tablist')
+				button#nav-material-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-material' type='button' role='tab') Thông tin
+				button#nav-mtrreq-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-mtrreq' type='button' role='tab') Yêu cầu nhập
+				button#nav-mtrbatch-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-mtrbatch' type='button' role='tab') Đợt nhập
+			#nav-tabContent.tab-content
+				#nav-material.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-material-tab')
+					if materials.length > 0
+						i
+							span Cập nhật số lượng NVL bằng cách thêm 
+							a(href="#" rel="switch-tab" data-to="#nav-mtrbatch-tab") Đợt nhật NVL
+					table.table.table-bordered(width="100%")
+						thead
+							if sess.rId.rName == "Quản lý"
+								tr
+									td(colspan="7")
+										button.btn.w-100.btn-outline-success.d-flex.align-items-center.justify-content-center(type="button" role="add-material" data-bs-toggle="modal" data-bs-target="#modal-material")
+											span(data-feather="plus")
+											span Thêm NVL
+							tr.text-center
+								th.align-middle(width="1%") STT
+								th.align-middle(width="10%") Ảnh NVL
+								th.align-middle(width="20%") Tên NVL
+								th.align-middle(width="5%") ĐVT
+								th.align-middle(width="") Số lượng
+								th.align-middle(width="") Mô tả
+								th.align-middle(width="") Tác vụ
+						tbody
+							each m, index in materials
+								tr.text-center
+									td.align-middle= index+1
+									td.align-middle
+										img.rounded.img-fluid(src=`img/materials/${m.mImg}` style="max-height:100px;")
+									td.text-start.align-middle= m.mName
+									td.align-middle= m.mUnit
+									td.align-middle= m.mStock
+									td.text-start.align-middle= m.mDesc
+									td.align-middle
+										.btn-group(role="group")
+											button.btn.btn-sm.btn-outline-primary(type="button" role="edit-material" data-id=m._id data-mname=m.mName data-munit=m.mUnit data-mdesc=m.mDesc data-mimg=m.mImg data-bs-toggle="modal" data-bs-target="#modal-material" rel="tooltip" data-bs-placement="top" title="Sửa")
+												span(data-feather="edit-3")
+											button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Xoá")
+												span(data-feather="x")
+											ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset")
+												li
+													a.dropdown-item.p-2.text-danger(href='#' data-id=m._id role="confirm-delete-material") Xác nhận
+												li
+													span.dropdown-item.p-2(role="button" rel="close-dropdown") Huỷ
+							else
+								tr
+									td(colspan="7") Chưa có nguyên vật liệu!
+							//- Modal material add/update
+					form#modal-material.needs-validation.modal.fade(method="post" action="/material/add" tabindex="-1" role="dialog" aria-hidden="true" enctype="multipart/form-data" novalidate)
+						.modal-dialog.modal-dialog-centered
+							.modal-content
+								.modal-header
+									h5#modal-material-title.modal-title Thêm nguyên vật liệu
+									button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
+								.modal-body
+									.form-label-group
+										input#mName.form-control(name="mName" type="text" placeholder="Tên nguyên vật liệu" required maxlength="50")
+										label.required(for="mName") Tên nguyên vật liệu
+										.invalid-feedback Tên nguyên vật liệu là bắt buộc
+									.form-label-group
+										input#mUnit.form-control(name="mUnit" type="text" placeholder="Đơn vị tính" required)
+										label.required(for="mUnit") Đơn vị tính
+										.invalid-feedback Đơn vị tính là bắt buộc
+									.form-label-group.form-floating
+										textarea#mDesc.form-control(name="mDesc" type="text" placeholder="Mô tả" maxlength="256" style="min-height:80px;")
+										label(for="mDesc") Mô tả
+										.invalid-feedback Mô tả tối đa 256 ký tự
+									.w-100.position-relative
+										label#mimg-preview.img-box.w-100.align-middle(for="mImg" style=`height:${imgPreviewSize-1}px`).d-flex.justify-content-center.align-items-center
+											input#mImg.btn.btn-success(type="file" name="mImg" accept="image/png, image/jpeg")
+											.title.h-100.d-flex.justify-content-center.align-items-center
+												span(data-feather="upload")
+												span.ms-2 Chọn ảnh
+											img#img-preview.d-none(src="" height=`${imgPreviewSize}px`)
+										span.file_remove.d-none(data-feather="x")
+										.text-danger.d-none(role="errMessage")
+											span.small
+								.modal-footer.d-grid.gap-2(style="justify-content: unset")
+									button.btn.btn-primary(type="submit") Lưu
+					//- End Modal material add/update
+				#nav-mtrreq.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-mtrreq-tab')
+					include ./mtrreq.pug
+				#nav-mtrbatch.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-mtrbatch-tab')
+					include ./mtrreq.pug
+		//- End UserList
+
+
+

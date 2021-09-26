@@ -5,9 +5,8 @@ block content
 			h1.h3.mb-0= pI.title
 			.btn-toolbar.mt-2.mb-mt-0
 				if sess.rId.rName == "Quản lý"
-					button.btn.btn-sm.btn-outline-success(type="button" role="add-staff" data-bs-toggle="modal" data-bs-target="#modal-staff")
+					button.btn.btn-sm.btn-outline-success.btn-42.btn-round(type="button" role="add-staff" data-bs-toggle="modal" data-bs-target="#modal-staff" rel="tooltip" data-bs-placement="left" title="Thêm Thành viên")
 						span(data-feather="user-plus")
-						|  Thêm
 		//- UserList
 
 		each staff, roleName in grpByRole
@@ -88,9 +87,8 @@ block content
 									span.ms-2 Chọn ảnh
 								img#img-preview.d-none(src="" height=`${imgPreviewSize}px`)
 							span.file_remove.d-none(data-feather="x")
-							.alert.alert-danger.d-none(role="errMessage")
-								span
-								button.btn-close(type="button" data-bs-dismiss="alert" aria-label="Close")
+							.text-danger.d-none(role="errMessage")
+								span.small
 					.modal-footer.d-grid.gap-2(style="justify-content: unset")
 						button.btn.btn-primary(type="submit") Lưu
 		//- End Modal add/update

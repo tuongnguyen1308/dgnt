@@ -1,0 +1,94 @@
+if materials.length == 0
+	.h4.fw-normal.text-center Cần thêm 
+		a(href="#" rel="switch-tab" data-to="#nav-material-tab") Thông tin NVL
+		|  trước
+else
+	table.table.table-responsive.table-bordered(width="100%")
+		thead.text-center
+			tr
+				td(colspan="7")
+					button.btn.w-100.btn-outline-success.d-flex.align-items-center.justify-content-center(type="button" role="add-mtrreq" data-bs-toggle="modal" data-bs-target="#modal-mtrreq")
+						span(data-feather="plus")
+						span Thêm yêu cầu
+			tr
+				th.align-middle(rowspan="2") STT
+				th.align-middle(rowspan="2") Ngày yêu cầu, Nhân viên tạo
+				th.align-middle(rowspan="2") Ngày cập nhật, Nhân viên cập nhật
+				th.align-middle(rowspan="2") Lý do
+				th.align-middle(colspan="2" width="40%") Danh sách NVL
+				th.align-middle(rowspan="2") Tác vụ
+			tr
+				th.align-middle NVL
+				th.align-middle(width="5%") SL
+		tbody
+			each mr, index in mtrreqs
+				tr
+					td.align-middle.text-center= index+1
+					td.align-middle.text-center= mr.createdAt.toISOString().slice(0,10).split('-').reverse().join('/') + ", " + mr.scId.sName
+					td.align-middle= mr.updatedAt.toISOString().slice(0,10).split('-').reverse().join('/') + ", " + mr.suId.sName
+					td.align-middle= mr.mrReason
+					td.align-middle.p-0(colspan="2")
+						table.table.m-0(width="100%")
+							tbody
+								each m in mr.mrDetail
+									tr
+										td.border-end
+											span(rel="tooltip" data-bs-placement="top" title=`<img width='100px;' src='/img/materials/${m.mId.mImg}'>` data-bs-html="true")= m.mId.mName
+										td(width="12.5%")= m.mQuantity
+					td.align-middle.text-center
+						if mr.mrState
+							.btn-group(role="group")
+								button.btn.btn-sm.btn-outline-primary(role="edit-mtrreq" data-id=mr._id data-reason=mr.mrReason data-detail= mr.mrDetail type='button' rel="tooltip" data-bs-placement="top" title="Sửa" data-bs-toggle="modal" data-bs-target="#modal-mtrreq")
+									span(data-feather="edit-3")
+								button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Hủy")
+									span(data-feather="x")
+								ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset")
+									li
+										a.dropdown-item.p-2.text-danger(href='#' data-id=mr._id role="confirm-cancel-mtrreq") Xác nhận
+									li
+										span.dropdown-item.p-2(role="button" rel="close-dropdown") Huỷ
+						else
+							.badge.bg-secondary Đã hủy
+			else
+				tr
+					td.text-center(colspan="6") Chưa có Yêu cầu nhập nguyên vật liệu!
+	form#modal-mtrreq.needs-validation.modal.fade(method="post" action="/mtrreq/add" tabindex="-1" role="dialog" aria-hidden="true" novalidate)
+		.modal-dialog.modal-dialog-centered.modal-lg
+			.modal-content
+				.modal-header
+					h5#modal-mtrreq-title.modal-title Thêm yêu cầu nhập NVL
+					button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
+				.modal-body
+					.d-grid.m-auto
+						.form-label-group.form-floating
+							textarea#mrReason.form-control(name="mrReason" type="text" placeholder="Lý do" maxlength="256" style="min-height:80px;")
+							label(for="mrReason") Lý do
+						.fs-4 Danh sách NVL
+						#mr-error.text-danger.small.d-none
+						table.table.table-bordered(width="100%")
+							thead
+								tr.text-center
+									th.align-middle(width="50%") NVL
+									th.align-middle(width="20%") Số lượng
+									th.align-middle(width="15%") Tác vụ
+							tbody#mr-list
+								template#mr-item-template
+									tr.text-center
+										td.p-1.text-start.align-middle
+											select.form-select.p-1(role="list-material_select" name="mId")
+												option(hidden value="-1") -- Chọn NVL --
+												each m in materials
+													option(value= m._id)= m.mName
+											.invalid-feedback NVL này đã được thêm trước đó
+										td.p-1.align-middle
+											input.form-control.p-1(name="mQuantity" type="number" required)
+											.invalid-feedback Số lượng là bắt buộc
+										td.p-1.align-middle
+											button.btn.p-1.btn-white.btn-hover_danger.border-0(value="" role="list-material_delete" type='button' rel="tooltip" data-bs-placement="top" title="Xoá")
+												span(data-feather="x")
+							tfoot
+								tr
+									td.text-center(colspan="3")
+										button.btn.btn-sm.btn-outline-success(type="button" role="list-material_add" onload="click()") Thêm NVL
+				.modal-footer.d-grid(style="justify-content: unset")
+					button.btn.btn-primary(type="submit") Lưu

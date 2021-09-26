@@ -60,6 +60,8 @@ const sDashboardR = require("./routes/staff/rDashboard");
 const sListR = require("./routes/staff/rStaff");
 const sProfileR = require("./routes/staff/rProfile");
 const sAboutR = require("./routes/staff/rAbout");
+const sMaterialR = require("./routes/staff/rMaterial");
+const sMtrreqR = require("./routes/staff/rMtrreq");
 
 const productTypeRoute = require("./routes/staff/rProductType");
 const productsRoute = require("./routes/staff/rProducts");
@@ -74,6 +76,8 @@ app.use("/dashboard", mwAuthS.Auth, sDashboardR);
 app.use("/staff", mwAuthS.Auth, sListR);
 app.use("/profile", mwAuthS.Auth, sProfileR);
 app.use("/about", mwAuthS.Auth, sAboutR);
+app.use("/material", mwAuthS.Auth, sMaterialR);
+app.use("/mtrreq", mwAuthS.Auth, sMtrreqR);
 
 app.use("/product-type", mwAuthS.Auth, productTypeRoute);
 app.use("/products", mwAuthS.Auth, productsRoute);

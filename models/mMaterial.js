@@ -26,7 +26,7 @@ let Material = Schema(
       ref: "col_staff",
     },
   },
-  { timestamp: true }
+  { timestamps: true }
 );
 
 module.exports = mongoose.model("col_material", Material);

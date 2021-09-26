@@ -1,7 +1,5 @@
-const Account = require("../../models/mAccount");
 const Material = require("../../models/mMaterial");
-const Role = require("../../models/mRole");
-const bcrypt = require("bcrypt");
+const Mtrreq = require("../../models/mMtrreq");
 const pI = { title: "Quản lý Nguyên vật liệu", url: "material" };
 const rootRoute = `/${pI.url}`;
 const imgViewSize = 300;
@@ -26,10 +24,24 @@ module.exports.index = async (req, res) => {
     path: "sId",
     select: "sName",
   });
+  let mtrreqs = await Mtrreq.find({})
+    .populate({
+      path: "mrDetail.mId",
+      select: "mName mUnit mImg",
+    })
+    .populate({
+      path: "scId",
+      select: "sName",
+    })
+    .populate({
+      path: "suId",
+      select: "sName",
+    });
   res.render(`./staff/${pI.url}`, {
     pI,
     messages,
     materials,
+    mtrreqs,
     imgViewSize,
     imgPreviewSize,
     sess,
@@ -37,35 +49,62 @@ module.exports.index = async (req, res) => {
 };
 
 module.exports.add = (req, res) => {
-  Material.find({ username: req.body.aUsername }, async (err, users_found) => {
-    if (err) {
-      redirectFunc(false, "Thêm tài khoản thất bại!", rootRoute, req, res);
-    } else if (users_found.length) {
-      redirectFunc(false, "Tên đăng nhập này đã tồn tại!", rootRoute, req, res);
+  Material.find({ mName: req.body.mName }, async (err, mFound) => {
+    if (mFound.length > 0) {
+      redirectFunc(
+        false,
+        "Tên nguyên vật liệu đã tồn tại!",
+        rootRoute,
+        req,
+        res
+      );
     } else {
-      const salt = await bcrypt.genSalt(10);
-      const hashPassword = await bcrypt.hash(req.body.aPassword, salt);
-      let newAcc = new Account({
-        aUsername: req.body.aUsername,
-        aPassword: hashPassword,
-        rId: req.body.rId,
-      });
+      const sess = req.session.user;
       try {
-        let accSaved = await newAcc.save();
-        let newStaff = new Material({
-          sName: req.body.sName,
-          sDofB: req.body.sDofB,
-          sNumber: req.body.sNumber,
-          sEmail: req.body.sEmail,
-          sImg: req.file?.filename,
-          sState: req.body.sState == "on",
-          sJoinAt: new Date(),
-          aId: accSaved._id,
+        let newMaterial = new Material({
+          mName: req.body.mName,
+          mDesc: req.body.mDesc,
+          mUnit: req.body.mUnit,
+          mStock: 0,
+          mImg: req.file?.filename || "default.png",
+          sId: sess.sId,
         });
-        await newStaff.save();
-        redirectFunc(true, "Đã thêm thành viên", rootRoute, req, res);
+        if (newMaterial.mName.length > 50) {
+          redirectFunc(
+            false,
+            "Tên nguyên vật liệu tối đa 50 ký tự!",
+            rootRoute,
+            req,
+            res
+          );
+        } else if (newMaterial.mDesc.length > 256) {
+          redirectFunc(false, "Mô tả tối đa 256 ký tự!", rootRoute, req, res);
+        } else if (!newMaterial.mImg.match(/\.(jpg|jpeg|png)$/i)) {
+          redirectFunc(
+            false,
+            "Ảnh nguyên vật liệu không hợp lệ!",
+            rootRoute,
+            req,
+            res
+          );
+        } else {
+          await newMaterial.save();
+          redirectFunc(
+            true,
+            "Thêm nguyên vật liệu thành công!",
+            rootRoute,
+            req,
+            res
+          );
+        }
       } catch (error) {
-        redirectFunc(false, "Cấp tài khoản thất bại!", rootRoute, req, res);
+        redirectFunc(
+          false,
+          "Thêm nguyên vật liệu thất bại!",
+          rootRoute,
+          req,
+          res
+        );
       }
     }
   });
@@ -73,64 +112,50 @@ module.exports.add = (req, res) => {
 };
 
 module.exports.update = async (req, res) => {
-  let updStaff = {
-    sName: req.body.sName,
-    sDofB: req.body.sDofB,
-    sNumber: req.body.sNumber,
-    sEmail: req.body.sEmail,
-    sState: req.body.sState == "on",
+  let updMaterial = {
+    mName: req.body.mName,
+    mDesc: req.body.mDesc,
+    mUnit: req.body.mUnit,
   };
-  let sImg = req.file?.filename || false;
-  if (sImg) {
-    updStaff.sImg = sImg;
+  let mImg = req.file?.filename || false;
+  if (mImg) {
+    updMaterial.mImg = mImg;
   }
-  let updAcc = {
-    rId: req.body.rId,
-  };
-  let aPassword = req.body.aPassword;
-  if (aPassword) {
-    const salt = await bcrypt.genSalt(10);
-    const aPassword = await bcrypt.hash(req.body.aPassword, salt);
-    updAcc.aPassword = aPassword;
-  }
-  try {
-    await Account.findByIdAndUpdate(req.body.aid, {
-      $set: updAcc,
-    });
-  } catch (error) {
-    redirectFunc(false, "Đổi mật khẩu thất bại!", rootRoute, req, res);
-  }
-  try {
-    await Material.findByIdAndUpdate(req.body.id, { $set: updStaff });
-    redirectFunc(true, "Cập nhật thành công!", rootRoute, req, res);
-  } catch (error) {
-    redirectFunc(false, "Cập nhật thất bại!", rootRoute, req, res);
-  }
+  const mFound = await Material.find({
+    mName: updMaterial.mName,
+    _id: { $ne: req.body.id },
+  });
+  if (mFound.length > 0) {
+    redirectFunc(false, "Tên nguyên vật liệu đã tồn tại!", rootRoute, req, res);
+  } else
+    try {
+      await Material.findByIdAndUpdate(req.body.id, { $set: updMaterial });
+      redirectFunc(true, "Cập nhật thành công!", rootRoute, req, res);
+    } catch (error) {
+      redirectFunc(false, "Cập nhật thất bại!", rootRoute, req, res);
+    }
   return;
 };
 
 module.exports.delete = async (req, res) => {
   try {
-    await Material.deleteOne({ aId: req.params.id }, function (err) {
-      err && res.json(err);
+    await Material.findByIdAndDelete(req.params.id, function (err) {
+      req.session.messages = {
+        icon: !err ? "check-circle" : "alert-circle",
+        color: !err ? "success" : "danger",
+        title: !err ? "Thành công!" : "Thất bại",
+        text: !err
+          ? "Xóa nguyên vật liệu thành công!"
+          : "Xóa nguyên vật liệu thất bại!",
+      };
+      res.json(!err);
     });
-    let result = await Account.deleteOne(
-      { _id: req.params.id },
-      (err) => err && res.json(err)
-    );
-    req.session.messages = {
-      icon: result ? "check-circle" : "alert-circle",
-      color: result ? "success" : "danger",
-      title: result ? "Thành công!" : "Thất bại",
-      text: result ? "Xóa thành viên thành công!" : "Xóa thành viên thất bại!",
-    };
-    res.json(result);
   } catch (error) {
     req.session.messages = {
       icon: "alert-circle",
       color: "danger",
       title: "Thất bại",
-      text: "Xóa thành viên thất bại!",
+      text: "Xóa nguyên vật liệu thất bại!",
     };
   }
 };

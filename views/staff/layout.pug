@@ -79,11 +79,15 @@ html(lang="en")
 								a.nav-link(class=(curPage == "product-type") ? "active" : "" href="/product-type")
 									span(data-feather="list")
 									|  Loại sản phẩm
-							if sess.rId.rName == "Quản lý"
 							li.nav-item
-								a.nav-link(class=(curPage == "about") ? "active" : "" href="/about")
-									span(data-feather="info")
-									|  Quản lý danh mục
+								a.nav-link(class=(curPage == "material") ? "active" : "" href="/material")
+									span(data-feather="layers")
+									|  Nguyên vật liệu
+							if sess.rId.rName == "Quản lý"
+								li.nav-item
+									a.nav-link(class=(curPage == "about") ? "active" : "" href="/about")
+										span(data-feather="info")
+										|  Quản lý danh mục
 							li.nav-item
 								a.nav-link(class=(curPage == "staff") ? "active" : "" href="/staff")
 									span(data-feather="users")
