@@ -306,3 +306,8 @@ img {
 .btn-hover_danger:hover {
   color: #dc3545 !important;
 }
+
+.border-bottom-none:last-child,
+.border-bottom-none:last-child td {
+  border-bottom-style: none !important;
+}

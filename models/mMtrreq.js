@@ -20,7 +20,7 @@ let Mtrreq = Schema(
       },
     ],
     mrState: {
-      type: Boolean,
+      type: Number,
       required: true,
     },
     scId: {

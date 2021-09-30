@@ -1,5 +1,6 @@
 const Material = require("../../models/mMaterial");
 const Mtrreq = require("../../models/mMtrreq");
+const MtrBatch = require("../../models/mMtrbatch");
 const pI = { title: "Quản lý Nguyên vật liệu", url: "material" };
 const rootRoute = `/${pI.url}`;
 const imgViewSize = 300;
@@ -20,11 +21,12 @@ module.exports.index = async (req, res) => {
   const messages = req.session?.messages || null;
   const sess = req.session.user;
   req.session.messages = null;
-  let materials = await Material.find({}).populate({
+  let materials = await Material.find({}).sort({ mName: "asc" }).populate({
     path: "sId",
     select: "sName",
   });
   let mtrreqs = await Mtrreq.find({})
+    .sort({ createdAt: "desc" })
     .populate({
       path: "mrDetail.mId",
       select: "mName mUnit mImg",
@@ -37,11 +39,29 @@ module.exports.index = async (req, res) => {
       path: "suId",
       select: "sName",
     });
+  mtrreqs = mtrreqs.map((mtr) => {
+    let ca = mtr.createdAt;
+    let ua = mtr.updatedAt;
+    mtr.createdAt = ca.setUTCHours(ca.getUTCHours() + 7);
+    mtr.updatedAt = ua.setUTCHours(ua.getUTCHours() + 7);
+    return mtr;
+  });
+  let mtrbatchs = await MtrBatch.find({})
+    .populate({ path: "mrId", select: "_id createdAt mrReason mrState" })
+    .populate({
+      path: "mbDetail.mId",
+      select: "mName mUnit mImg",
+    })
+    .populate({
+      path: "sId",
+      select: "sName",
+    });
   res.render(`./staff/${pI.url}`, {
     pI,
     messages,
     materials,
     mtrreqs,
+    mtrbatchs,
     imgViewSize,
     imgPreviewSize,
     sess,
@@ -138,24 +158,15 @@ module.exports.update = async (req, res) => {
 };
 
 module.exports.delete = async (req, res) => {
-  try {
-    await Material.findByIdAndDelete(req.params.id, function (err) {
-      req.session.messages = {
-        icon: !err ? "check-circle" : "alert-circle",
-        color: !err ? "success" : "danger",
-        title: !err ? "Thành công!" : "Thất bại",
-        text: !err
-          ? "Xóa nguyên vật liệu thành công!"
-          : "Xóa nguyên vật liệu thất bại!",
-      };
-      res.json(!err);
-    });
-  } catch (error) {
+  await Material.findByIdAndDelete(req.params.id, function (err) {
     req.session.messages = {
-      icon: "alert-circle",
-      color: "danger",
-      title: "Thất bại",
-      text: "Xóa nguyên vật liệu thất bại!",
+      icon: !err ? "check-circle" : "alert-circle",
+      color: !err ? "success" : "danger",
+      title: !err ? "Thành công!" : "Thất bại",
+      text: !err
+        ? "Xóa nguyên vật liệu thành công!"
+        : "Xóa nguyên vật liệu thất bại!",
     };
-  }
+    res.json(!err);
+  });
 };

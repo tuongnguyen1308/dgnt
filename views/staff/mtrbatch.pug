@@ -1,5 +1,127 @@
-if materials.length == 0
-	.h4.fw-normal.text-center Cập nhật số lượng NVL bằng cách thêm 
-		a(href="#" rel="switch-tab" data-to="#nav-mtrbatch-tab") Đợt nhật NVL
+if mtrreqs.length == 0
+	.h4.fw-normal.text-center Cần thêm 
+		a(href="#" rel="switch-tab" data-to="#nav-mtrreq-tab") Yêu cầu nhập NVL
+		|  trước
 else
-	.h4.fw-normal.text-center Chưa có Đợt nhập nguyên vật liệu!
+	table.table.table-responsive.table-bordered(width="100%")
+		thead.text-center
+			tr
+				td(colspan="9")
+					button.btn.w-100.btn-outline-success.d-flex.align-items-center.justify-content-center(type="button" role="add-mtrbatch" data-bs-toggle="modal" data-bs-target="#modal-mtrbatch")
+						span(data-feather="plus")
+						span Thêm đợt nhập
+			tr
+				th.align-middle(rowspan="2") STT
+				th.align-middle(rowspan="2") Ngày nhập - Nhân viên tạo
+				th.align-middle(rowspan="2") Thông tin yêu cầu
+				th.align-middle(rowspan="2") Nhà cung cấp
+				th.align-middle(colspan="4" width="50%") Danh sách NVL
+				th.align-middle(rowspan="2") Tác vụ
+			tr
+				th.align-middle NVL
+				th.align-middle(width="5%") SL
+				th.align-middle(width="10%") Đơn giá
+				th.align-middle(width="10%") Thành tiền
+		tbody
+			each mb, index in mtrbatchs
+				tr
+					td.align-middle.text-center= index+1
+					td.align-middle
+						div= mb.mbBatchAt.toISOString().slice(0,10).split('-').reverse().join('/')
+						span= mb.sId.sName
+					td.align-middle
+						div= mb.mrId.createdAt.toISOString().slice(0,10).split('-').reverse().join('/') + ' ' + mb.mrId.createdAt.toISOString().slice(11,19)
+						span= mb.mrId.mrReason
+					td.align-middle= mb.mbSupplier
+					td.align-middle.p-0(colspan="4")
+						table.table.m-0(width="100%")
+							tbody
+								each m in mb.mbDetail
+									tr.text-end
+										td.border-bottom.border-end.text-start
+											span(rel="tooltip" data-bs-placement="top" title=`<img width='100px;' src='/img/materials/${m.mId.mImg}'>` data-bs-html="true")= m.mId.mName
+										td.border-bottom.border-end(width="10%")= m.mQuantity
+										td.border-bottom.border-end(width="20%")= m.mPrice.toLocaleString("vi", {style: "currency",currency: "VND",})
+										td.border-bottom(width="20%")= (m.mPrice * m.mQuantity).toLocaleString("vi", {style: "currency",currency: "VND",})
+							tfoot
+								tr.border-bottom-none.text-end
+									td.fw-bold.border-end(colspan="3") Tổng tiền
+									td.h5= mb.mbTotal.toLocaleString("vi", {style: "currency",currency: "VND",})
+					td.align-middle.text-center
+						if (sess.rId.rName == 'Kế toán' || sess.rId.rName == 'Quản lý') && mb.mrId.mrState == 0
+							.btn-group(role="group")
+								button.btn.btn-sm.btn-outline-primary(role="edit-mtrbatch" data-id=mb._id data-mrid= mb.mrId._id data-batchat=mb.mbBatchAt data-supplier=mb.mbSupplier data-total=mb.mbTotal data-detail= mb.mbDetail type='button' rel="tooltip" data-bs-placement="top" title="Sửa" data-bs-toggle="modal" data-bs-target="#modal-mtrbatch")
+									span(data-feather="edit-3")
+								button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Xóa")
+									span(data-feather="x")
+								ul.dropdown-menu.p-0.position-absolute.top-100.end-0(style="min-width:unset")
+									li
+										a.dropdown-item.p-2.text-danger(href='#' data-id=mb._id role="confirm-delete-mtrbatch") Xác nhận
+									li
+										span.dropdown-item.p-2(role="button" rel="close-dropdown") Huỷ
+			else
+				tr
+					td.text-center(colspan="9") Chưa có đợt nhập nhập nguyên vật liệu!
+	form#modal-mtrbatch.needs-validation.modal.fade(method="post" action="/mtrbatch/add" tabindex="-1" role="dialog" aria-hidden="true" novalidate)
+		.modal-dialog.modal-dialog-centered.modal-xl
+			.modal-content
+				.modal-header
+					h5#modal-mtrbatch-title.modal-title Thêm đợt nhập nhập NVL
+					button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
+				.modal-body
+					.d-grid.m-auto
+						.row
+							.col-12.col-md-6
+								.form-label-group
+									input#mbBatchAt.form-control(name="mbBatchAt" type="date" required)
+									label.required(for="mbBatchAt") Ngày nhập
+									.invalid-feedback Ngày nhập không được để trống
+							.col-12.col-md-6
+								.form-label-group
+									input#mbSupplier.form-control(name="mbSupplier" type="text" placeholder="Nhà cung cấp" required maxlength="256")
+									label.required(for="mbSupplier") Nhà cung cấp
+									.invalid-feedback Nhà cung cấp không được để trống
+						.form-floating.mb-2
+							select#mrId.form-control(name="mrId" required)
+								option(hidden value="-1") -- Chọn Yêu cầu --
+								each mr in mtrreqs
+									if mr.mrState == 0
+										option(value= mr._id data-detail= mr.mrDetail)= mr.createdAt.toISOString().slice(0,10).split('-').reverse().join('/') + ' ' + mr.createdAt.toISOString().slice(11,19) + ' - ' + mr.mrReason
+							label.required(for="mrId") Yêu cầu nhập NVL
+							.invalid-feedback Yêu cầu nhập NVL là bắt buộc
+						.fs-4 Danh sách NVL
+						table.table.table-bordered.mb-0(width="100%")
+							thead
+								tr.text-center
+									th.align-middle(width="30%") NVL
+									th.align-middle(width="10%") Số lượng
+									th.align-middle(width="20%") Đơn giá
+									th.align-middle Thành tiền
+									th.align-middle Tác vụ
+							tbody#mb-list
+								template#mb-item-template
+									tr.text-center
+										td.p-1.text-start.align-middle
+											input(name="mId" type="hidden" required)
+											.p-1(rel="mName")
+										td.p-1.align-middle
+											input.form-control.p-1(name="mQuantity" type="number" min="1" required)
+											.invalid-feedback Số lượng không hợp lệ
+										td.p-1.align-middle
+											input.form-control.p-1(name="mPrice" type="number" min="1" required)
+											.invalid-feedback Đơn giá là bắt buộc
+										td.p-1.align-middle.text-end
+											.p-1(rel="mTotal")
+										td.p-1.align-middle
+											button.btn.p-1.btn-white.btn-hover_danger.border-0(role="list-material_delete" type='button' rel="tooltip" title="Xoá")
+												span(data-feather="x")
+							tfoot
+								tr
+									td.fw-bold.text-end(colspan="3") Tổng tiền
+									td.text-end
+										span(rel="mbTotal")
+										input.form-control.p-1(name="mbTotal" type="hidden" min="1" required)
+									td
+				.modal-footer.d-grid(style="justify-content: unset")
+					button.btn.btn-primary(type="submit") Lưu
+script(src="js/mtrbatch.js" defer)

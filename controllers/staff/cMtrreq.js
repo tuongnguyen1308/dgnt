@@ -23,6 +23,10 @@ module.exports.add = async (req, res) => {
     let mrDetail = [];
     let mIds = req.body.mId;
     let mQuantitys = req.body.mQuantity;
+    if (typeof mIds === "string") {
+      mIds = [mIds];
+      mQuantitys = [mQuantitys];
+    }
     mIds.map((mId, index) => {
       mrDetail.push({ mId, mQuantity: mQuantitys[index] });
     });
@@ -31,7 +35,7 @@ module.exports.add = async (req, res) => {
       mrDetail,
       scId: sess.sId,
       suId: sess.sId,
-      mrState: true,
+      mrState: 0,
     });
     await newMtrreq.save();
     redirectFunc(true, "Thêm yêu cầu thành công!", rootRoute, req, res);
@@ -45,13 +49,17 @@ module.exports.update = async (req, res) => {
   let mrDetail = [];
   let mIds = req.body.mId;
   let mQuantitys = req.body.mQuantity;
+  if (typeof mIds === "string") {
+    mIds = [mIds];
+    mQuantitys = [mQuantitys];
+  }
   mIds.map((mId, index) => {
     mrDetail.push({ mId, mQuantity: mQuantitys[index] });
   });
   let updMtrreq = {
     mrReason: req.body.mrReason,
     mrDetail,
-    scId: sess.sId,
+    mrState: 0,
     suId: sess.sId,
   };
   try {
@@ -66,7 +74,7 @@ module.exports.update = async (req, res) => {
 module.exports.patch = async (req, res) => {
   const sess = req.session.user;
   let updMtrreq = {
-    mrState: false,
+    mrState: req.body.mrState,
     suId: sess.sId,
   };
   await Mtrreq.findByIdAndUpdate(req.params.id, { $set: updMtrreq }, (err) => {
@@ -74,7 +82,7 @@ module.exports.patch = async (req, res) => {
       icon: !err ? "check-circle" : "alert-circle",
       color: !err ? "success" : "danger",
       title: !err ? "Thành công!" : "Thất bại",
-      text: !err ? "Hủy yêu cầu thành công!" : "Hủy yêu cầu thất bại!",
+      text: !err ? "Cập nhật thành công!" : "Cập nhật thất bại!",
     };
     res.json(!err);
   });

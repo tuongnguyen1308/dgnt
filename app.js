@@ -62,6 +62,7 @@ const sProfileR = require("./routes/staff/rProfile");
 const sAboutR = require("./routes/staff/rAbout");
 const sMaterialR = require("./routes/staff/rMaterial");
 const sMtrreqR = require("./routes/staff/rMtrreq");
+const sMtrbatchR = require("./routes/staff/rMtrbatch");
 
 const productTypeRoute = require("./routes/staff/rProductType");
 const productsRoute = require("./routes/staff/rProducts");
@@ -78,6 +79,7 @@ app.use("/profile", mwAuthS.Auth, sProfileR);
 app.use("/about", mwAuthS.Auth, sAboutR);
 app.use("/material", mwAuthS.Auth, sMaterialR);
 app.use("/mtrreq", mwAuthS.Auth, sMtrreqR);
+app.use("/mtrbatch", mwAuthS.Auth, sMtrbatchR);
 
 app.use("/product-type", mwAuthS.Auth, productTypeRoute);
 app.use("/products", mwAuthS.Auth, productsRoute);
