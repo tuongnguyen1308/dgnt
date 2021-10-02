@@ -1,0 +1,49 @@
+form#roomtype-form.w-100.mx-auto.my-2.needs-validation(method="post" action="/roomtype/add" enctype="multipart/form-data" novalidate)
+    i *Phân loại sản phẩm theo loại phòng
+    .my-3(style="max-width:200px")
+        .form-title.fs-5 Thêm loại phòng
+        .position-relative(style="width:100px")
+            label.upload-before.img-box.align-middle.d-flex.justify-content-center.align-items-center(for="rtImg" style=`height:99px; weight: 100px;`)
+                input#rtImg.btn.btn-success(style="z-index:-1;" type="file" name="rtImg" accept="image/png, image/jpeg" role="button" required)
+                .title.h-100.d-flex.justify-content-center.align-items-center.p-2
+                    span(data-feather="image")
+                img.img-preview.d-none(src="" style=`max-width:100px; height:100px`)
+                .invalid-feedback Ảnh là bắt buộc
+            span.file_remove.d-none(data-feather="x")
+            .text-danger.mb-3.d-none(role="errMessage")
+                span
+        .form-label-group.my-2
+            input#rtName.form-control(name="rtName" type="text" placeholder="Tên loại phòng" required maxlength="50")
+            label.required(for="rtName") Tên loại phòng
+            .invalid-feedback Tên loại phòng là bắt buộc
+        button.btn.btn-primary(type="submit") Lưu
+        button.btn.btn-light.ms-2(role="form-roomtype-reset" type="reset") Hủy
+table.table.table-responsive.table-bordered(width="100%")
+    thead.text-center
+        th.align-middle STT
+        th.align-middle Ảnh
+        th.align-middle Tên loại phòng
+        th.align-middle Tác vụ
+    tbody
+        each rt, index in roomtypes
+            tr
+                td.align-middle.text-center= index+1
+                td.align-middle.text-center
+                    img.rounded.img-fluid(src=`img/roomtypes/${rt.rtImg}` style="max-height:100px; width:100px;")
+                td.align-middle= rt.rtName
+                td.align-middle.text-center
+                    .btn-group(role="group")
+                        button.btn.btn-sm.btn-outline-primary(role="edit-roomtype" data-id=rt._id data-name=rt.rtName data-img= rt.rtImg type='button' rel="tooltip" data-bs-placement="top" title="Sửa")
+                            span(data-feather="edit-3")
+                        button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Hủy")
+                            span(data-feather="x")
+                        ul.dropdown-menu.p-0.position-absolute.top-100.end-0(style="min-width:unset")
+                            li
+                                a.dropdown-item.p-2.text-danger(href='#' data-id=rt._id role="confirm-delete-roomtype") Xác nhận
+                            li
+                                span.dropdown-item.p-2(role="button" rel="close-dropdown") Huỷ
+        else
+            tr
+                td(colspan="4")
+                    i Chưa có loại phòng
+script(src="./js/roomtype.js" defer) 

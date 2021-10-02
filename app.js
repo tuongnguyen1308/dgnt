@@ -63,33 +63,41 @@ const sAboutR = require("./routes/staff/rAbout");
 const sMaterialR = require("./routes/staff/rMaterial");
 const sMtrreqR = require("./routes/staff/rMtrreq");
 const sMtrbatchR = require("./routes/staff/rMtrbatch");
+const sRoomtypeR = require("./routes/staff/rRoomtype");
+const sCategoryR = require("./routes/staff/rCategory");
 
-const productTypeRoute = require("./routes/staff/rProductType");
-const productsRoute = require("./routes/staff/rProducts");
+const productsRoute = require("./routes/staff/rProduct");
 
 const cHomeR = require("./routes/customer/rHome");
 const cCustomerR = require("./routes/customer/rCustomer");
 const cPersonalR = require("./routes/customer/rPersonal");
 const cAboutR = require("./routes/customer/rAbout");
-
-app.use("/login-staff", sLoginR);
+//#region staff
 app.use("/dashboard", mwAuthS.Auth, sDashboardR);
+// quan ly tai khoan
+app.use("/login-staff", sLoginR);
 app.use("/staff", mwAuthS.Auth, sListR);
 app.use("/profile", mwAuthS.Auth, sProfileR);
+// quan ly danh muc
 app.use("/about", mwAuthS.Auth, sAboutR);
+// quan ly nvl
 app.use("/material", mwAuthS.Auth, sMaterialR);
 app.use("/mtrreq", mwAuthS.Auth, sMtrreqR);
 app.use("/mtrbatch", mwAuthS.Auth, sMtrbatchR);
+// quan ly sp
+app.use("/roomtype", mwAuthS.Auth, sRoomtypeR);
+app.use("/category", mwAuthS.Auth, sCategoryR);
 
-app.use("/product-type", mwAuthS.Auth, productTypeRoute);
-app.use("/products", mwAuthS.Auth, productsRoute);
+app.use("/product-manager", mwAuthS.Auth, productsRoute);
+//#endregion
 
+//#region customber
 app.use("/", cHomeR);
 app.use("/customer", cCustomerR);
 app.use("/personal", mwAuthC.Auth, cPersonalR);
 
 app.use("/shop-about", cAboutR);
-
+//#endregion
 //#endregion
 
 app.listen(process.env.PORT, () => console.log("Server started!"));

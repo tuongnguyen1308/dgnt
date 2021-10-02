@@ -48,7 +48,7 @@ else
 									td.fw-bold.border-end(colspan="3") Tổng tiền
 									td.h5= mb.mbTotal.toLocaleString("vi", {style: "currency",currency: "VND",})
 					td.align-middle.text-center
-						if (sess.rId.rName == 'Kế toán' || sess.rId.rName == 'Quản lý') && mb.mrId.mrState == 0
+						if 'Quản lý Kế toán'.includes(sess.rId.rName) && mb.mrId.mrState == 0
 							.btn-group(role="group")
 								button.btn.btn-sm.btn-outline-primary(role="edit-mtrbatch" data-id=mb._id data-mrid= mb.mrId._id data-batchat=mb.mbBatchAt data-supplier=mb.mbSupplier data-total=mb.mbTotal data-detail= mb.mbDetail type='button' rel="tooltip" data-bs-placement="top" title="Sửa" data-bs-toggle="modal" data-bs-target="#modal-mtrbatch")
 									span(data-feather="edit-3")

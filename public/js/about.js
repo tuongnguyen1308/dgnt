@@ -39,7 +39,6 @@ $(document).ready(() => {
     document.getElementById("pmDesc").value = $btn?.data("pmdesc") || "";
     document.getElementById("pmState").checked = $btn?.data("pmstate") === "";
     $("#pm-title").text(`${listTitle[$btn ? 1 : 0]} hình thức`);
-    $("#pm-btn_submit").text(listTitle[$btn ? 1 : 0]);
   };
 
   //#endregion

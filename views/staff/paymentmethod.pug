@@ -1,0 +1,52 @@
+.row
+    .col-12.col-lg-4.mb-3.mb-lg-0
+        form#pm-form.needs-validation(method="post" action="/about/pm-add" novalidate)
+            .d-grid.m-auto
+                #pm-title.fs-4 Thêm hình thức
+                .form-label-group
+                    input#pmName.form-control(name="pmName" type="text" placeholder="Tên hình thức" autocomplete="off" minlength="0" maxlength="50" required)
+                    label(for="pmName") Tên hình thức
+                    .invalid-feedback Tên hình thức không được để trống
+                .form-label-group
+                    input#pmDesc.form-control(name="pmDesc" type="text" placeholder="Mô tả" autocomplete="off" maxlength="256")
+                    label(for="pmDesc") Mô tả
+                fieldset.form-control
+                    legend.small.text-secondary Trạng thái
+                    .form-check.form-switch.fs-6
+                        input#pmState.form-check-input(name="pmState" type='checkbox' checked='true' role="button")
+                        label.form-check-label(for='pmState') Hiện
+            .mt-2
+                button#pm-btn_submit.btn.btn-primary.me-2(type="submit") Lưu
+                button#pm-btn_cancel.btn.btn-secondary.d-none(type="button") Hủy
+    .col-12.col-lg-8
+        .fs-4 Danh sách hình thức
+        table.table.table-responsive.table-bordered(width="100%")
+            thead.text-center
+                tr
+                    th(width="1%").align-middle STT
+                    th(width="10%").align-middle Tên Hình thức
+                    th(width="50%").align-middle Mô tả
+                    th(width="7%").align-middle Trạng thái
+                    th(width="5%").align-middle Tác vụ
+            tbody
+                each pm, index in paymentMethods
+                    tr.align-items-center
+                        td.align-middle.text-center= index+1
+                        td.align-middle= pm.pmName
+                        td.align-middle= pm.pmDesc
+                        td.align-middle.text-center
+                            if pm.pmState
+                                .badge.bg-success Hiện
+                            else
+                                .badge.bg-secondary Ẩn
+                        td.text-center
+                            .btn-group(role="group")
+                                button.btn.btn-sm.btn-outline-primary(role="edit-pm" data-id=pm._id data-pmname=pm.pmName data-pmdesc=pm.pmDesc data-pmstate=pm.pmState type='button' rel="tooltip" data-bs-placement="top" title="Sửa")
+                                    span(data-feather="edit-3")
+                                button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Xoá")
+                                    span(data-feather="x")
+                                ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset")
+                                    li
+                                        a.dropdown-item.p-2.text-danger(href='#' data-id=pm._id role="confirm-delete-pm") Xác nhận
+                                    li
+                                        span.dropdown-item.p-2(role="button" rel="close-dropdown") Huỷ

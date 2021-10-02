@@ -45,13 +45,14 @@ block content
 										.btn-group(role="group")
 											button.btn.btn-sm.btn-outline-primary(type="button" role="edit-material" data-id=m._id data-mname=m.mName data-munit=m.mUnit data-mdesc=m.mDesc data-mimg=m.mImg data-bs-toggle="modal" data-bs-target="#modal-material" rel="tooltip" data-bs-placement="top" title="Sửa")
 												span(data-feather="edit-3")
-											button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Xoá")
-												span(data-feather="x")
-											ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset")
-												li
-													a.dropdown-item.p-2.text-danger(href='#' data-id=m._id role="confirm-delete-material") Xác nhận
-												li
-													span.dropdown-item.p-2(role="button" rel="close-dropdown") Huỷ
+											if !mtrsCantBeDel.includes(m._id)
+												button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Xoá")
+													span(data-feather="x")
+												ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset")
+													li
+														a.dropdown-item.p-2.text-danger(href='#' data-id=m._id role="confirm-delete-material") Xác nhận
+													li
+														span.dropdown-item.p-2(role="button" rel="close-dropdown") Huỷ
 							else
 								tr
 									td(colspan="7") Chưa có nguyên vật liệu!
@@ -79,7 +80,7 @@ block content
 										label#mimg-preview.img-box.w-100.align-middle(for="mImg" style=`height:${imgPreviewSize-1}px`).d-flex.justify-content-center.align-items-center
 											input#mImg.btn.btn-success(type="file" name="mImg" accept="image/png, image/jpeg")
 											.title.h-100.d-flex.justify-content-center.align-items-center
-												span(data-feather="upload")
+												span(data-feather="image")
 												span.ms-2 Chọn ảnh
 											img#img-preview.d-none(src="" height=`${imgPreviewSize}px`)
 										span.file_remove.d-none(data-feather="x")

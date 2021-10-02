@@ -1,66 +1,62 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-//#region danh sách ảnh
-let imgSchema = Schema({
-  src: {
-    type: String,
-    required: true,
-  },
-  isMain: {
-    type: Boolean,
-    default: false,
-  },
-});
-//#endregion
-
-//#region danh sách kích thước sản phẩm
-let sizeSchema = Schema({
-  thickness: {
-    type: Number,
-  },
-  height: {
-    type: Number,
-  },
-  weight: {
-    type: Number,
-  },
-  price: {
-    type: Number,
-  },
-  discount: {
-    type: Number,
-  },
-});
-//#endregion
 
 let Product = Schema(
   {
-    pCode: {
-      type: String,
-      required: true,
-      unique: true,
-    },
     pName: {
       type: String,
       required: true,
       unique: true,
     },
-    unit: {
+    pUnit: {
       type: String,
+      required: true,
     },
-    stock: {
+    pSize: {
+      type: String,
+      required: true,
+    },
+    pStock: {
       type: Number,
       required: true,
     },
-    description: {
+    pPrice: {
+      type: Number,
+      required: true,
+    },
+    pDiscount: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 100,
+    },
+    pDesc: {
       type: String,
     },
-    state: {
+    pState: {
       type: Boolean,
       default: true,
     },
-    pImgs: [imgSchema],
-    size: [sizeSchema],
+    pImgs: [
+      {
+        piImg: {
+          type: String,
+          required: true,
+        },
+        piIsMain: {
+          type: Boolean,
+          default: false,
+        },
+      },
+    ],
+    pcId: {
+      type: Schema.Types.ObjectId,
+      rel: "col_category",
+    },
+    sId: {
+      type: Schema.Types.ObjectId,
+      ref: "col_staff",
+    },
   },
   { timestamps: true }
 );

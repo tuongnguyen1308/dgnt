@@ -1,0 +1,58 @@
+- var size = 150
+form#category-form.w-100.mx-auto.my-2.needs-validation(method="post" action="/category/add" enctype="multipart/form-data" novalidate)
+    i *Phân loại sản phẩm theo danh mục sản phẩm
+    .form-title.fs-5 Thêm danh mục
+    .d-flex
+        .form-group.me-3
+            .form-label-group
+                input#pcName.form-control(name="pcName" type="text" placeholder="Tên danh mục" required maxlength="50")
+                label.required(for="pcName") Tên danh mục
+                .invalid-feedback Tên danh mục là bắt buộc
+            .form-floating.mb-2
+                select#rtId.form-control(name="rtId" required)
+                    option(hidden value="-1") -- Chọn loại phòng --
+                    each rt in roomtypes
+                        option(value= rt._id)= rt.rtName
+                label.required(for="rtId") Loại phòng
+                .invalid-feedback loại phòng là bắt buộc
+        .position-relative(style=`width:${size}px`)
+            label.upload-before.img-box.align-middle.d-flex.justify-content-center.align-items-center(for="pcImg" style=`height:${size-1}px; weight: ${size}px;`)
+                input#pcImg.btn.btn-success(style="z-index:-1;" type="file" name="pcImg" accept="image/png, image/jpeg" role="button" required)
+                .title.h-100.d-flex.justify-content-center.align-items-center.p-2
+                    span(data-feather="image")
+                img.img-preview.d-none(src="" style=`max-width:${size}px; height:${size}px`)
+                .invalid-feedback Ảnh là bắt buộc
+            span.file_remove.d-none(data-feather="x")
+            .text-danger.mb-3.d-none(role="errMessage")
+                span
+    button.btn.btn-primary(type="submit") Lưu
+    button.btn.btn-light.ms-2(role="form-category-reset" type="reset") Hủy
+table.table.table-responsive.table-bordered(width="100%")
+    thead.text-center
+        th.align-middle STT
+        th.align-middle Ảnh
+        th.align-middle Tên danh mục
+        th.align-middle Tác vụ
+    tbody
+        each pc, index in categories
+            tr
+                td.align-middle.text-center= index+1
+                td.align-middle.text-center
+                    img.rounded.img-fluid(src=`img/categories/${pc.pcImg}` style=`max-height:${size}px; width:${size}px;`)
+                td.align-middle= pc.pcName
+                td.align-middle.text-center
+                    .btn-group(role="group")
+                        button.btn.btn-sm.btn-outline-primary(role="edit-category" data-id=pc._id data-name=pc.pcName data-img= pc.pcImg data-rtid= pc.rtId._id type='button' rel="tooltip" data-bs-placement="top" title="Sửa")
+                            span(data-feather="edit-3")
+                        button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Hủy")
+                            span(data-feather="x")
+                        ul.dropdown-menu.p-0.position-absolute.top-100.end-0(style="min-width:unset")
+                            li
+                                a.dropdown-item.p-2.text-danger(href='#' data-id=pc._id role="confirm-delete-category") Xác nhận
+                            li
+                                span.dropdown-item.p-2(role="button" rel="close-dropdown") Huỷ
+        else
+            tr
+                td(colspan="4")
+                    i Chưa có danh mục
+script(src="./js/category.js" defer) 

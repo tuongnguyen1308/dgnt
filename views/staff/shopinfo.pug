@@ -1,0 +1,31 @@
+form.needs-validation(method="post" action="/about/si-update" enctype="multipart/form-data" novalidate)
+    .d-flex.flex-lg-row.flex-column.w-100.m-auto(style="max-width:900px")
+        .flex-fill.w-100.position-relative
+            label.upload-before.img-box.w-100.align-middle(for="siLogo" style=`height:${imgViewHeight-1}px`).d-flex.justify-content-center.align-items-center
+                input#siLogo.btn.btn-success(type="file" name="siLogo" accept="image/png, image/jpeg")
+                .title.h-100.d-flex.justify-content-center.align-items-center(class=`${shopInfo.siLogo ? 'd-none' : ''}`)
+                    span(data-feather="image")
+                    span.ms-2 Chọn ảnh
+                img#img-preview(src=`${shopInfo.siLogo ? 'img/logo/'+shopInfo.siLogo : ''}` style="max-width:398px;" height=`${imgViewHeight}px` class=`${shopInfo.siLogo ? '' : 'd-none'}`)
+            span.file_remove(data-feather="x" class=`${shopInfo.siLogo ? '' : 'd-none'}`)
+            .text-danger.mb-3(role="errMessage" class=`${shopInfo.siLogo ? 'd-none' : ''}`)
+                span
+        .flex-fill.w-100
+            .form.pe-0.ps-lg-3.pt-3.pt-lg-0
+                .form-label-group
+                    input#siName.form-control(name="siName" type="text" placeholder="Tên trang" value= shopInfo.siName maxlength="50")
+                    label(for="siName") Tên trang
+                .form-label-group
+                    input#siAddress.form-control(name="siAddress" type="text" placeholder="Địa chỉ" value= shopInfo.siAddress maxlength="256")
+                    label(for="siAddress") Địa chỉ
+                .form-label-group
+                    input#siHotline.form-control(name="siHotline" type="text" placeholder="Đường dây nóng" value= shopInfo.siHotline maxlength="12")
+                    label(for="siHotline") Đường dây nóng
+                .form-label-group
+                    input#siFacebook.form-control(name="siFacebook" type="text" placeholder="Link Facebook" value= shopInfo.siFacebook maxlength="50")
+                    label(for="siFacebook") Link Facebook
+                .form-label-group
+                    input#siZalo.form-control(name="siZalo" type="text" placeholder="Link Zalo" value= shopInfo.siZalo maxlength="50")
+                    label(for="siZalo") Link Zalo
+    .d-grid.m-auto(style="max-width:900px")
+        button.btn.btn-block.btn-primary(type="submit") Cập nhật

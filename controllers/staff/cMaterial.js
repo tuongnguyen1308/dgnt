@@ -56,12 +56,20 @@ module.exports.index = async (req, res) => {
       path: "sId",
       select: "sName",
     });
+  let mtrsCantBeDel = new Set();
+  mtrreqs.map((mtrreq) => {
+    mtrreq.mrDetail.map((mtr) => {
+      mtrsCantBeDel.add(mtr.mId._id);
+    });
+  });
+  mtrsCantBeDel = [...mtrsCantBeDel].join(" ");
   res.render(`./staff/${pI.url}`, {
     pI,
     messages,
     materials,
     mtrreqs,
     mtrbatchs,
+    mtrsCantBeDel,
     imgViewSize,
     imgPreviewSize,
     sess,
@@ -158,15 +166,28 @@ module.exports.update = async (req, res) => {
 };
 
 module.exports.delete = async (req, res) => {
-  await Material.findByIdAndDelete(req.params.id, function (err) {
+  let already_req = await Mtrreq.find({
+    "mrDetail.mId": req.params.id,
+  }).countDocuments();
+  if (already_req == 0) {
+    await Material.findByIdAndDelete(req.params.id, function (err) {
+      req.session.messages = {
+        icon: !err ? "check-circle" : "alert-circle",
+        color: !err ? "success" : "danger",
+        title: !err ? "Thành công!" : "Thất bại",
+        text: !err
+          ? "Xóa nguyên vật liệu thành công!"
+          : "Xóa nguyên vật liệu thất bại!",
+      };
+      res.json(!err);
+    });
+  } else {
     req.session.messages = {
-      icon: !err ? "check-circle" : "alert-circle",
-      color: !err ? "success" : "danger",
-      title: !err ? "Thành công!" : "Thất bại",
-      text: !err
-        ? "Xóa nguyên vật liệu thành công!"
-        : "Xóa nguyên vật liệu thất bại!",
+      icon: "alert-circle",
+      color: "danger",
+      title: "Thất bại",
+      text: "Không thể xóa NVL đã có yêu cầu nhập!",
     };
-    res.json(!err);
-  });
+    res.json(false);
+  }
 };

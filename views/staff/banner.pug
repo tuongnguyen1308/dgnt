@@ -1,0 +1,30 @@
+.m-auto(style="max-width:900px")
+    ul.list-group.sortable-list
+        each banner in banners
+            li.list-group-item(href='#' aria-current='true' id=`${banner._id}`)
+                .d-flex.w-100.justify-content-between.align-items-center
+                    img(src=`img/banner/${banner.bImg}` style=`max-width: ${imgViewWeight}px; max-height: ${imgViewHeight}px;`)
+                    .tool
+                        .btn-group(role="group")
+                            .panel-handle.btn.btn-sm.btn-outline-primary(rel="tooltip" data-bs-placement="top" title="Sắp xếp")
+                                span(data-feather="move")
+                            button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Xoá")
+                                span(data-feather="x")
+                            ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset")
+                                li
+                                    a.dropdown-item.p-2.text-danger(href='#' data-id=`${banner._id}` data-bimg=`${banner.bImg}` role="confirm-delete-banner") Xác nhận
+                                li
+                                    span.dropdown-item.p-2(role="button" rel="close-dropdown") Huỷ
+    form.w-100.mx-auto.my-2.needs-validation(method="post" action="/about/banner-add" enctype="multipart/form-data" style="max-width:900px")
+        .fs-4 Thêm ảnh
+        .position-relative.mb-3
+            label.upload-before.img-box.align-middle(for="bImg" style=`height:${imgViewHeight-1}px; weight: ${imgViewWeight}px;`).d-flex.justify-content-center.align-items-center
+                input#bImg.btn.btn-success(style="z-index:-1;" type="file" name="bImg" accept="image/png, image/jpeg" role="button" required)
+                .title.h-100.d-flex.justify-content-center.align-items-center.p-2
+                    span(data-feather="image")
+                    span.ms-2(role="button") Chọn ảnh
+                img#img-preview.d-none(src="" style=`max-width:${imgViewWeight}px; height:${imgViewHeight}px`)
+            span.file_remove.d-none(data-feather="x")
+            .text-danger.mb-3.d-none(role="errMessage")
+                span
+        button.btn.btn-primary(type="submit") Lưu

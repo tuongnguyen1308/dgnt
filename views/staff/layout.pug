@@ -55,18 +55,13 @@ html(lang="en")
 					.position-sticky.pt-3
 						ul.nav.flex-column
 							li.nav-item
-								- let cp = curPage == "dashboard" ? "active" : ""
-								a.nav-link(class=cp href="/dashboard")
+								a.nav-link(class=(pI.url == "dashboard") ? "active" : "" href="/dashboard")
 									span(data-feather="home")
 									|  Trang chủ
 							li.nav-item
 								a.nav-link(href="#")
 									span(data-feather="file")
 									|  Orders
-							li.nav-item
-								a.nav-link(class=(curPage == "products") ? "active" : "" href="/products")
-									span(data-feather="box")
-									|  Sản phẩm
 							li.nav-item
 								a.nav-link(href="#")
 									span(data-feather="users")
@@ -76,24 +71,24 @@ html(lang="en")
 									span(data-feather="bar-chart-2")
 									|  Reports
 							li.nav-item
-								a.nav-link(class=(curPage == "product-type") ? "active" : "" href="/product-type")
-									span(data-feather="list")
-									|  Loại sản phẩm
+								a.nav-link(class=(pI.url == "product") ? "active" : "" href="/product-manager")
+									span(data-feather="box")
+									|  Quản lý sản phẩm
 							li.nav-item
-								a.nav-link(class=(curPage == "material") ? "active" : "" href="/material")
+								a.nav-link(class=(pI.url == "material") ? "active" : "" href="/material")
 									span(data-feather="layers")
-									|  Nguyên vật liệu
+									|  Quản lý NVL
 							if sess.rId.rName == "Quản lý"
 								li.nav-item
-									a.nav-link(class=(curPage == "about") ? "active" : "" href="/about")
+									a.nav-link(class=(pI.url == "about") ? "active" : "" href="/about")
 										span(data-feather="info")
 										|  Quản lý danh mục
 							li.nav-item
-								a.nav-link(class=(curPage == "staff") ? "active" : "" href="/staff")
+								a.nav-link(class=(pI.url == "staff") ? "active" : "" href="/staff")
 									span(data-feather="users")
-									|  Nhân viên
+									|  Quản lý nhân viên
 							li.nav-item
-								a.nav-link(class=(curPage == "profile") ? "active" : "" href="/profile")
+								a.nav-link(class=(pI.url == "profile") ? "active" : "" href="/profile")
 									span(data-feather="user")
 									|  Cá nhân
 						h6.sidebar-heading.d-flex.justify-content-between.align-items-center.px-3.mt-4.mb-1.text-muted

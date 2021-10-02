@@ -1,0 +1,27 @@
+extends ./layout.pug
+block content
+	main.col-md-9.ms-sm-auto.col-lg-10.px-md-4
+		.d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pt-3.pb-2.mb-3.border-bottom.flex-column.flex-lg-row
+			h1.h3.mb-0= pI.title
+			.btn-toolbar.mt-2.mb-mt-0
+		nav
+			#nav-tab.nav.nav-tabs(role='tablist')
+				button#nav-classify-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-classify' type='button' role='tab') Phân loại sản phẩm
+				button#nav-product-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-product' type='button' role='tab') Thông tin sản phẩm
+				button#nav-prdreq-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-prdreq' type='button' role='tab') Yêu cầu bổ sung
+			#nav-tabContent.tab-content
+				#nav-classify.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-roomtype-tab')
+					.row
+						.col-12.col-md-6
+							include ./roomtype.pug
+						.col-12.col-md-6
+							include ./category.pug
+					//- End Modal roomtype add/update
+					//- #nav-product.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-product-tab')
+					//- 	include ./product.pug
+					//- #nav-prdreq.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-prdreq-tab')
+					//- 	include ./prdreq.pug
+					//- End UserList
+
+
+
