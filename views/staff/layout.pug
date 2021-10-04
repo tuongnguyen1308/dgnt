@@ -9,12 +9,14 @@ html(lang="en")
 		link(rel="icon" href="img/icon/main-icon-sm.png")
 		link(rel="stylesheet" href="plugin/bootstrap/css/bootstrap.min.css")
 		link(rel="stylesheet" href="plugin/jquery-ui/jquery-ui.min.css")
+		link(rel="stylesheet" href="plugin/summernote/summernote.min.css")
 		link(rel="stylesheet" href="css/common.css")
 		script(src="plugin/jquery/js/jquery.min.js", defer)
 		script(src="plugin/jquery-ui/jquery-ui.min.js" defer)
 		script(src="plugin/bootstrap/js/bootstrap.bundle.min.js", defer)
 		script(src="plugin/bootstrap/js/popper.min.js", defer)
 		script(src="plugin/feather/js/feather.min.js", defer)
+		script(src="plugin/summernote/summernote.min.js" defer)
 		script(src="plugin/Chart/js/Chart.min.js", defer)
 		script(src="js/common.js", defer)
 		script(src=`js/${pI.url}.js`, defer)
@@ -71,7 +73,7 @@ html(lang="en")
 									span(data-feather="bar-chart-2")
 									|  Reports
 							li.nav-item
-								a.nav-link(class=(pI.url == "product") ? "active" : "" href="/product-manager")
+								a.nav-link(class=(pI.url == "product") ? "active" : "" href="/product-management")
 									span(data-feather="box")
 									|  Quản lý sản phẩm
 							li.nav-item

@@ -1,24 +1,49 @@
 $(document).ready(() => {
-  const curPage = "product-type";
-  const formModal = document.getElementById("modal-product-type");
-  const modalTitle = document.getElementById("modal-product-type-title");
-  $('[rel="tooltip"]').tooltip({ trigger: "hover" });
-  //#region func
-  let removeImg = () => {
-    $("#img-preview").attr("src", "#").addClass("d-none");
-    $("#tImg-preview .title").removeClass("d-none");
-    $(".file_remove").addClass("d-none");
-  };
+  const curPage = "product";
+  const formModal = document.getElementById("modal-product");
+  const modalTitle = document.getElementById("modal-product-title");
 
-  let changeImgWhenModalOpen = (con, src) => {
-    if (con) {
-      $("#img-preview").attr("src", src).removeClass("d-none");
-      $("#tImg-preview .title").addClass("d-none");
-      $(".file_remove").removeClass("d-none");
-    } else removeImg();
+  let imgFiles = [];
+  //#region func
+  // generate mtr item
+  let generatemcItem = (mId, mQuantity) => {
+    let mcItemTemplate = document.querySelector("#mc-item-template");
+    let mcItem = mcItemTemplate.content.cloneNode(true);
+    if (mId) {
+      let mIdSelector = mcItem.querySelector("[name=mId]");
+      mIdSelector.value = mId;
+    }
+    if (mQuantity) {
+      let mQuantitySelector = mcItem.querySelector("[name=mQuantity]");
+      mQuantitySelector.value = mQuantity;
+    }
+    $("#mc-list").append(mcItem);
+    feather.replace({ "aria-hidden": "true" });
+    let cases = [{ con: true, mess: `Tên NVL là bắt buộc` }];
+    checkValidate(cases, $("#mc-list tr:last-child select").get(0), false);
   };
+  // generate prd img item
+  let generateImg = (src, fname) => {
+    let imgTemp = document.querySelector("#img-preview-template");
+    let imgItem = imgTemp.content.cloneNode(true);
+    let imgEle = imgItem.querySelector("img");
+    imgEle.src = src;
+    imgEle.dataset.fname = fname;
+    $("#pImgs").append(imgItem);
+  };
+  // let changeImgWhenModalOpen = (con, src) => {
+  //   if (con) {
+  //     $("#img-preview").attr("src", src).removeClass("d-none");
+  //     $("#pImg-preview .title").addClass("d-none");
+  //     $(".file_remove").removeClass("d-none");
+  //   }
+  // };
   let prepareModal = ($btn = null) => {
-    $("#modal-product-type input#id").remove();
+    $("#modal-product input#id").remove();
+    $("#pImgs").html("");
+    $("#mc-list>tr").html("");
+    $("#pImg").attr("required", true);
+    $("#main-img").attr("src", "").addClass("d-none");
     if ($btn) {
       let inputID = document.createElement("input");
       inputID.id = "id";
@@ -26,49 +51,86 @@ $(document).ready(() => {
       inputID.value = $btn.data("id");
       inputID.type = "hidden";
       formModal.appendChild(inputID);
+      let mConsume = $btn.data("mcon");
+      mConsume.map((m) => {
+        generatemcItem(m.mId, m.mQuantity);
+        $("[name=mId]").trigger("change");
+      });
+      let imgs = $btn.data("imgs");
+      imgs.map((img) => {
+        let src = `img/products/${img.piImg}`;
+        generateImg(src, img.piImg);
+        if (img.piIsMain) {
+          $("#main-img").attr("src", src).removeClass("d-none");
+          $("#mainimg-inp").val(img.piImg);
+        }
+      });
+      $("#pImg").attr("required", false);
     }
-    formModal.action = $btn ? "/product-type/update" : "/product-type/add";
-    modalTitle.innerText = $btn ? "Sửa loại sản phẩm" : "Thêm loại sản phẩm";
-    document.getElementById("tName").value = $btn?.data("tName") || "";
-    document.getElementById("tState").checked = $btn?.data("tState") === "";
-    $("#tState").trigger("change");
-    changeImgWhenModalOpen(
-      $btn?.data("tImg") && $btn.data("tImg") != "",
-      `img/${curPage}/${$btn?.data("tImg")}`
-    );
-  };
-  let changetState = () => {
-    let state = $("#tState").is(":checked") ? "Hiện" : "Ẩn";
-    $("#tState").next().text(state);
-  };
-  let findProductType = (keyword) => {
-    $(`.card:contains(${keyword})`).removeClass("d-none");
-    $(`.card:not(:contains(${keyword}))`).addClass("d-none");
+    formModal.action = $btn ? "/product/update" : "/product/add";
+    modalTitle.innerText = $btn ? "Sửa" : "Thêm";
+    document.getElementById("pcId").value = $btn?.data("pcid") || -1;
+    document.getElementById("pName").value = $btn?.data("name") || "";
+    document.getElementById("pUnit").value = $btn?.data("unit") || "";
+    document.getElementById("pSize").value = $btn?.data("size") || "";
+    document.getElementById("pPrice").value = $btn?.data("price") || "";
+    document.getElementById("pDiscount").value = $btn?.data("discount") || "";
+    calculateMtotal();
+    document.getElementById("pDesc").innerText = $btn?.data("desc") || "";
+    $(".note-editable").html($btn?.data("desc") || "");
+    document.getElementById("pState").checked = $btn?.data("state") === "";
+    $("#pState").trigger("change");
+    // changeImgWhenModalOpen(
+    //   $btn?.data("pImg") && $btn.data("pImg") != "",
+    //   `img/${curPage}/${$btn?.data("pImg")}`
+    // );
   };
   //#endregion
 
   //#region events
-  $(".btn[role=add-product-type]").on("click", function () {
+  $(".btn[role=add-product]").on("click", function () {
     prepareModal();
   });
 
-  $(".btn[role=edit-product-type]").on("click", function () {
+  // add mtr
+  $("[role=list-mc_add]").on("click", function () {
+    generatemcItem();
+  });
+  // change mtr
+  $(document).on("change", "[role=list-mc_select]", function (e) {
+    let list_mtr_taken = [];
+    $("#mc-list [role=list-mc_select]").each(function () {
+      let mtr_selected_id = $(this).find("option:selected").val();
+      if (mtr_selected_id != -1) {
+        if (list_mtr_taken[mtr_selected_id] != 1) {
+          list_mtr_taken[mtr_selected_id] = 1;
+          let cases = [{ con: false, mess: `` }];
+          checkValidate(cases, this);
+        } else {
+          let cases = [{ con: true, mess: `NVL này đã được thêm trước đó` }];
+          checkValidate(cases, this);
+        }
+      }
+    });
+  });
+  // del mtr
+  $(document).on("click", "[role=list-mc_delete]", function () {
+    $(this).parent().parent().remove();
+  });
+
+  $(".btn[role=edit-product]").on("click", function () {
     prepareModal($(this));
   });
 
-  $(".btn[role=delete-product-type]").on("click", function () {
-    $(this).next().toggleClass("show");
-  });
-
-  $("[role=confirm-delete-product-type]").on("click", function (e) {
+  $("[role=confirm-delete-product]").on("click", function (e) {
     $target = $(e.target);
     const id = $target.data("id");
     $.ajax({
       type: "DELETE",
-      url: "/product-type/" + id,
+      url: "/product/" + id,
       success: function (res) {
         console.log(res);
-        window.location.replace("/product-type");
+        window.location.replace("/product");
       },
       error: function (err) {
         console.error(err);
@@ -76,39 +138,99 @@ $(document).ready(() => {
     });
   });
 
-  $("[rel=cancel-delete-product-type]").on("click", function () {
-    $(this).parent().parent().removeClass("show");
+  $("#pState").on("change", function () {
+    $(this)
+      .next()
+      .text($(this).is(":checked") ? "Hiện" : "Ẩn");
   });
-  $(document).click((e) => {
-    if (!["BUTTON", "line", "svg"].includes(e.target.tagName)) {
-      $(".dropdown-menu.show").removeClass("show");
+
+  $("#pImg").on("change", function (e) {
+    $("#pImgs").html("");
+    imgFiles = e.target.files;
+    Array.from(imgFiles).forEach((f) => {
+      let cases = [
+        { con: f["type"].split("/")[0] !== "image", mess: `Ảnh không hợp lệ` },
+      ];
+      let pImg = document.getElementById("pImg");
+      checkValidate(cases, pImg);
+      if (f["type"].split("/")[0] === "image") {
+        var src = URL.createObjectURL(f);
+        generateImg(src, f.name);
+        $("#main-img").attr("src", src).removeClass("d-none");
+        $("#mainimg-inp").val(f.name);
+        feather.replace({ "aria-hidden": "true" });
+        $('[rel="tooltip"]').tooltip({ trigger: "hover" });
+      }
+    });
+  });
+
+  $(document).on("click", ".sub-img", function () {
+    $("#main-img").attr("src", $(this).attr("src")).removeClass("d-none");
+    $("#mainimg-inp").val($(this).data("fname"));
+  });
+
+  // $(document).on("click", ".file-remove", function () {
+  //   if ($(this).prev().attr("src") == $("#main-img").attr("src")) {
+  //     $prevImg = $(this).parent().prev().find("img");
+  //     if ($prevImg.length > 0) {
+  //       $("#main-img").attr("src", $prevImg.attr("src"));
+  //     } else {
+  //       $("#main-img").addClass("d-none").attr("src", "");
+  //     }
+  //   }
+  //   $(this).parent().remove();
+  // });
+
+  //#region validate
+  $("#pcId").on("change", function () {
+    let cases = [
+      {
+        con: $("#pcId").find("option:selected").val() == -1,
+        mess: `Danh mục là bắt buộc`,
+      },
+    ];
+    let sltpcId = document.getElementById("pcId");
+    checkValidate(cases, sltpcId);
+  });
+
+  $("#modal-product").on("submit", function () {
+    let cases = [
+      {
+        con: $("#pcId").find("option:selected").val() == -1,
+        mess: `Danh mục là bắt buộc`,
+      },
+    ];
+    let sltpcId = document.getElementById("pcId");
+    checkValidate(cases, sltpcId);
+  });
+
+  const calculateMtotal = () => {
+    const price = $("#pPrice").val();
+    const discount = $("#pDiscount").val() || 0;
+    if (!isNaN(price)) {
+      let total = (price - (price * discount) / 100).toLocaleString("vi", {
+        style: "currency",
+        currency: "VND",
+      });
+      $("#pFinalPrire").text(total);
+    }
+  };
+
+  $("#pPrice").on("keyup", function () {
+    calculateMtotal();
+  });
+
+  $("#pDiscount").on("keydown", function (e) {
+    let dcv = $(this).val();
+    if (dcv >= 10 && /^[0-9]$/i.test(e.key)) {
+      e.preventDefault();
+      e.stopPropagation();
     }
   });
 
-  $("#tState").on("change", function () {
-    changetState();
+  $("#pDiscount").on("keyup", function () {
+    calculateMtotal();
   });
-
-  $("#tImg").on("change", function (e) {
-    var ext = $(this).val().split(".").pop().toLowerCase();
-    if ($.inArray(ext, ["gif", "png", "jpg", "jpeg"]) == -1) {
-      $("[role=errMessage]")
-        .removeClass("d-none")
-        .find("span")
-        .text("Không đúng định dạng!");
-    } else {
-      $("[role=errMessage]").addClass("d-none").find("span").text("");
-      var uploadedFile = URL.createObjectURL(e.target.files[0]);
-      changeImgWhenModalOpen(true, uploadedFile);
-    }
-  });
-
-  $(".file_remove").on("click", function (e) {
-    removeImg();
-  });
-
-  $("#search").on("keyup", function () {
-    findProductType($(this).val());
-  });
+  //#endregion
   //#endregion
 });

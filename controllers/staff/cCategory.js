@@ -1,6 +1,6 @@
 const Category = require("../../models/mCategory");
 const pI = { title: "Quản lý sản phẩm", url: "product" };
-const rootRoute = `/${pI.url}-manager`;
+const rootRoute = `/${pI.url}-management`;
 
 let redirectFunc = (state, text, dir, req, res) => {
   req.session.messages = {
@@ -18,7 +18,6 @@ module.exports.index = async (req, res) => {
 };
 
 module.exports.add = async (req, res) => {
-  console.log(req.file);
   let pcName = req.body.pcName;
   await Category.findOne({ pcName }, async (err, pcFound) => {
     if (err) {

@@ -1,6 +1,7 @@
 const Roomtype = require("../../models/mRoomtype");
+const Category = require("../../models/mCategory");
 const pI = { title: "Quản lý sản phẩm", url: "product" };
-const rootRoute = `/${pI.url}-manager`;
+const rootRoute = `/${pI.url}-management`;
 
 let redirectFunc = (state, text, dir, req, res) => {
   req.session.messages = {
@@ -62,13 +63,26 @@ module.exports.update = async (req, res) => {
 };
 
 module.exports.delete = async (req, res) => {
-  await Roomtype.findByIdAndDelete(req.params.id, function (err) {
+  let room_in_used = await Category.find({
+    rtId: req.params.id,
+  }).countDocuments();
+  if (room_in_used == 0) {
+    await Roomtype.findByIdAndDelete(req.params.id, function (err) {
+      req.session.messages = {
+        icon: !err ? "check-circle" : "alert-circle",
+        color: !err ? "success" : "danger",
+        title: !err ? "Thành công!" : "Thất bại",
+        text: !err ? "Xóa loại phòng thành công!" : "Xóa loại phòng thất bại!",
+      };
+      res.json(!err);
+    });
+  } else {
     req.session.messages = {
-      icon: !err ? "check-circle" : "alert-circle",
-      color: !err ? "success" : "danger",
-      title: !err ? "Thành công!" : "Thất bại",
-      text: !err ? "Xóa loại phòng thành công!" : "Xóa loại phòng thất bại!",
+      icon: "alert-circle",
+      color: "danger",
+      title: "Thất bại",
+      text: "Không thể xóa loại phòng đã có danh mục!",
     };
-    res.json(!err);
-  });
+    res.json(false);
+  }
 };

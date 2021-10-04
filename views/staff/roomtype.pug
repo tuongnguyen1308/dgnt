@@ -35,13 +35,14 @@ table.table.table-responsive.table-bordered(width="100%")
                     .btn-group(role="group")
                         button.btn.btn-sm.btn-outline-primary(role="edit-roomtype" data-id=rt._id data-name=rt.rtName data-img= rt.rtImg type='button' rel="tooltip" data-bs-placement="top" title="Sửa")
                             span(data-feather="edit-3")
-                        button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Hủy")
-                            span(data-feather="x")
-                        ul.dropdown-menu.p-0.position-absolute.top-100.end-0(style="min-width:unset")
-                            li
-                                a.dropdown-item.p-2.text-danger(href='#' data-id=rt._id role="confirm-delete-roomtype") Xác nhận
-                            li
-                                span.dropdown-item.p-2(role="button" rel="close-dropdown") Huỷ
+                        if !rt_cbd.includes(rt._id)
+                            button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Hủy")
+                                span(data-feather="x")
+                            ul.dropdown-menu.p-0.position-absolute.top-100.end-0(style="min-width:unset")
+                                li
+                                    a.dropdown-item.p-2.text-danger(href='#' data-id=rt._id role="confirm-delete-roomtype") Xác nhận
+                                li
+                                    span.dropdown-item.p-2(role="button" rel="close-dropdown") Huỷ
         else
             tr
                 td(colspan="4")

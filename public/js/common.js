@@ -1,5 +1,5 @@
 //#region global function
-let generateToast = (state, text) => {
+const generateToast = (state, text) => {
   if ("content" in document.createElement("template")) {
     let toastTemplate = document.querySelector("#toast-template");
     let newToast = toastTemplate.content.cloneNode(true);
@@ -29,7 +29,7 @@ let generateToast = (state, text) => {
   }
 };
 
-let checkValidate = (cases, inp, immidiate_check = true) => {
+const checkValidate = (cases, inp, immidiate_check = true) => {
   let invailArr = cases.filter((cs) => cs.con);
   if (invailArr.length > 0) {
     immidiate_check && $(inp).parent().addClass("was-validated");
@@ -40,6 +40,12 @@ let checkValidate = (cases, inp, immidiate_check = true) => {
   }
 };
 
+const removeImg = ($parent) => {
+  $parent.find("img").attr("src", "#").addClass("d-none");
+  $parent.find(".title").removeClass("d-none");
+  $parent.next().addClass("d-none");
+  $parent.find("input").val("");
+};
 //#endregion
 
 $(document).ready(function () {
@@ -74,6 +80,17 @@ $(document).ready(function () {
     localStorage.setItem("cur-tab", $(this).attr("id"));
   });
 
+  // summernote
+  $(".summernote").summernote({
+    toolbar: [
+      // [groupName, [list of button]]
+      ["style", ["bold", "italic", "underline", "clear"]],
+      ["font", ["strikethrough", "superscript", "subscript"]],
+      ["para", ["ul", "ol"]],
+      ["insert", ["hr", "link", "video"]],
+    ],
+  });
+
   // logout show
   $("[role=open-dropdown]").on("click", function () {
     $(this).next().toggleClass("show");
@@ -105,11 +122,6 @@ $(document).ready(function () {
   });
 
   //#region modal-signup
-  const removeImg = () => {
-    $("#img-preview").attr("src", "#").addClass("d-none");
-    $("#cimg-preview .title").removeClass("d-none");
-    $(".file_remove").addClass("d-none");
-  };
   $("#cImg").on("change", function (e) {
     const filename = $(this).val();
     if (!filename.match(/\.(jpg|jpeg|png)$/i)) {
@@ -117,7 +129,7 @@ $(document).ready(function () {
         .removeClass("d-none")
         .find("span")
         .text("Ảnh không hợp lệ");
-      removeImg();
+      removeImg($(this));
     } else {
       $("[role=errMessage]").addClass("d-none").find("span").text("");
       var uploadedFile = URL.createObjectURL(e.target.files[0]);
@@ -126,8 +138,8 @@ $(document).ready(function () {
       $(".file_remove").removeClass("d-none");
     }
   });
-  $(".file_remove").on("click", function (e) {
-    removeImg();
+  $(document).on("click", ".file_remove", function (e) {
+    removeImg($(this).prev());
   });
 
   //#region validate

@@ -23,6 +23,10 @@ else
 				th.align-middle(width="5%") ĐVT
 		tbody
 			each mr, index in mtrreqs
+				- var ca = mr.createdAt;
+				- var ua = mr.updatedAt;
+				- mr.createdAt = ca.setUTCHours(ca.getUTCHours() + 7);
+				- mr.updatedAt = ua.setUTCHours(ua.getUTCHours() + 7);
 				tr
 					td.align-middle.text-center= index+1
 					td.align-middle

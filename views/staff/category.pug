@@ -32,6 +32,7 @@ table.table.table-responsive.table-bordered(width="100%")
         th.align-middle STT
         th.align-middle Ảnh
         th.align-middle Tên danh mục
+        th.align-middle Thuộc loại phòng
         th.align-middle Tác vụ
     tbody
         each pc, index in categories
@@ -40,6 +41,7 @@ table.table.table-responsive.table-bordered(width="100%")
                 td.align-middle.text-center
                     img.rounded.img-fluid(src=`img/categories/${pc.pcImg}` style=`max-height:${size}px; width:${size}px;`)
                 td.align-middle= pc.pcName
+                td.align-middle= pc.rtId.rtName
                 td.align-middle.text-center
                     .btn-group(role="group")
                         button.btn.btn-sm.btn-outline-primary(role="edit-category" data-id=pc._id data-name=pc.pcName data-img= pc.pcImg data-rtid= pc.rtId._id type='button' rel="tooltip" data-bs-placement="top" title="Sửa")

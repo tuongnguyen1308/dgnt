@@ -39,13 +39,6 @@ module.exports.index = async (req, res) => {
       path: "suId",
       select: "sName",
     });
-  mtrreqs = mtrreqs.map((mtr) => {
-    let ca = mtr.createdAt;
-    let ua = mtr.updatedAt;
-    mtr.createdAt = ca.setUTCHours(ca.getUTCHours() + 7);
-    mtr.updatedAt = ua.setUTCHours(ua.getUTCHours() + 7);
-    return mtr;
-  });
   let mtrbatchs = await MtrBatch.find({})
     .populate({ path: "mrId", select: "_id createdAt mrReason mrState" })
     .populate({

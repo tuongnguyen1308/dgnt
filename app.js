@@ -63,10 +63,10 @@ const sAboutR = require("./routes/staff/rAbout");
 const sMaterialR = require("./routes/staff/rMaterial");
 const sMtrreqR = require("./routes/staff/rMtrreq");
 const sMtrbatchR = require("./routes/staff/rMtrbatch");
+const sProductMnmRoute = require("./routes/staff/rProductManagement");
 const sRoomtypeR = require("./routes/staff/rRoomtype");
 const sCategoryR = require("./routes/staff/rCategory");
-
-const productsRoute = require("./routes/staff/rProduct");
+const sProductRoute = require("./routes/staff/rProduct");
 
 const cHomeR = require("./routes/customer/rHome");
 const cCustomerR = require("./routes/customer/rCustomer");
@@ -85,10 +85,10 @@ app.use("/material", mwAuthS.Auth, sMaterialR);
 app.use("/mtrreq", mwAuthS.Auth, sMtrreqR);
 app.use("/mtrbatch", mwAuthS.Auth, sMtrbatchR);
 // quan ly sp
+app.use("/product-management", mwAuthS.Auth, sProductMnmRoute);
 app.use("/roomtype", mwAuthS.Auth, sRoomtypeR);
 app.use("/category", mwAuthS.Auth, sCategoryR);
-
-app.use("/product-manager", mwAuthS.Auth, productsRoute);
+app.use("/product", mwAuthS.Auth, sProductRoute);
 //#endregion
 
 //#region customber

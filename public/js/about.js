@@ -2,19 +2,6 @@ $(document).ready(() => {
   const listTitle = ["Thêm", "Cập nhật"];
 
   //#region func
-  let changeImg = (con, src, tab) => {
-    if (con) {
-      $(`${tab} #img-preview`).attr("src", src).removeClass("d-none");
-      $(`${tab} .upload-before .title`).addClass("d-none");
-      $(`${tab} .file_remove`).removeClass("d-none");
-    } else removeImg();
-  };
-  let removeImg = () => {
-    $(`${tab} #img-preview`).attr("src", "#").addClass("d-none");
-    $(`${tab} .upload-before .title`).removeClass("d-none");
-    $(`${tab} .file_remove`).addClass("d-none");
-  };
-
   let changePMState = () => {
     let state = $("#pmState").is(":checked") ? "Hiện" : "Ẩn";
     $("#pmState").next().text(state);
@@ -53,16 +40,16 @@ $(document).ready(() => {
         .removeClass("d-none")
         .find("span")
         .text("Không đúng định dạng!");
+      removeImg($(this));
     } else {
       $("[role=errMessage]").addClass("d-none").find("span").text("");
       var uploadedFile = URL.createObjectURL(e.target.files[0]);
-      changeImg(true, uploadedFile, "#nav-banner");
+      $(this).next().next().attr("src", uploadedFile).removeClass("d-none");
+      $(this).next().addClass("d-none");
+      $(this).parent().next().removeClass("d-none");
     }
   });
 
-  $(".file_remove").on("click", function (e) {
-    removeImg();
-  });
   $(".sortable-list").sortable({
     handle: ".panel-handle",
     update: function () {
@@ -162,10 +149,13 @@ $(document).ready(() => {
         .removeClass("d-none")
         .find("span")
         .text("Không đúng định dạng!");
+      removeImg($(this));
     } else {
       $("[role=errMessage]").addClass("d-none").find("span").text("");
       var uploadedFile = URL.createObjectURL(e.target.files[0]);
-      changeImg(true, uploadedFile, "#nav-shopinfo");
+      $(this).next().next().attr("src", uploadedFile).removeClass("d-none");
+      $(this).next().addClass("d-none");
+      $(this).parent().next().removeClass("d-none");
     }
   });
   //#endregion

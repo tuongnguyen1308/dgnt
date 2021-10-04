@@ -29,7 +29,7 @@ html(lang="vi")
                 h1.h1.mb-3 Hệ thống quản lý
                 h1.h2.mb-3.font-weight-bold= title
             .form-label-group
-                input#inputUsername.form-control(name="username" type='text' placeholder='Tên đăng nhập' required='true' value=username, onkeyup='removeAlert()')
+                input#inputUsername.form-control(name="username" type='text' placeholder='Tên đăng nhập' required='true' value=username, onkeyup='removeAlert()' autofocus)
                 label(for='inputUsername') Tên đăng nhập
             .form-label-group
                 input#inputPassword.form-control(name="password" type='password' placeholder='Mật khẩu' required='true' onkeyup='removeAlert()')

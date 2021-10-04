@@ -49,6 +49,19 @@ let Product = Schema(
         },
       },
     ],
+    mConsume: [
+      {
+        mId: {
+          type: Schema.Types.ObjectId,
+          rel: "col_material",
+        },
+        mQuantity: {
+          type: Number,
+          min: 1,
+          required: true,
+        },
+      },
+    ],
     pcId: {
       type: Schema.Types.ObjectId,
       rel: "col_category",
@@ -61,4 +74,4 @@ let Product = Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Product", Product);
+module.exports = mongoose.model("col_product", Product);

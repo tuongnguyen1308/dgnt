@@ -1,18 +1,12 @@
 $(document).ready(() => {
   const curPage = "product";
-  const redirectUrl = "/product-manager";
+  const redirectUrl = "/product-management";
   const formModal = document.getElementById("category-form");
   //#region func
   let setImg = ($parent, src) => {
     $parent.find(".img-preview").attr("src", src).removeClass("d-none");
     $parent.find("#pcImg").next().addClass("d-none");
     $parent.find(".file_remove").removeClass("d-none");
-  };
-  let removeImg = ($parent) => {
-    $parent.find("img").attr("src", "#").addClass("d-none");
-    $parent.find(".title").removeClass("d-none");
-    $parent.next().addClass("d-none");
-    $parent.find("input").val("");
   };
   let prepareForm = ($btn = null) => {
     $(".was-validated .is-valid, .was-validated .is-invalid").removeClass(
@@ -73,19 +67,24 @@ $(document).ready(() => {
   $("#pcImg").on("change", function (e) {
     var ext = $(this).val().split(".").pop().toLowerCase();
     if ($.inArray(ext, ["gif", "png", "jpg", "jpeg"]) == -1) {
-      $("[role=errMessage]")
+      $(this)
+        .parent()
+        .parent()
+        .find("[role=errMessage]")
         .removeClass("d-none")
         .find("span")
         .text("Không đúng định dạng!");
     } else {
-      $("[role=errMessage]").addClass("d-none").find("span").text("");
+      $(this)
+        .parent()
+        .parent()
+        .find("[role=errMessage]")
+        .addClass("d-none")
+        .find("span")
+        .text("");
       var uploadedFile = URL.createObjectURL(e.target.files[0]);
       setImg($(this).parent().parent(), uploadedFile);
     }
-  });
-
-  $(".file_remove").on("click", function (e) {
-    removeImg($(this).prev());
   });
 
   $("#category-form").on("submit", function (e) {

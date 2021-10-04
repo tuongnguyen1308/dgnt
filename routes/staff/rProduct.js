@@ -10,10 +10,11 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage: storage });
+const multipleUpload = upload.fields([{ name: "pImg" }]);
 
 router.get("/", controller.index);
-router.post("/add", upload.single("pImg"), controller.add);
-router.post("/update", upload.single("pImg"), controller.update);
+router.post("/add", multipleUpload, controller.add);
+router.post("/update", multipleUpload, controller.update);
 router.delete("/:id", controller.delete);
 
 module.exports = router;

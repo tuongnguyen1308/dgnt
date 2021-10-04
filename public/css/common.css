@@ -260,8 +260,8 @@
 .file_remove {
   width: 30px;
   height: 30px;
-  border-bottom-left-radius: 0.35rem;
-  border-top-right-radius: 0.35rem;
+  border-bottom-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
   display: block;
   position: absolute;
   background: #ddd;
@@ -272,9 +272,26 @@
   right: 0px;
   top: 0px;
 }
-.file_remove:hover {
+.file_remove:hover,
+.file-remove:hover {
   background: #222;
   transition: 0.2s;
+}
+
+.file-remove {
+  width: 20px;
+  height: 20px;
+  border-bottom-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
+  display: block;
+  position: absolute;
+  background: #ddd;
+  line-height: 20px;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  right: 0px;
+  top: 0px;
 }
 
 img {
