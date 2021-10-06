@@ -1,0 +1,136 @@
+if products.length == 0
+	.h4.fw-normal.text-center Cần thêm 
+		a(href="#" rel="switch-tab" data-to="#nav-product-tab") Thông tin sản phẩm
+		|  trước
+else
+	table.table.table-responsive.table-bordered(width="100%")
+		thead.text-center
+			if 'Quản lý, Nhân viên bán hàng'.includes(sess.rId.rName)
+				tr
+					td(colspan="8")
+						button.btn.w-100.btn-outline-success.d-flex.align-items-center.justify-content-center(type="button" role="add-prdreq" data-bs-toggle="modal" data-bs-target="#modal-prdreq")
+							span(data-feather="plus")
+							span Thêm yêu cầu bổ sung
+			tr
+				th.align-middle(rowspan="2") STT
+				th.align-middle(rowspan="2") Thời gian - Nhân viên tạo
+				th.align-middle(rowspan="2") Thời gian - Nhân viên cập nhật
+				th.align-middle(rowspan="2") Lý do
+				th.align-middle(colspan="2" width="40%") Danh sách sản phẩm
+				th.align-middle(rowspan="2") Hạn hoàn thành
+				th.align-middle(rowspan="2") Tác vụ
+			tr
+				th.align-middle Tên sản phẩm
+				th.align-middle(width="5%") SL
+		tbody
+			each pr, index in prdreqs
+				- var ca = pr.createdAt;
+				- var ua = pr.updatedAt;
+				- pr.createdAt = ca.setUTCHours(ca.getUTCHours() + 7);
+				- pr.updatedAt = ua.setUTCHours(ua.getUTCHours() + 7);
+				tr
+					td.align-middle.text-center= index+1
+					td.align-middle
+						div= pr.createdAt.toISOString().slice(0,10).split('-').reverse().join('/') + ' ' + pr.createdAt.toISOString().slice(11,19)
+						span= pr.scId.sName
+					td.align-middle
+						div= pr.updatedAt.toISOString().slice(0,10).split('-').reverse().join('/') + ' ' + pr.updatedAt.toISOString().slice(11,19)
+						span= pr.suId.sName
+					td.align-middle= pr.prReason
+					td.align-middle.p-0(colspan="2")
+						table.table.m-0(width="100%")
+							tbody
+								each p, index in pr.prDetail
+									tr.border-bottom-none
+										td.border-end
+											each pimg in p.pId.pImgs
+												if pimg.piIsMain
+													span(rel="tooltip" data-bs-placement="top" title=`<img width='100px;' src='/img/products/${pimg.piImg}'>` data-bs-html="true")= p.pId.pName
+										td.text-end.border-end(width="12.5%")= p.pQuantity
+					td.align-middle
+						div= pr.prDeadlineAt.toISOString().slice(0,10).split('-').reverse().join('/')
+					td.align-middle.text-center
+						if pr.prState == 0 && 'Quản lý, Nhân viên bán hàng, Nhân viên sản xuất'.includes(sess.rId.rName)
+							.btn-group(role="group")
+								if 'Quản lý, Nhân viên sản xuất'.includes(sess.rId.rName)
+									button.btn.btn-sm.btn-outline-success(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Đánh dấu là đã giải quyết")
+										span(data-feather="check")
+									ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset")
+										li
+											a.dropdown-item.p-2.text-success(href='#' data-id=pr._id data-state="1" role="update-state-prdreq") Xác nhận
+										li
+											span.dropdown-item.p-2(role="button" rel="close-dropdown") Huỷ
+								if 'Quản lý, Nhân viên bán hàng'.includes(sess.rId.rName)
+									button.btn.btn-sm.btn-outline-primary(role="edit-prdreq" data-id=pr._id data-reason=pr.prReason data-detail= pr.prDetail data-deadline= pr.prDeadlineAt type='button' rel="tooltip" data-bs-placement="top" title="Sửa" data-bs-toggle="modal" data-bs-target="#modal-prdreq")
+										span(data-feather="edit-3")
+									button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Hủy")
+										span(data-feather="x")
+									ul.dropdown-menu.p-0.position-absolute.top-100.end-0(style="min-width:unset")
+										li
+											a.dropdown-item.p-2.text-danger(href='#' data-id=pr._id data-state="-1" role="update-state-prdreq") Xác nhận
+										li
+											span.dropdown-item.p-2(role="button" rel="close-dropdown") Huỷ
+						else if pr.prState == -1
+							.badge.bg-secondary Đã hủy
+						else if pr.prState == 1
+							.badge.bg-success Đã giải quyết
+			else
+				tr
+					td.text-center(colspan="8") Chưa có Yêu cầu bổ sung sản phẩm!
+	form#modal-prdreq.needs-validation.modal.fade(method="post" action="/prdreq/add" tabindex="-1" role="dialog" aria-hidden="true" novalidate)
+		.modal-dialog.modal-dialog-centered.modal-lg
+			.modal-content
+				.modal-header
+					h5.modal-title
+						span#modal-prdreq-title Thêm
+						|  yêu cầu bổ sung sản phẩm
+					button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
+				.modal-body
+					.d-grid.m-auto
+						.form-label-group
+							input#prDeadlineAt.form-control(name="prDeadlineAt" type="date" placeholder="Hạn hoàn thành" required)
+							label.required(for="prDeadlineAt") Hạn hoàn thành
+							.invalid-feedback Hạn hoàn thành là bắt buộc
+						.form-label-group.form-floating
+							textarea#prReason.form-control(name="prReason" type="text" placeholder="Lý do" maxlength="256" style="min-height:80px;" required)
+							label(for="prReason") Lý do
+							.invalid-feedback Lý do là bắt buộc
+						span.fs-4 Danh sách sản phẩm
+						#pr-error.text-danger.small.d-none
+						table.table.table-bordered.mb-0(width="100%")
+							thead
+								tr.text-center
+									th.align-middle(width="50%") Sản phẩm
+									th.align-middle(width="20%") Số lượng
+									th.align-middle(width="15%") Tác vụ
+							tbody#pr-list
+								template#pr-item-template
+									tr.text-center
+										td.p-1.text-start.align-middle
+											span.p-1(rel="product-name")
+											input(type="hidden" name="pId" required)
+										td.p-1.align-middle
+											input.form-control.p-1(name="pQuantity" type="number" min="1" max="100" required)
+											.invalid-feedback Số lượng là bắt buộc
+										td.p-1.align-middle
+											button.btn.p-1.btn-white.btn-hover_danger.border-0(value="" role="list-prdreq_delete" type='button' rel="tooltip" data-bs-placement="top" title="Xoá")
+												span(data-feather="x")
+							tfoot
+								tr
+									td.text-center(colspan="3")
+										.input-group
+											input.form-control(type="text" name="pfind" placeholder="Nhập tên sản phẩm")
+											button.btn.btn-outline-success(type="button" rel="find-product" role="open-dropdown")
+												span(data-feather="search")
+											ul#listPrdreqItem.dropdown-menu.p-0.position-absolute.top-100.start-0(style="min-width:unset")
+											template#search-result-temp
+												li(role="list-prdreq_add")
+													.dropdown-item.p-2
+														.d-flex
+															img.img-fluid.rounded(style="width:100px; max-height:100px;")
+															.ms-2
+																h5.fs-5
+																p
+				.modal-footer.d-grid(style="justify-content: unset")
+					button.btn.btn-primary(type="submit") Lưu
+script(src="js/prdreq.js" defer)

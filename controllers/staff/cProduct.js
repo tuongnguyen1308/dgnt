@@ -1,8 +1,4 @@
 const Product = require("../../models/mProduct");
-const Roomtype = require("../../models/mRoomtype");
-const Category = require("../../models/mCategory");
-// const Mtrreq = require("../../models/mMtrreq");
-const Material = require("../../models/mMaterial");
 const pI = { title: "Quản lý sản phẩm", url: "product" };
 const rootRoute = `/${pI.url}-management`;
 
@@ -167,5 +163,12 @@ module.exports.delete = async (req, res) => {
       text: !err ? "Xóa sản phẩm thành công!" : "Xóa sản phẩm thất bại!",
     };
     res.json(!err);
+  });
+};
+
+module.exports.find = async (req, res) => {
+  let keyword = req.body.keyword;
+  Product.find({ pName: new RegExp(keyword, "i") }, async (err, products) => {
+    res.json(products);
   });
 };

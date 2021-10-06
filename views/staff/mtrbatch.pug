@@ -5,11 +5,12 @@ if mtrreqs.length == 0
 else
 	table.table.table-responsive.table-bordered(width="100%")
 		thead.text-center
-			tr
-				td(colspan="9")
-					button.btn.w-100.btn-outline-success.d-flex.align-items-center.justify-content-center(type="button" role="add-mtrbatch" data-bs-toggle="modal" data-bs-target="#modal-mtrbatch")
-						span(data-feather="plus")
-						span Thêm đợt nhập
+			if 'Quản lý, Nhân viên kế toán'.includes(sess.rId.rName)
+				tr
+					td(colspan="9")
+						button.btn.w-100.btn-outline-success.d-flex.align-items-center.justify-content-center(type="button" role="add-mtrbatch" data-bs-toggle="modal" data-bs-target="#modal-mtrbatch")
+							span(data-feather="plus")
+							span Thêm đợt nhập
 			tr
 				th.align-middle(rowspan="2") STT
 				th.align-middle(rowspan="2") Ngày nhập - Nhân viên tạo
@@ -24,6 +25,10 @@ else
 				th.align-middle(width="10%") Thành tiền
 		tbody
 			each mb, index in mtrbatchs
+				- var ca = mb.mbBatchAt;
+				- var ua = mb.mrId.createdAt;
+				- mb.mbBatchAt = ca.setUTCHours(ca.getUTCHours() + 7);
+				- mb.mrId.createdAt = ua.setUTCHours(ua.getUTCHours() + 7);
 				tr
 					td.align-middle.text-center= index+1
 					td.align-middle
@@ -48,7 +53,7 @@ else
 									td.fw-bold.border-end(colspan="3") Tổng tiền
 									td.h5= mb.mbTotal.toLocaleString("vi", {style: "currency",currency: "VND",})
 					td.align-middle.text-center
-						if 'Quản lý Kế toán'.includes(sess.rId.rName) && mb.mrId.mrState == 0
+						if 'Quản lý, Nhân viên kế toán'.includes(sess.rId.rName) && mb.mrId.mrState == 0
 							.btn-group(role="group")
 								button.btn.btn-sm.btn-outline-primary(role="edit-mtrbatch" data-id=mb._id data-mrid= mb.mrId._id data-batchat=mb.mbBatchAt data-supplier=mb.mbSupplier data-total=mb.mbTotal data-detail= mb.mbDetail type='button' rel="tooltip" data-bs-placement="top" title="Sửa" data-bs-toggle="modal" data-bs-target="#modal-mtrbatch")
 									span(data-feather="edit-3")
@@ -105,7 +110,7 @@ else
 											input(name="mId" type="hidden" required)
 											.p-1(rel="mName")
 										td.p-1.align-middle
-											input.form-control.p-1(name="mQuantity" type="number" min="1" required)
+											input.form-control.p-1(name="mQuantity" type="number" min="1" max="1000" required)
 											.invalid-feedback Số lượng không hợp lệ
 										td.p-1.align-middle
 											input.form-control.p-1(name="mPrice" type="number" min="1" required)

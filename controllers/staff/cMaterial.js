@@ -40,6 +40,7 @@ module.exports.index = async (req, res) => {
       select: "sName",
     });
   let mtrbatchs = await MtrBatch.find({})
+    .sort({ mbBatchAt: "desc" })
     .populate({ path: "mrId", select: "_id createdAt mrReason mrState" })
     .populate({
       path: "mbDetail.mId",

@@ -46,6 +46,15 @@ const removeImg = ($parent) => {
   $parent.next().addClass("d-none");
   $parent.find("input").val("");
 };
+// validate max input number
+$(document).on("keydown", "[max]", function (e) {
+  let maxval = Number($(this).attr("max"));
+  let dcv = $(this).val();
+  if (dcv + e.key > maxval && /^[0-9]$/i.test(e.key)) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+});
 //#endregion
 
 $(document).ready(function () {

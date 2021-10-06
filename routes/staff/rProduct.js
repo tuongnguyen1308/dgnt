@@ -16,5 +16,6 @@ router.get("/", controller.index);
 router.post("/add", multipleUpload, controller.add);
 router.post("/update", multipleUpload, controller.update);
 router.delete("/:id", controller.delete);
+router.post("/find", controller.find);
 
 module.exports = router;

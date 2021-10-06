@@ -67,6 +67,7 @@ const sProductMnmRoute = require("./routes/staff/rProductManagement");
 const sRoomtypeR = require("./routes/staff/rRoomtype");
 const sCategoryR = require("./routes/staff/rCategory");
 const sProductRoute = require("./routes/staff/rProduct");
+const sPrdreqRoute = require("./routes/staff/rPrdreq");
 
 const cHomeR = require("./routes/customer/rHome");
 const cCustomerR = require("./routes/customer/rCustomer");
@@ -89,6 +90,7 @@ app.use("/product-management", mwAuthS.Auth, sProductMnmRoute);
 app.use("/roomtype", mwAuthS.Auth, sRoomtypeR);
 app.use("/category", mwAuthS.Auth, sCategoryR);
 app.use("/product", mwAuthS.Auth, sProductRoute);
+app.use("/prdreq", mwAuthS.Auth, sPrdreqRoute);
 //#endregion
 
 //#region customber

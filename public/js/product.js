@@ -118,11 +118,11 @@ $(document).ready(() => {
     $(this).parent().parent().remove();
   });
 
-  $(".btn[role=edit-product]").on("click", function () {
+  $(document).on("click", ".btn[role=edit-product]", function () {
     prepareModal($(this));
   });
 
-  $("[role=confirm-delete-product]").on("click", function (e) {
+  $(document).on("click", "[role=confirm-delete-product]", function (e) {
     $target = $(e.target);
     const id = $target.data("id");
     $.ajax({
@@ -220,16 +220,17 @@ $(document).ready(() => {
     calculateMtotal();
   });
 
-  $("#pDiscount").on("keydown", function (e) {
-    let dcv = $(this).val();
-    if (dcv >= 10 && /^[0-9]$/i.test(e.key)) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-  });
-
   $("#pDiscount").on("keyup", function () {
     calculateMtotal();
+  });
+
+  $("[name=prdRoom]").on("change", function () {
+    let rtId = $(this).val();
+    $("[name=prdCate]").val(-1);
+    $("[name=prdCate] option:not([value=-1])").each(function (index) {
+      let rel = $(this).attr("rel");
+      $(this).attr("hidden", rel != rtId);
+    });
   });
   //#endregion
   //#endregion

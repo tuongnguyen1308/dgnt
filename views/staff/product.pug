@@ -21,26 +21,41 @@ block content
 				#nav-product.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-product-tab')
 					table.table.table-bordered(width="100%")
 						thead
-							if sess.rId.rName == "Quản lý"
+							form(action="product-management" method="get")
 								tr
-									td(colspan="5")
-										button.btn.w-100.btn-outline-success.d-flex.align-items-center.justify-content-center(type="button" role="add-product" data-bs-toggle="modal" data-bs-target="#modal-product")
-											span(data-feather="plus")
-											span Thêm sản phẩm
-									td(colspan="3")
-										form(action="product-management" method="get").input-group
-											input.form-control(type="text" name="productName" placeholder="Nhập tên sản phẩm cần tìm" value=keyword)
+									td(colspan="2")
+										if sess.rId.rName == "Quản lý"
+											button.btn.w-100.btn-outline-success.d-flex.align-items-center.justify-content-center(type="button" role="add-product" data-bs-toggle="modal" data-bs-target="#modal-product")
+												span(data-feather="plus")
+												span Thêm SP
+									td.border-end-0(colspan="1")
+										select.form-select(name="prdRoom")
+											option(value='-1' hidden) -- Chọn loại phòng --
+											each rt in roomtypes
+												option(value=rt._id selected= rtSelected==rt._id)= rt.rtName
+									td.border-end-0.border-start-0(colspan="2")
+										select.form-select(name="prdCate")
+											option(value='-1' hidden) -- Chọn danh mục --
+											each pc in categories
+												option(value=pc._id selected= pcSelected==pc._id hidden= (rtSelected!=pc.rtId._id && rtSelected!=-1)||(rtSelected==-1&&pcSelected==-1) rel=pc.rtId._id)= pc.pcName
+									td.border-start-0(colspan="4")
+										.input-group
+											input.form-control(type="text" name="productName" placeholder="Nhập tên sản phẩm" value=keyword)
 											button.btn.btn-outline-success(type="submit")
 												span(data-feather="search")
+											if pcSelected != -1 || rtSelected != -1
+												a.btn.btn-danger(href="/product-management" rel="tooltip" data-bs-placement="top" title="Hủy bộ lọc")
+													span(data-feather="x")
 							tr.text-center
 								th.align-middle(width="1%") STT
 								th.align-middle(width="10%") Ảnh sản phẩm
 								th.align-middle(width="20%") Tên sản phẩm
-								th.align-middle(width="5%") ĐVT
-								th.align-middle(width="") Số lượng
-								th.align-middle(width="") Giá
-								th.align-middle(width="") Trạng thái
-								th.align-middle(width="") Tác vụ
+								th.align-middle Số lượng
+								th.align-middle ĐVT
+								th.align-middle Giá
+								th.align-middle Trạng thái
+								if sess.rId.rName == "Quản lý"
+									th.align-middle Tác vụ
 						tbody
 							each p, index in products
 								- var ca = p.createdAt;
@@ -54,29 +69,32 @@ block content
 											if pi.piIsMain
 												img.rounded.img-fluid(src=`img/products/${pi.piImg}` style="max-height:100px;")
 									td.text-start.align-middle(rel="tooltip" data-bs-placement="top" title=`Ngày tạo: ${p.createdAt.toISOString().slice(0,10).split('-').reverse().join('/') + ' ' + p.createdAt.toISOString().slice(11,19)} - ${p.sId.sName}`)= p.pName
-									td.align-middle= p.pUnit
 									td.align-middle= p.pStock
+									td.align-middle= p.pUnit
 									td.text-end.align-middle
-										del.fs-6= p.pPrice.toLocaleString("vi", {style: "currency",currency: "VND",})
+										del.text-secondary.fs-6= p.pPrice.toLocaleString("vi", {style: "currency",currency: "VND",})
 										span (-#{p.pDiscount}%)
 										.fs-4 #{(p.pPrice - p.pPrice*p.pDiscount/100).toLocaleString("vi", {style: "currency",currency: "VND",})}
 									td.align-middle
 										if p.pState
-											.badge.bg-success Hiện
+											.text-success(rel="tooltip" data-bs-placement="top" title="Hiện")
+												span(data-feather="eye")
 										else
-											.badge.bg-secondary Ẩn
-									td.align-middle
-										.btn-group(role="group")
-											button.btn.btn-sm.btn-outline-primary(type="button" role="edit-product" data-id=p._id data-name=p.pName data-unit=p.pUnit data-size=p.pSize data-price=p.pPrice data-discount=p.pDiscount data-desc=p.pDesc data-state=p.pState data-imgs=p.pImgs data-mcon=p.mConsume data-pcid=p.pcId data-bs-toggle="modal" data-bs-target="#modal-product" rel="tooltip" data-bs-placement="top" title="Sửa")
-												span(data-feather="edit-3")
-											if !rt_cbd.includes(p._id)
-												button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Xoá")
-													span(data-feather="x")
-												ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset")
-													li
-														a.dropdown-item.p-2.text-danger(href='#' data-id=p._id role="confirm-delete-product") Xác nhận
-													li
-														span.dropdown-item.p-2(role="button" rel="close-dropdown") Huỷ
+											.text-secondary(rel="tooltip" data-bs-placement="top" title="Ẩn")
+												span(data-feather="eye-off")
+									if sess.rId.rName == "Quản lý"
+										td.align-middle
+											.btn-group(role="group")
+												button.btn.btn-sm.btn-outline-primary(type="button" role="edit-product" data-id=p._id data-name=p.pName data-unit=p.pUnit data-size=p.pSize data-price=p.pPrice data-discount=p.pDiscount data-desc=p.pDesc data-state=p.pState data-imgs=p.pImgs data-mcon=p.mConsume data-pcid=p.pcId data-bs-toggle="modal" data-bs-target="#modal-product" rel="tooltip" data-bs-placement="top" title="Sửa")
+													span(data-feather="edit-3")
+												if !p_cbd.includes(p._id)
+													button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Xoá")
+														span(data-feather="x")
+													ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset")
+														li
+															a.dropdown-item.p-2.text-danger(href='#' data-id=p._id role="confirm-delete-product") Xác nhận
+														li
+															span.dropdown-item.p-2(role="button" rel="close-dropdown") Huỷ
 							else
 								tr
 									td(colspan="8") Chưa có sản phẩm!
@@ -183,8 +201,7 @@ block content
 								.modal-footer.d-grid(style="justify-content: unset")
 									button.btn.btn-primary(type="submit") Lưu
 				#nav-prdreq.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-prdreq-tab')
-					//- 	include ./prdreq.pug
-					//- End UserList
+					include ./prdreq.pug
 
 
 

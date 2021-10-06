@@ -30,7 +30,8 @@ block content
 								th.align-middle(width="5%") ĐVT
 								th.align-middle(width="") Số lượng
 								th.align-middle(width="") Mô tả
-								th.align-middle(width="") Tác vụ
+								if sess.rId.rName == "Quản lý"
+									th.align-middle(width="") Tác vụ
 						tbody
 							each m, index in materials
 								tr.text-center
@@ -41,18 +42,19 @@ block content
 									td.align-middle= m.mUnit
 									td.align-middle= m.mStock
 									td.text-start.align-middle= m.mDesc
-									td.align-middle
-										.btn-group(role="group")
-											button.btn.btn-sm.btn-outline-primary(type="button" role="edit-material" data-id=m._id data-mname=m.mName data-munit=m.mUnit data-mdesc=m.mDesc data-mimg=m.mImg data-bs-toggle="modal" data-bs-target="#modal-material" rel="tooltip" data-bs-placement="top" title="Sửa")
-												span(data-feather="edit-3")
-											if !mtrsCantBeDel.includes(m._id)
-												button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Xoá")
-													span(data-feather="x")
-												ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset")
-													li
-														a.dropdown-item.p-2.text-danger(href='#' data-id=m._id role="confirm-delete-material") Xác nhận
-													li
-														span.dropdown-item.p-2(role="button" rel="close-dropdown") Huỷ
+									if sess.rId.rName == "Quản lý"
+										td.align-middle
+											.btn-group(role="group")
+												button.btn.btn-sm.btn-outline-primary(type="button" role="edit-material" data-id=m._id data-mname=m.mName data-munit=m.mUnit data-mdesc=m.mDesc data-mimg=m.mImg data-bs-toggle="modal" data-bs-target="#modal-material" rel="tooltip" data-bs-placement="top" title="Sửa")
+													span(data-feather="edit-3")
+												if !mtrsCantBeDel.includes(m._id)
+													button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Xoá")
+														span(data-feather="x")
+													ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset")
+														li
+															a.dropdown-item.p-2.text-danger(href='#' data-id=m._id role="confirm-delete-material") Xác nhận
+														li
+															span.dropdown-item.p-2(role="button" rel="close-dropdown") Huỷ
 							else
 								tr
 									td(colspan="7") Chưa có nguyên vật liệu!

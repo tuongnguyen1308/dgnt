@@ -14,7 +14,7 @@ let redirectFunc = (state, text, dir, req, res) => {
 };
 
 module.exports.index = async (req, res) => {
-  res.redirect("/material");
+  res.redirect(rootRoute);
 };
 
 module.exports.add = async (req, res) => {
