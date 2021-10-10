@@ -45,44 +45,53 @@ module.exports.index = async (req, res) => {
 };
 
 module.exports.add = (req, res) => {
-  Staff.find({ username: req.body.aUsername }, async (err, users_found) => {
-    if (err) {
-      redirectFunc(false, "Thêm tài khoản thất bại!", rootRoute, req, res);
-    } else if (users_found.length) {
-      redirectFunc(false, "Tên đăng nhập này đã tồn tại!", rootRoute, req, res);
-    } else {
-      const salt = await bcrypt.genSalt(10);
-      const hashPassword = await bcrypt.hash(req.body.aPassword, salt);
-      let newAcc = new Account({
-        aUsername: req.body.aUsername,
-        aPassword: hashPassword,
-        rId: req.body.rId,
-      });
-      try {
-        let accSaved = await newAcc.save();
-        let newStaff = new Staff({
-          sName: req.body.sName,
-          sDofB: req.body.sDofB,
-          sNumber: req.body.sNumber,
-          sEmail: req.body.sEmail,
-          sImg: req.file?.filename,
-          sState: req.body.sState == "on",
-          sJoinAt: new Date(),
-          aId: accSaved._id,
+  Staff.find(
+    { username: req.body.aUsername.trim().toLowerCase() },
+    async (err, users_found) => {
+      if (err) {
+        redirectFunc(false, "Tên tài khoản đã tồn tại!", rootRoute, req, res);
+      } else if (users_found.length) {
+        redirectFunc(
+          false,
+          "Tên đăng nhập này đã tồn tại!",
+          rootRoute,
+          req,
+          res
+        );
+      } else {
+        const salt = await bcrypt.genSalt(10);
+        const hashPassword = await bcrypt.hash(req.body.aPassword, salt);
+        let newAcc = new Account({
+          aUsername: req.body.aUsername.trim().toLowerCase(),
+          aPassword: hashPassword,
+          rId: req.body.rId,
         });
-        await newStaff.save();
-        redirectFunc(true, "Đã thêm thành viên", rootRoute, req, res);
-      } catch (error) {
-        redirectFunc(false, "Cấp tài khoản thất bại!", rootRoute, req, res);
+        try {
+          let accSaved = await newAcc.save();
+          let newStaff = new Staff({
+            sName: req.body.sName.trim(),
+            sDofB: req.body.sDofB,
+            sNumber: req.body.sNumber,
+            sEmail: req.body.sEmail,
+            sImg: req.file?.filename,
+            sState: req.body.sState == "on",
+            sJoinAt: new Date(),
+            aId: accSaved._id,
+          });
+          await newStaff.save();
+          redirectFunc(true, "Đã thêm thành viên", rootRoute, req, res);
+        } catch (error) {
+          redirectFunc(false, "Cấp tài khoản thất bại!", rootRoute, req, res);
+        }
       }
     }
-  });
+  );
   return;
 };
 
 module.exports.update = async (req, res) => {
   let updStaff = {
-    sName: req.body.sName,
+    sName: req.body.sName.trim(),
     sDofB: req.body.sDofB,
     sNumber: req.body.sNumber,
     sEmail: req.body.sEmail,

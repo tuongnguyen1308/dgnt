@@ -8,6 +8,11 @@ let Product = Schema(
       required: true,
       unique: true,
     },
+    slugName: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     pUnit: {
       type: String,
       required: true,
@@ -53,7 +58,7 @@ let Product = Schema(
       {
         mId: {
           type: Schema.Types.ObjectId,
-          rel: "col_material",
+          ref: "col_material",
         },
         mQuantity: {
           type: Number,
@@ -64,7 +69,7 @@ let Product = Schema(
     ],
     pcId: {
       type: Schema.Types.ObjectId,
-      rel: "col_category",
+      ref: "col_category",
     },
     sId: {
       type: Schema.Types.ObjectId,

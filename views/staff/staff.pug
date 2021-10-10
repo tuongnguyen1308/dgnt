@@ -23,6 +23,10 @@ block content
 								| #{user.sNumber || "Chưa thêm SĐT"}
 								br
 								| #{user.sEmail || "Chưa thêm email"}
+								br
+								- var ca = user.sJoinAt;
+								- user.sJoinAt = ca.setUTCHours(ca.getUTCHours() + 7);
+								| TG vào làm: #{user.sJoinAt.toISOString().slice(0,10).split('-').reverse().join('/')}
 							if sess.rId.rName == "Quản lý" && user.aId.rId.rName != "Quản lý"
 								.card-text.text-center
 									.btn-group(role="group")
@@ -48,15 +52,15 @@ block content
 					.modal-body.d-flex.flex-lg-row.flex-column
 						.flex-fill.w-100
 							.form.pe-0.pe-lg-3
-								span.required Thông tin tài khoản
+								span Thông tin tài khoản
 								.form-label-group
-									input#aUsername.form-control(name="aUsername" type="text" placeholder="Tên tài khoản" required="true" maxlength="50")
-									label(for="aUsername") Tên tài khoản
-									.invalid-feedback Tên tài khoản không được để trống
+									input#aUsername.form-control(name="aUsername" type="text" placeholder="Tên tài khoản" required)
+									label.required(for="aUsername") Tên tài khoản
+									.invalid-feedback Tên tài khoản là bắt buộc
 								.form-label-group
-									input#aPassword.form-control(name="aPassword" type="password" placeholder="Mật khẩu" required="true" maxlength="50")
-									label(for="aPassword") Mật khẩu
-									.invalid-feedback Mật khẩu phải chứa ít nhất 6 kí tự
+									input#aPassword.form-control(name="aPassword" type="password" placeholder="Mật khẩu" required)
+									label.required(for="aPassword") Mật khẩu
+									.invalid-feedback Mật khẩu là bắt buộc
 								.form-floating.mb-2
 									select#rId.form-select(name="rId" required="true")
 										each role in roles
@@ -64,18 +68,22 @@ block content
 									label(for="rId") Quyền
 								span Thông tin cá nhân
 								.form-label-group
-									input#sName.form-control(name="sName" type="text" placeholder="Tên nhân viên" maxlength="50")
-									label(for="sName") Tên nhân viên
+									input#sName.form-control(name="sName" type="text" placeholder="Tên nhân viên" required)
+									label.required(for="sName") Tên nhân viên
+									.invalid-feedback Tên nhân viên là bắt buộc
 								.d-flex
 									.flex-fill.form-label-group.pe-2
 										input#sDofB.form-control(name="sDofB" type="date")
 										label(for="sDofB") Ngày sinh
+										.invalid-feedback Ngày sinh không hợp lệ
 									.flex-fill.form-label-group
-										input#sNumber.form-control(name="sNumber" type="text" placeholder="Số điện thoại" maxlength="10")
-										label(for="sNumber") Số điện thoại
+										input#sNumber.form-control(name="sNumber" type="text" placeholder="Số điện thoại" required)
+										label.required(for="sNumber") Số điện thoại
+										.invalid-feedback Số điện thoại là bắt buộc
 								.form-label-group
-									input#sEmail.form-control(name="sEmail" type="email" placeholder="Email")
-									label(for="sEmail") Email
+									input#sEmail.form-control(name="sEmail" type="email" placeholder="Email" required)
+									label.required(for="sEmail") Email
+									.invalid-feedback Email là bắt buộc
 								.form-check.form-switch.fs-6
 									input#sState.form-check-input(name="sState" type='checkbox' checked='true' role="button")
 									label.form-check-label(for='sState') Đang làm việc

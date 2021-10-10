@@ -72,6 +72,7 @@ const sPrdreqRoute = require("./routes/staff/rPrdreq");
 const cHomeR = require("./routes/customer/rHome");
 const cCustomerR = require("./routes/customer/rCustomer");
 const cPersonalR = require("./routes/customer/rPersonal");
+const cCartR = require("./routes/customer/rCart");
 const cAboutR = require("./routes/customer/rAbout");
 //#region staff
 app.use("/dashboard", mwAuthS.Auth, sDashboardR);
@@ -94,11 +95,12 @@ app.use("/prdreq", mwAuthS.Auth, sPrdreqRoute);
 //#endregion
 
 //#region customber
-app.use("/", cHomeR);
 app.use("/customer", cCustomerR);
 app.use("/personal", mwAuthC.Auth, cPersonalR);
+app.use("/cart", mwAuthC.Auth, cCartR);
 
 app.use("/shop-about", cAboutR);
+app.use("/", cHomeR);
 //#endregion
 //#endregion
 

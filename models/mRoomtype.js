@@ -8,6 +8,11 @@ let RoomtypeScheme = mongoose.Schema(
       required: true,
       unique: true,
     },
+    slugName: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     rtImg: {
       type: String,
       default: "default.png",

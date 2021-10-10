@@ -1,0 +1,76 @@
+:root {
+  --brown: #653208;
+  --darkbrown: #4e2707;
+  --darkerbrown: #3d1f06;
+  --lightbrown: #f1e1d4;
+  --lesslightbrown: #d9a275;
+  --blackbrown: #1f0f03;
+}
+.bg-orange-100 {
+  background-color: #ffe5d0;
+}
+
+.btn-hover_danger:hover {
+  color: #dc3545 !important;
+}
+
+.border-brown {
+  border-color: var(--brown) !important;
+}
+
+.text-brown {
+  color: var(--brown);
+}
+
+a.text-brown:hover,
+button.text-brown:hover {
+  color: #000 !important;
+}
+
+.text-hover-brown:hover {
+  color: var(--brown) !important;
+}
+
+.btn-outline-brown {
+  background-color: #fff;
+  color: var(--brown);
+  border: 1px solid var(--brown);
+}
+.btn-outline-brown:hover {
+  background-color: var(--brown);
+  color: #fff !important;
+}
+
+.bg-brown {
+  background-color: var(--brown);
+  color: #fff;
+}
+
+.btn-brown {
+  background-color: var(--brown);
+  color: #fff;
+}
+
+.btn-brown:hover {
+  background-color: var(--darkbrown);
+  color: #fff;
+}
+
+.btn-brown:active {
+  background-color: var(--darkerbrown);
+  color: #fff;
+}
+.bg-black-brown {
+  background-color: var(--blackbrown);
+}
+
+.text-brown.active,
+.text-brown.active:hover {
+  background-color: var(--lesslightbrown) !important;
+  color: #000;
+}
+
+.nav-tabs.brown .nav-link.active {
+  background-color: var(--brown);
+  color: #fff !important;
+}

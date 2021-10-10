@@ -8,6 +8,11 @@ let CategoryScheme = mongoose.Schema(
       required: true,
       unique: true,
     },
+    slugName: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     pcImg: {
       type: String,
       default: "default.png",

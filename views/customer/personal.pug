@@ -1,7 +1,13 @@
 extends ./layout.pug
 block content
-	nav.mt-3.mx-auto(style="max-width:1200px;")
-		#nav-tab.nav.nav-tabs(role='tablist')
+	nav.mx-auto(style="max-width:1200px;")
+		nav.py-3(aria-label="breadcrumb")
+			ol.breadcrumb.m-0
+				li.breadcrumb-item
+					a.text-brown.text-decoration-none(href="/") Trang chủ
+				li.breadcrumb-item.active
+					span.text-decoration-none= pI.title
+		#nav-tab.nav.nav-tabs.brown(role='tablist')
 			button#nav-personal-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-personal' type='button' role='tab' aria-controls='nav-personal' aria-selected='true') Thông tin cá nhân
 			button#nav-changepassword-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-changepassword' type='button' role='tab' aria-controls='nav-changepassword' aria-selected='false') Đổi mật khẩu
 		#nav-tabContent.tab-content
@@ -23,27 +29,30 @@ block content
 								.my-2.fs-6 Tên tài khoản: 
 									b= sess.aUsername
 								.form-label-group
-									input#cName.form-control(name="cName" type="text" placeholder="Họ tên" value= personal? personal.cName : '' maxlength="50")
-									label(for="cName") Họ tên
+									input#cName.form-control(name="cName" type="text" placeholder="Họ tên" value= personal.cName required)
+									label.required(for="cName") Họ tên
+									.invalid-feedback Họ tên là bắt buộc
 								.form-label-group
 									input#cDofB.form-control(name="cDofB" type="date" value= personal? personal.cDofB : '')
 									label(for="cDofB") Ngày sinh
+									.invalid-feedback Ngày sinh không hợp lệ
 								.form-label-group
-									input#cNumber.form-control(name="cNumber" type="text" placeholder="Số điện thoại" value=personal? personal.cNumber : '' maxlength="10")
-									label(for="cNumber") Số điện thoại
+									input#cNumber.form-control(name="cNumber" type="text" placeholder="Số điện thoại" value= personal.cNumber required)
+									label.required(for="cNumber") Số điện thoại
+									.invalid-feedback Số điện thoại là bắt buộc
 								.form-label-group
-									input#cEmail.form-control(name="cEmail" type="email" placeholder="Email" value= personal? personal.cEmail : '' maxlength="50")
+									input#cEmail.form-control(name="cEmail" type="email" placeholder="Email" value= personal? personal.cEmail : '')
 									label(for="cEmail") Email
 									.invalid-feedback Email không hợp lệ
 					.d-grid.mt-3.mx-auto(style="max-width:800px")
-						button.btn.btn-block.btn-primary(type="submit") Cập nhật
+						button.btn.btn-block.btn-brown(type="submit") Cập nhật
 			#nav-changepassword.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-changepassword-tab')
 				form.needs-validation(method="post" action="/personal/change-password" novalidate)
 					.d-grid.m-auto(style="max-width:400px")
 						.form-label-group
-							input#newPassword.form-control(name="newPassword" type="password" placeholder="Mật khẩu mới" autocomplete="off" minlength="6" maxlength="50" required)
+							input#newPassword.form-control(name="newPassword" type="password" placeholder="Mật khẩu mới" autocomplete="off" minlength="6" required)
 							label(for="newPassword") Mật khẩu mới
-							.invalid-feedback Mật khẩu phải có ít nhất 6 kí tự
+							.invalid-feedback Mật khẩu tối thiểu 6 kí tự
 						.form-label-group
 							input#newPassword2.form-control(name="newPassword2" type="password" placeholder="Nhập lại mật khẩu mới" autocomplete="off" maxlength="50" required)
 							label(for="newPassword2") Nhập lại mật khẩu mới
@@ -53,7 +62,7 @@ block content
 							label(for="oldPassword") Xác nhận bằng mật khẩu cũ
 							.invalid-feedback Mật khẩu cũ không được để trống
 					.d-grid.m-auto(style="max-width:400px")
-						button.btn.btn-block.btn-primary(type="submit") Cập nhật
+						button.btn.btn-block.btn-brown(type="submit") Cập nhật
 
 
 

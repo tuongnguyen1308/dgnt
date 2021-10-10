@@ -49,7 +49,7 @@ module.exports.index = async (req, res) => {
 module.exports.update = async (req, res) => {
   const sess = req.session.user;
   let updStaff = {
-    sName: req.body.sName,
+    sName: req.body.sName.trim(),
     sDofB: req.body.sDofB,
     sNumber: req.body.sNumber,
     sEmail: req.body.sEmail,
@@ -59,10 +59,7 @@ module.exports.update = async (req, res) => {
     updStaff.sImg = sImg;
   }
   try {
-    let staffSaved = await Staff.findOneAndUpdate(
-      { aId: sess._id },
-      { $set: updStaff }
-    );
+    await Staff.findOneAndUpdate({ aId: sess._id }, { $set: updStaff });
     redirectFunc(true, "Cập nhật thành công!", rootRoute, req, res);
   } catch (error) {
     redirectFunc(false, "Cập nhật thất bại!", rootRoute, req, res);

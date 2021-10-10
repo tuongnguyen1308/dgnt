@@ -2,7 +2,7 @@ const Product = require("../../models/mProduct");
 const pI = { title: "Quản lý sản phẩm", url: "product" };
 const rootRoute = `/${pI.url}-management`;
 
-let redirectFunc = (state, text, dir, req, res) => {
+const redirectFunc = (state, text, dir, req, res) => {
   req.session.messages = {
     icon: state ? "check-circle" : "alert-circle",
     color: state ? "success" : "danger",
@@ -12,6 +12,14 @@ let redirectFunc = (state, text, dir, req, res) => {
   res.redirect(dir);
   return;
 };
+
+const createSlug = (text) =>
+  text
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .split(" ")
+    .join("-")
+    .toLowerCase();
 
 module.exports.index = async (req, res) => {
   res.redirect(rootRoute);
@@ -47,6 +55,7 @@ module.exports.add = async (req, res) => {
       try {
         let newProduct = new Product({
           pName: req.body.pName,
+          slugName: createSlug(req.body.pName),
           pUnit: req.body.pUnit,
           pSize: req.body.pSize,
           pPrice: req.body.pPrice,
@@ -121,6 +130,7 @@ module.exports.update = async (req, res) => {
         }
         let updProduct = {
           pName: req.body.pName,
+          slugName: createSlug(req.body.pName),
           pUnit: req.body.pUnit,
           pSize: req.body.pSize,
           pPrice: req.body.pPrice,

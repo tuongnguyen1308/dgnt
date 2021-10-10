@@ -9,47 +9,41 @@ html(lang="en")
         link(rel="icon" href="img/icon/main-icon-sm.png")
         link(rel="stylesheet" href="plugin/bootstrap/css/bootstrap.min.css")
         link(rel="stylesheet" href="plugin/jquery-ui/jquery-ui.min.css")
+        link(rel="stylesheet" href="plugin/summernote/summernote.min.css")
         link(rel="stylesheet" href="css/carousel.css")
         link(rel="stylesheet" href="css/common.css")
+        link(rel="stylesheet" href="css/colors.css")
         script(src="plugin/jquery/js/jquery.min.js", defer)
         script(src="plugin/jquery-ui/jquery-ui.min.js" defer)
         script(src="plugin/bootstrap/js/bootstrap.bundle.min.js", defer)
         script(src="plugin/bootstrap/js/popper.min.js", defer)
         script(src="plugin/feather/js/feather.min.js", defer)
+        script(src="plugin/summernote/summernote.min.js" defer)
         script(src="plugin/Chart/js/Chart.min.js", defer)
         script(src="js/common.js", defer)
-        title Nội Thât Tuấn Trang
-    body.position-relative(style="min-height: 100vh;")
-        nav.navbar.navbar-expand-md.navbar-dark.fixed-top.bg-dark.bg-wood
-            .container-fluid(style='max-width: 1200px;')
-                a.navbar-brand(href='/') Logo
-                .collapse.navbar-collapse
-                    ul.navbar-nav.mb-2.mb-md-0
-                        li.nav-item.dropdown
-                            a#dropdown01.nav-link.dropdown-toggle(href='#' data-bs-toggle='dropdown' aria-expanded='false') Danh mục
-                            ul.dropdown-menu(aria-labelledby='dropdown01')
-                                li
-                                    a.dropdown-item(href='#')
-                                        img(src='D://giuong.jpg' width='50px')
-                                        |  Giường
-                                li
-                                    a.dropdown-item(href='#') Another action
-                                li
-                                    a.dropdown-item(href='#') Something else here
-                        li.nav-item
-                            a.nav-link(aria-current='page' href='/shop-about') Giới thiệu
+        script(src=`js/${pI.url}.js`, defer)
+        title= shopinfo.siName || ""
+        - var maxWidth = 1200
+    body.position-relative(style="min-height: 100vh; padding-bottom: 10rem;")
+        nav.navbar.navbar-expand-md.fixed-top.bg-white
+            .container-fluid(style=`max-width: ${maxWidth}px;`)
+                a.navbar-brand.p-0(href='/')
+                    img.img-fluid(src=`img/logo/${shopinfo.siLogo || 'default.png'}` style="height:42px;")
+                ul.navbar-nav.me-auto.collapse.navbar-collapse
+                    li.nav-item
+                        span.text-brown(href='#') Hotline: #{shopinfo.siHotline}
                 form.w-50
                     .input-group
-                        input.form-control.border-white(type='text' placeholder='Tìm kiếm sản phẩm' aria-label="Recipient's username" aria-describedby='button-addon2')
-                        button#button-addon2.btn.bg-white(type='button')
-                            i.text-warning(data-feather="search")
+                        input.form-control.border-dark.border-end-0.border-brown.pe-0(type='text' placeholder='Tìm kiếm sản phẩm' aria-label="Recipient's username" aria-describedby='button-addon2')
+                        button#button-addon2.btn.btn-outline-brown.text-brown.border-start-0.p-2(type='button')
+                            i(data-feather="search")
                 ul.navbar-nav.list-group-horizontal
                     li.nav-item.mx-2(rel="tooltip" data-bs-placement="bottom" title="Giỏ hàng")
-                        a.nav-link(href='#')
+                        a.nav-link.text-dark.text-hover-brown(href='/cart')
                             i(data-feather="shopping-cart")
                     if sess
                         li.nav-item.dropdown
-                            a#user-dropdown.nav-link.dropdown-toggle.user-select-none(role="button" data-bs-toggle='dropdown' aria-expanded='false')
+                            a#user-dropdown.nav-link.dropdown-toggle.user-select-none.text-dark.text-hover-brown(role="button" data-bs-toggle='dropdown' aria-expanded='false')
                                 i(data-feather="user")
                             ul.dropdown-menu.p-0.position-absolute(aria-labelledby='user-dropdown' style="min-width:unset; right:0; left:unset;")
                                 li
@@ -60,10 +54,21 @@ html(lang="en")
                                     a.dropdown-item(href='/customer/logout') Đăng xuất
                     else
                         li.nav-item.mx-2(rel="tooltip" data-bs-placement="bottom" title="Đăng nhập/Đăng ký")
-                            a.nav-link(role="button" data-bs-toggle="modal" data-bs-target="#modal-signin" rel="call-modal")
+                            a.nav-link.text-dark.text-hover-brown(role="button" data-bs-toggle="modal" data-bs-target="#modal-signin" rel="call-modal")
                                 i(data-feather="log-in")
-
-        main.mt-2.flex-shrink-0
+        header.mt-2.bg-brown
+            .container-fluid(style=`max-width: ${maxWidth}px;`)
+                ul.nav
+                    each rt, index in menubar
+                        li.nav-item.py-2.dropdown-trigger.position-relative
+                            a.nav-link.fw-bold.text-light.px-2.px-md-4(href= rt.url)= rt.title
+                            ul.dropdown-items.bg-white.mt-2.w-100
+                                each pc in rt.pcs
+                                    li
+                                        a.p-2.text-dark(href= pc.url)= pc.title
+                    li.nav-item.py-2.ms-auto.dropdown-trigger
+                        a.nav-link.fw-bold.text-light.px-2.px-md-4(href='shop-info') Giới thiệu
+        main.flex-shrink-0.bg-light
             if messages
                 #toast.toast.position-absolute.m-2.end-0.z-index-3(role='alert' aria-live='assertive' aria-atomic='true' data-bs-animation="true")
                     .toast-header.text-white(class= `bg-${messages.color}`)
@@ -74,82 +79,96 @@ html(lang="en")
                     #messages-text.toast-body= messages.text
             block content
 
-        // FOOTER
-        footer.position-absolute.bottom-0.w-100.bg-dark.py-3
-            .mx-auto(style="max-width:1200px")
-                p.float-end.mb-0
-                    a(href='#') Back to top
-                p.mb-0 © 2021 Company, Inc
+            // FOOTER
+            footer.position-absolute.bottom-0.w-100.bg-black-brown.py-3
+                .container-fluid.mx-auto(style="max-width:1200px")
+                    .row
+                        .col-6
+                            h5.text-light= shopinfo.siName || ""
+                            ul.list-unstyled.text-small.mb-0
+                                each rt in menubar
+                                    li
+                                        a.link-secondary.text-decoration-none(href= rt.url)= rt.title
+                        .col-6
+                            h5.text-light Về cửa hàng
+                            ul.list-unstyled.text-small.mb-0
+                                li.link-secondary= `Hotline: ${shopinfo.siHotline || ''}`
+                                li.link-secondary= `Địa chỉ: ${shopinfo.siAddress || ''}`
+                                li
+                                    a.link-secondary.text-decoration-none(href=shopinfo.siFacebook || '' target="_blank") Facebook
+                                li
+                                    a.link-secondary.text-decoration-none(href='#') Zalo
 
-        //- Modal add/update
-        if !sess
-            #modal-signin.modal.fade
-                .modal-dialog
-                    .modal-content
-                        .modal-body
-                            #nav-tab.nav.nav-tabs.align-items-center.nav-fill(role='tablist')
-                                button#nav-signin-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-signin' type='button' role='tab' aria-controls='nav-signin' aria-selected='true') Đăng nhập
-                                button#nav-signup-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-signup' type='button' role='tab' aria-controls='nav-signup' aria-selected='false') Đăng ký
-                                .ms-2.ms-md-5.text-right
-                                    button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
-                            #nav-tabContent.tab-content
-                                #nav-signin.tab-pane.fade.pt-3(role='tabpanel' aria-labelledby='nav-signin-tab')
-                                    form.d-grid.needs-validation(method="post" action="/customer/auth" tabindex="-1" role="dialog" aria-hidden="true" novalidate)
-                                        input(type="hidden" name="curPage" value=pI.url)
-                                        .form-label-group
-                                            input#si_username.form-control(name="si_username" type="text" placeholder="Tên tài khoản" required="true" maxlength="50")
-                                            label(for="si_username") Tên tài khoản
-                                            .invalid-feedback Tên tài khoản là bắt buộc
-                                        .form-label-group
-                                            input#si_password.form-control(name="si_password" type="password" placeholder="Mật khẩu" required="true" maxlength="50")
-                                            label(for="si_password") Mật khẩu
-                                            .invalid-feedback Mật khẩu là bắt buộc
-                                        button.btn.btn-block.btn-primary(type="submit") Đăng nhập
-                                #nav-signup.tab-pane.fade.pt-3(role='tabpanel' aria-labelledby='nav-signup-tab')
-                                    form.needs-validation(method="post" action="/customer/signup" tabindex="-1" role="dialog" aria-hidden="true" enctype="multipart/form-data" novalidate)
-                                        input(type="hidden" name="curPage" value=pI.url)
-                                        span Thông tin tài khoản
-                                        .form-label-group
-                                            input#su_username.form-control(name="su_username" type="text" placeholder="Tên tài khoản" required="true" maxlength="50")
-                                            label.required(for="su_username") Tên tài khoản
-                                            .invalid-feedback Tên tài khoản là bắt buộc
-                                        .row
-                                            .col-12.col-md-6.form-label-group
-                                                input#su_password.form-control(name="su_password" type="password" placeholder="Mật khẩu" required="true" maxlength="50")
-                                                label.ms-2.ps-3.required(for="su_password") Mật khẩu
+
+            //- Modal sign in/sign up
+            if !sess
+                #modal-signin.modal.fade
+                    .modal-dialog
+                        .modal-content
+                            .modal-body
+                                #nav-tab.nav.nav-tabs.align-items-center.nav-fill(role='tablist')
+                                    button#nav-signin-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-signin' type='button' role='tab' aria-controls='nav-signin' aria-selected='true') Đăng nhập
+                                    button#nav-signup-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-signup' type='button' role='tab' aria-controls='nav-signup' aria-selected='false') Đăng ký
+                                    .ms-2.ms-md-5.text-right
+                                        button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
+                                #nav-tabContent.tab-content
+                                    #nav-signin.tab-pane.fade.pt-3(role='tabpanel' aria-labelledby='nav-signin-tab')
+                                        form.d-grid.needs-validation(method="post" action="/customer/auth" tabindex="-1" role="dialog" aria-hidden="true" novalidate)
+                                            input(type="hidden" name="curPage" value=pI.url)
+                                            .form-label-group
+                                                input#si_username.form-control(name="si_username" type="text" placeholder="Tên tài khoản" required="true" maxlength="50")
+                                                label(for="si_username") Tên tài khoản
+                                                .invalid-feedback Tên tài khoản là bắt buộc
+                                            .form-label-group
+                                                input#si_password.form-control(name="si_password" type="password" placeholder="Mật khẩu" required="true" maxlength="50")
+                                                label(for="si_password") Mật khẩu
                                                 .invalid-feedback Mật khẩu là bắt buộc
-                                            .col-12.col-md-6.form-label-group
-                                                input#su_repassword.form-control(name="su_repassword" type="password" placeholder="Nhập lại mật khẩu" required="true" maxlength="50")
-                                                label.ms-2.ps-3.required(for="su_repassword") Nhập lại mật khẩu
-                                                .invalid-feedback Nhập lại mật khẩu không đúng
-                                        span Thông tin cá nhân
-                                        .row
-                                            .col-12.col-md-6.form-label-group
-                                                input#cName.form-control(name="cName" type="text" placeholder="Họ tên" required maxlength="50")
-                                                label.ms-2.ps-3.required(for="cName") Họ tên
-                                                .invalid-feedback Họ tên là bắt buộc
-                                            .col-12.col-md-6.form-label-group
-                                                input#cNumber.form-control(name="cNumber" type="text" placeholder="Số điện thoại" required maxlength="10")
-                                                label.ms-2.ps-3.required(for="cNumber") Số điện thoại
-                                                .invalid-feedback Số điện thoại là bắt buộc
-                                            .col-12.col-md-6.form-label-group
-                                                input#cDofB.form-control(name="cDofB" type="date")
-                                                label.ms-2.ps-3(for="cDofB") Ngày sinh
-                                                .invalid-feedback Ngày sinh không hợp lệ
-                                            .col-12.col-md-6.form-label-group
-                                                input#cEmail.form-control(name="cEmail" type="email" placeholder="Email")
-                                                label.ms-2.ps-3(for="cEmail") Email
-                                                .invalid-feedback Email không hợp lệ
-                                        .position-relative.mb-3
-                                            label#cimg-preview.img-box.w-100.align-middle(for="cImg" style=`height:400px`).d-flex.justify-content-center.align-items-center
-                                                input#cImg.btn.btn-success(type="file" name="cImg" accept="image/png, image/jpeg")
-                                                .title.h-100.d-flex.justify-content-center.align-items-center
-                                                    span(data-feather="upload")
-                                                    span.ms-2 Chọn ảnh
-                                                img#img-preview.d-none(src="" height=`400px`)
-                                            span.file_remove.d-none(data-feather="x")
-                                            .text-danger.d-none(role="errMessage")
-                                                span.small
-                                        .d-grid
-                                            button.btn.btn-block.btn-primary(type="submit") Đăng ký
-        //- End Modal add/update
+                                            button.btn.btn-block.btn-brown(type="submit") Đăng nhập
+                                    #nav-signup.tab-pane.fade.pt-3(role='tabpanel' aria-labelledby='nav-signup-tab')
+                                        form.needs-validation(method="post" action="/customer/signup" tabindex="-1" role="dialog" aria-hidden="true" enctype="multipart/form-data" novalidate)
+                                            input(type="hidden" name="curPage" value=pI.url)
+                                            span Thông tin tài khoản
+                                            .form-label-group
+                                                input#su_username.form-control(name="su_username" type="text" placeholder="Tên tài khoản" required="true" maxlength="50")
+                                                label.required(for="su_username") Tên tài khoản
+                                                .invalid-feedback Tên tài khoản là bắt buộc
+                                            .row
+                                                .col-12.col-md-6.form-label-group
+                                                    input#su_password.form-control(name="su_password" type="password" placeholder="Mật khẩu" required="true")
+                                                    label.ms-2.ps-3.required(for="su_password") Mật khẩu
+                                                    .invalid-feedback Mật khẩu là bắt buộc
+                                                .col-12.col-md-6.form-label-group
+                                                    input#su_repassword.form-control(name="su_repassword" type="password" placeholder="Nhập lại mật khẩu" required="true" maxlength="50")
+                                                    label.ms-2.ps-3.required(for="su_repassword") Nhập lại mật khẩu
+                                                    .invalid-feedback Nhập lại mật khẩu không đúng
+                                            span Thông tin cá nhân
+                                            .row
+                                                .col-12.col-md-6.form-label-group
+                                                    input#cName.form-control(name="cName" type="text" placeholder="Họ tên" required maxlength="50")
+                                                    label.ms-2.ps-3.required(for="cName") Họ tên
+                                                    .invalid-feedback Họ tên là bắt buộc
+                                                .col-12.col-md-6.form-label-group
+                                                    input#cNumber.form-control(name="cNumber" type="text" placeholder="Số điện thoại" required)
+                                                    label.ms-2.ps-3.required(for="cNumber") Số điện thoại
+                                                    .invalid-feedback Số điện thoại là bắt buộc
+                                                .col-12.col-md-6.form-label-group
+                                                    input#cDofB.form-control(name="cDofB" type="date")
+                                                    label.ms-2.ps-3(for="cDofB") Ngày sinh
+                                                    .invalid-feedback Ngày sinh không hợp lệ
+                                                .col-12.col-md-6.form-label-group
+                                                    input#cEmail.form-control(name="cEmail" type="email" placeholder="Email")
+                                                    label.ms-2.ps-3(for="cEmail") Email
+                                                    .invalid-feedback Email không hợp lệ
+                                            .position-relative.mb-3
+                                                label#cimg-preview.img-box.w-100.align-middle(for="cImg" style=`height:400px`).d-flex.justify-content-center.align-items-center
+                                                    input#cImg.btn.btn-success(type="file" name="cImg" accept="image/png, image/jpeg")
+                                                    .title.h-100.d-flex.justify-content-center.align-items-center
+                                                        span(data-feather="upload")
+                                                        span.ms-2 Chọn ảnh
+                                                    img#img-preview.d-none(src="" height=`400px`)
+                                                span.file_remove.d-none(data-feather="x")
+                                                .text-danger.d-none(role="errMessage")
+                                                    span.small
+                                            .d-grid
+                                                button.btn.btn-block.btn-brown(type="submit") Đăng ký
+            //- End Modal sign in/sign up

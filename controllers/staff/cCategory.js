@@ -2,7 +2,7 @@ const Category = require("../../models/mCategory");
 const pI = { title: "Quản lý sản phẩm", url: "product" };
 const rootRoute = `/${pI.url}-management`;
 
-let redirectFunc = (state, text, dir, req, res) => {
+const redirectFunc = (state, text, dir, req, res) => {
   req.session.messages = {
     icon: state ? "check-circle" : "alert-circle",
     color: state ? "success" : "danger",
@@ -12,6 +12,14 @@ let redirectFunc = (state, text, dir, req, res) => {
   res.redirect(dir);
   return;
 };
+
+const createSlug = (text) =>
+  text
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .split(" ")
+    .join("-")
+    .toLowerCase();
 
 module.exports.index = async (req, res) => {
   res.redirect(dir);
@@ -29,6 +37,7 @@ module.exports.add = async (req, res) => {
       let newCategory = new Category({
         pcName,
         pcImg: req.file.filename,
+        slugName: createSlug(pcName),
         rtId: req.body.rtId,
         sId: sess.sId,
       });
@@ -41,6 +50,7 @@ module.exports.add = async (req, res) => {
 module.exports.update = async (req, res) => {
   let updCategory = {
     pcName: req.body.pcName,
+    slugName: createSlug(req.body.pcName),
     rtId: req.body.rtId,
   };
   let pcImg = req.file?.filename || false;

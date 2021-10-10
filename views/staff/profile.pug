@@ -31,25 +31,28 @@ block content
 									.my-2.fs-6 Quyền: 
 										b= profile.aId.rId.rName
 									.form-label-group
-										input#sName.form-control(name="sName" type="text" placeholder="Họ tên" value= profile.sName maxlength="50")
-										label(for="sName") Họ tên
+										input#sName.form-control(name="sName" type="text" placeholder="Họ tên" value= profile.sName required)
+										label.required(for="sName") Họ tên
+										.invalid-feedback Họ tên là bắt buộc
 									.form-label-group
 										input#sDofB.form-control(name="sDofB" type="date" value= profile.sDofB)
 										label(for="sDofB") Ngày sinh
+										.invalid-feedback Ngày sinh không hợp lệ
 									.form-label-group
-										input#sNumber.form-control(name="sNumber" type="text" placeholder="Số điện thoại" value= profile.sNumber maxlength="10")
-										label(for="sNumber") Số điện thoại
+										input#sNumber.form-control(name="sNumber" type="text" placeholder="Số điện thoại" value= profile.sNumber required)
+										label.required(for="sNumber") Số điện thoại
+										.invalid-feedback Số điện thoại là bắt buộc
 									.form-label-group
-										input#sEmail.form-control(name="sEmail" type="email" placeholder="Email" value= profile.sEmail maxlength="50")
-										label(for="sEmail") Email
-										.invalid-feedback Email không hợp lệ
+										input#sEmail.form-control(name="sEmail" type="email" placeholder="Email" value= profile.sEmail required)
+										label.required(for="sEmail") Email
+										.invalid-feedback Email là bắt buộc
 						.d-grid.m-auto(style="max-width:800px")
 							button.btn.btn-block.btn-primary(type="submit") Cập nhật
 				#nav-changepassword.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-changepassword-tab')
 					form.needs-validation(method="post" action="/profile/change-password" novalidate)
 						.d-grid.m-auto(style="max-width:400px")
 							.form-label-group
-								input#newPassword.form-control(name="newPassword" type="password" placeholder="Mật khẩu mới" autocomplete="off" minlength="6" maxlength="50" required)
+								input#newPassword.form-control(name="newPassword" type="password" placeholder="Mật khẩu mới" autocomplete="off" minlength="6" required)
 								label(for="newPassword") Mật khẩu mới
 								.invalid-feedback Mật khẩu phải có ít nhất 6 kí tự
 							.form-label-group

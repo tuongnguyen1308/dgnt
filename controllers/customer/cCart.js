@@ -1,10 +1,11 @@
 const Shopinfo = require("../../models/mShopInfo");
+const Account = require("../../models/mAccount");
 const Roomtype = require("../../models/mRoomtype");
 const Category = require("../../models/mCategory");
 const Product = require("../../models/mProduct");
 const Banner = require("../../models/mBanner");
 
-const pI = { title: "Trang chủ", url: "home" };
+const pI = { title: "Giỏ hàng", url: "cart" };
 
 let shopinfo;
 let menubar = [];

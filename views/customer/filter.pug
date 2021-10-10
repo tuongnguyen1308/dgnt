@@ -1,0 +1,41 @@
+extends ./layout.pug
+block content
+	.container-fluid.pb-5(style=`max-width: ${maxWidth}px;`)
+		nav.py-3(aria-label="breadcrumb")
+			ol.breadcrumb.m-0
+				li.breadcrumb-item
+					a.text-brown.text-decoration-none(href="/") Trang chủ
+				li.breadcrumb-item
+					a.text-brown.text-decoration-none(href="/"+ rtFound.slugName)= rtFound.rtName
+				if pcFound
+					li.breadcrumb-item.active
+						span.text-decoration-none= pcFound.pcName
+
+		h5.bg-white.border-bottom.rounded
+			a.d-inline-block.bg-brown.p-3.text-decoration-none.text-white(href= "/" + rtFound.slugName)= rtFound.rtName
+		.row.g-3
+			.col-12.col-md-3
+				ul.list-group.bg-white
+					each pc in pcFounds
+						a.text-decoration-none.rounded(href= "/" + pc.slugName)
+							li.list-group-item.bg-hover-brown_light.text-brown.border-0(class= (pcFound && pcFound.slugName == pc.slugName)? "active" : "")= pc.pcName
+			.col-12.col-md-9
+				.row.row-cols-2.row-cols-md-3.g-3.mb-5
+					each p in prds
+						.col
+							.card.h-100.product-card.border-0
+								a.position-relative.overflow-hidden(href= p.url)
+									img.card-img-top.hover-zoom(src=`img/products/${p.img}`)
+									.bg-blur.position-absolute.w-100.h-100.top-0.bg-dark
+									.btn-detail.position-absolute.top-100.start-50.btn.btn-brown.p-2.d-flex.align-items-center
+										span(data-feather="eye")
+										span.ms-1 Chi tiết
+								.card-body
+									a.card-title.text-decoration-none.text-brown.fw-bold(href= p.url)= p.title
+									.fs-5
+										del.fs-6.small.text-secondary= p.price
+										span.fs-6.small.text-dark= ` (-${p.disc}%)`
+										.text-danger.fw-bold= p.priceAfter
+					else
+						.col-12.text-center
+							h4 Không tìm thấy sản phẩm nào!

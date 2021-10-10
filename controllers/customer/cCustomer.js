@@ -28,9 +28,19 @@ let redirectFunc = (state, text, dir, req, res) => {
 module.exports.auth = async (req, res, next) => {
   let prevUrl = req.headers.referer;
   let prevPage = `/${prevUrl.split("/").pop()}`;
+  let username = req.body.si_username.trim().toLowerCase();
+  if (username.length == 0) {
+    redirectFunc(false, "Tên tài khoản là bắt buộc!", prevPage, req, res);
+    return;
+  }
+  let password = req.body.si_password;
+  if (password.length == 0) {
+    redirectFunc(false, "Mật khẩu là bắt buộc!", prevPage, req, res);
+    return;
+  }
   try {
     const accFound = await Account.findOne({
-      aUsername: req.body.si_username,
+      aUsername: username,
     }).populate("rId");
     if (!accFound) {
       redirectFunc(false, "Tên tài khoản không đúng!", prevPage, req, res);
@@ -47,7 +57,7 @@ module.exports.auth = async (req, res, next) => {
     // đúng user
     let user = {
       _id: accFound._id,
-      aUsername: accFound.aUsername,
+      aUsername: accFound.aUsername.toLowerCase(),
       aPassword: accFound.aPassword,
       rId: accFound.rId,
       sId: null,
@@ -65,6 +75,7 @@ module.exports.signup = async (req, res, next) => {
   let prevUrl = req.headers.referer;
   let prevPage = `/${prevUrl.split("/").pop()}`;
   let customerRole = await Role.findOne({ rName: "Khách hàng" });
+  let su_repassword = req.body.su_repassword;
   let newAccount = {
     aUsername: req.body.su_username,
     aPassword: req.body.su_password,
@@ -75,7 +86,7 @@ module.exports.signup = async (req, res, next) => {
     return;
   }
   if (newAccount.aUsername.length >= 50) {
-    redirectFunc(false, "Tên tài khoản tốt đa 50 ký tự!", prevPage, req, res);
+    redirectFunc(false, "Tên tài khoản tối đa 50 ký tự!", prevPage, req, res);
     return;
   }
   try {
@@ -91,6 +102,29 @@ module.exports.signup = async (req, res, next) => {
       redirectFunc(false, "Mật khẩu là bắt buộc!", prevPage, req, res);
       return;
     }
+
+    if (newAccount.aPassword.length < 6) {
+      redirectFunc(false, "Mật khẩu tối thiểu 6 ký tự!", prevPage, req, res);
+      return;
+    }
+    if (newAccount.aPassword.length > 50) {
+      redirectFunc(false, "Mật khẩu tối đa 50 ký tự!", prevPage, req, res);
+      return;
+    }
+    if (su_repassword.length == 0) {
+      redirectFunc(false, "Nhập lại mật khẩu là bắt buộc!", prevPage, req, res);
+      return;
+    }
+    if (newAccount.aPassword != su_repassword) {
+      redirectFunc(
+        false,
+        "Mật khẩu và xác nhận mật khẩu không đúng!",
+        prevPage,
+        req,
+        res
+      );
+      return;
+    }
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(newAccount.aPassword, salt);
     newAccount.aPassword = hashPassword;
@@ -103,17 +137,11 @@ module.exports.signup = async (req, res, next) => {
     };
 
     if (newCustomer.cName.length == 0) {
-      redirectFunc(false, "Tên khách hàng là bắt buộc!", prevPage, req, res);
+      redirectFunc(false, "Họ tên là bắt buộc!", prevPage, req, res);
       return;
     }
     if (newCustomer.cName.length > 50) {
-      redirectFunc(
-        false,
-        "Tên khách hàng tối đa 50 ký tự!",
-        prevPage,
-        req,
-        res
-      );
+      redirectFunc(false, "Họ tên tối đa 50 ký tự!", prevPage, req, res);
       return;
     }
     if (newCustomer.cNumber.length == 0) {
@@ -128,7 +156,7 @@ module.exports.signup = async (req, res, next) => {
         cNumber: newCustomer.cNumber,
       });
       if (cFound) {
-        redirectFunc(false, "Số điện thoại đã bị trùng!", prevPage, req, res);
+        redirectFunc(false, "Số điện thoại đã tồn tại!", prevPage, req, res);
         return;
       }
     }
@@ -137,6 +165,9 @@ module.exports.signup = async (req, res, next) => {
       let ns = new Date(newCustomer.cDofB);
       if (!(ns > 0)) {
         redirectFunc(false, "Ngày sinh không hợp lệ!", prevPage, req, res);
+        return;
+      } else if (new Date().getFullYear - ns.slice(0, 4) < 18) {
+        redirectFunc(false, "Chưa đủ 18 tuổi!", prevPage, req, res);
         return;
       }
     }
@@ -153,7 +184,7 @@ module.exports.signup = async (req, res, next) => {
         cEmail: newCustomer.cEmail,
       });
       if (cFound) {
-        redirectFunc(false, "Email đã bị trùng!", prevPage, req, res);
+        redirectFunc(false, "Email đã tồn tại!", prevPage, req, res);
         return;
       }
     }

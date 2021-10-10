@@ -3,7 +3,7 @@ const Category = require("../../models/mCategory");
 const pI = { title: "Quản lý sản phẩm", url: "product" };
 const rootRoute = `/${pI.url}-management`;
 
-let redirectFunc = (state, text, dir, req, res) => {
+const redirectFunc = (state, text, dir, req, res) => {
   req.session.messages = {
     icon: state ? "check-circle" : "alert-circle",
     color: state ? "success" : "danger",
@@ -13,6 +13,14 @@ let redirectFunc = (state, text, dir, req, res) => {
   res.redirect(dir);
   return;
 };
+
+const createSlug = (text) =>
+  text
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .split(" ")
+    .join("-")
+    .toLowerCase();
 
 module.exports.index = async (req, res) => {
   res.redirect(dir);
@@ -29,6 +37,7 @@ module.exports.add = async (req, res) => {
       const sess = req.session.user;
       let newRoomtype = new Roomtype({
         rtName,
+        slugName: createSlug(rtName),
         rtImg: req.file.filename,
         sId: sess.sId,
       });
@@ -41,6 +50,7 @@ module.exports.add = async (req, res) => {
 module.exports.update = async (req, res) => {
   let updRT = {
     rtName: req.body.rtName,
+    slugName: createSlug(req.body.rtName),
   };
   let rtImg = req.file?.filename || false;
   if (rtImg) {

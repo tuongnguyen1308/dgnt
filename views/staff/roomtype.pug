@@ -1,14 +1,15 @@
+- var imgheight = 300
 if sess.rId.rName == "Quản lý"
     form#roomtype-form.w-100.mx-auto.my-2.needs-validation(method="post" action="/roomtype/add" enctype="multipart/form-data" novalidate)
         i *Phân loại sản phẩm theo loại phòng
-        .my-3(style="max-width:200px")
+        .my-3(style=`max-width:${imgheight}px`)
             .form-title.fs-5 Thêm loại phòng
             .position-relative(style="width:100px")
-                label.upload-before.img-box.align-middle.d-flex.justify-content-center.align-items-center(for="rtImg" style=`height:99px; weight: 100px;`)
+                label.upload-before.img-box.align-middle.d-flex.justify-content-center.align-items-center(for="rtImg" style=`height:${imgheight}px; width: ${imgheight}px;`)
                     input#rtImg.btn.btn-success(style="z-index:-1;" type="file" name="rtImg" accept="image/png, image/jpeg" role="button" required)
                     .title.h-100.d-flex.justify-content-center.align-items-center.p-2
                         span(data-feather="image")
-                    img.img-preview.d-none(src="" style=`max-width:100px; height:100px`)
+                    img.img-preview.d-none(src="" style=`max-width:${imgheight}px; height:${imgheight}px`)
                     .invalid-feedback Ảnh là bắt buộc
                 span.file_remove.d-none(data-feather="x")
                 .text-danger.mb-3.d-none(role="errMessage")
@@ -31,7 +32,7 @@ table.table.table-responsive.table-bordered(width="100%")
             tr
                 td.align-middle.text-center= index+1
                 td.align-middle.text-center
-                    img.rounded.img-fluid(src=`img/roomtypes/${rt.rtImg}` style="max-height:100px; width:100px;")
+                    img.rounded.img-fluid(src=`img/roomtypes/${rt.rtImg}` style=`max-height:150px;`)
                 td.align-middle= rt.rtName
                 if sess.rId.rName == "Quản lý"
                     td.align-middle.text-center

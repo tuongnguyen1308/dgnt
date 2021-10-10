@@ -66,8 +66,8 @@ $(document).ready(() => {
   });
 
   $("#rtImg").on("change", function (e) {
-    var ext = $(this).val().split(".").pop().toLowerCase();
-    if ($.inArray(ext, ["gif", "png", "jpg", "jpeg"]) == -1) {
+    const filename = $(this).val();
+    if (!filename.match(/\.(jpg|jpeg|png)$/i)) {
       $(this)
         .parent()
         .parent()
@@ -75,6 +75,7 @@ $(document).ready(() => {
         .removeClass("d-none")
         .find("span")
         .text("Không đúng định dạng!");
+      $(this).val("");
     } else {
       $(this)
         .parent()

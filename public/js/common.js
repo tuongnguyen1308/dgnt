@@ -55,6 +55,20 @@ $(document).on("keydown", "[max]", function (e) {
     e.stopPropagation();
   }
 });
+
+const listKeyAllow = [
+  "ArrowLeft",
+  "ArrowUp",
+  "ArrowRight",
+  "ArrowDown",
+  "Delete",
+  "Backspace",
+  "Tab",
+  "Shift",
+  "Ctrl",
+];
+
+const specialChar = "~`!#$%^&*()-=+[{}]|\\;:'<>/?";
 //#endregion
 
 $(document).ready(function () {
@@ -139,6 +153,7 @@ $(document).ready(function () {
         .find("span")
         .text("Ảnh không hợp lệ");
       removeImg($(this));
+      $(this).val("");
     } else {
       $("[role=errMessage]").addClass("d-none").find("span").text("");
       var uploadedFile = URL.createObjectURL(e.target.files[0]);
@@ -152,7 +167,18 @@ $(document).ready(function () {
   });
 
   //#region validate
-  $("#su_username").on("keyup", function () {
+
+  $(
+    "#si_username, #si_password, #su_username, #su_password, #su_repassword, #aUsername, #aPassword"
+  ).on("keydown", function (e) {
+    console.log(e.keyCode);
+    if (e.keyCode == 32) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  });
+
+  $("#su_username, #aUsername").on("keyup", function () {
     const title = "Tên tài khoản";
     const maxVal = 50;
     let val = $.trim($(this).val());
@@ -164,7 +190,7 @@ $(document).ready(function () {
     ];
     checkValidate(cases, this);
   });
-  $("#su_password").on("keyup", function () {
+  $("#su_password, #aPassword").on("keyup", function () {
     const title = "Mật khẩu";
     const minVal = 6;
     const maxVal = 50;
@@ -201,7 +227,7 @@ $(document).ready(function () {
     checkValidate(cases, this);
   });
 
-  $("#cNumber").on("keyup", function () {
+  $("#cNumber, #sNumber").on("keyup", function () {
     const title = "Số điện thoại";
     const lengthVal = 10;
     let val = $(this).val();
@@ -210,9 +236,47 @@ $(document).ready(function () {
       { con: isNaN(val), mess: `${title} không hợp lệ` },
       { con: val.length != lengthVal, mess: `${title} gồm ${lengthVal} ký tự` },
     ];
+    checkValidate(cases, this, false);
+  });
+  $("#cNumber, #sNumber").on("keydown", function (e) {
+    if (!/^[0-9]$/i.test(e.key) && !listKeyAllow.includes(e.key)) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  });
+
+  $("#cDofB, #sDofB").on("change", function () {
+    const title = "Ngày sinh";
+    let val = new Date($(this).val()).getTime();
+    let curDate = new Date();
+    let cases = [
+      { con: val >= curDate.getTime(), mess: `${title} không hợp lệ` },
+      {
+        con: curDate.getFullYear() - $(this).val().slice(0, 4) < 18,
+        mess: `${title} không hợp lệ`,
+      },
+    ];
     checkValidate(cases, this);
   });
 
+  $("#cEmail, #sEmail").on("keydown", function (e) {
+    if (specialChar.includes(e.key)) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  });
+
+  $("#cEmail, #sEmail").on("keyup", function () {
+    const title = "Email";
+    let val = $(this).val();
+    const re =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    let cases = [
+      { con: val.length == 0, mess: `${title} là bắt buộc` },
+      { con: !re.test(val), mess: `${title} không hợp lệ` },
+    ];
+    checkValidate(cases, this, false);
+  });
   //#endregion
 
   $("[rel=call-modal]").on("click", function () {
