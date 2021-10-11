@@ -77,6 +77,28 @@ else
 			else
 				tr
 					td.text-center(colspan="8") Chưa có Yêu cầu bổ sung sản phẩm!
+
+	if prdreqs.length > 0
+		nav.d-flex.justify-content-between.align-items-center
+			span.me-3 Tổng: #{totalR} yêu cầu bổ sung
+			ul.pagination.justify-content-end.mb-0
+				li.page-item(class= pageNumR==1 ? 'disabled' : '')
+					a.page-link.px-2(href='/product-management')
+						span(data-feather="chevrons-left")
+				li.page-item(class= pageNumR==1 ? 'disabled' : '')
+					a.page-link.px-2(href=`/product-management?pname=req&pnum=${pageNumR}`)
+						span(data-feather="chevron-left")
+				- for (var i = 1; i <= totalRP; i++)
+					li.page-item(class= pageNumR==i ? 'active' : '')
+						a.page-link.h-100.d-flex.align-items-center.px-3(href=`/product-management?pname=req&pnum=${i}`)
+							span= i
+				li.page-item(class= pageNumR==totalRP ? 'disabled' : '')
+					a.page-link.px-2(href=`/product-management?pname=req&pnum=${pageNumR}`)
+						span(data-feather="chevron-right")
+				li.page-item(class= pageNumR==totalRP ? 'disabled' : '')
+					a.page-link.px-2(href=`/product-management?pname=req&pnum=${totalRP}`)
+						span(data-feather="chevrons-right")
+
 	form#modal-prdreq.needs-validation.modal.fade(method="post" action="/prdreq/add" tabindex="-1" role="dialog" aria-hidden="true" novalidate)
 		.modal-dialog.modal-dialog-centered.modal-lg
 			.modal-content

@@ -30,7 +30,7 @@ else
 				- mb.mbBatchAt = ca.setUTCHours(ca.getUTCHours() + 7);
 				- mb.mrId.createdAt = ua.setUTCHours(ua.getUTCHours() + 7);
 				tr
-					td.align-middle.text-center= index+1
+					td.align-middle.text-center= ((pageNumB-1)*pageSize) + index+1
 					td.align-middle
 						div= mb.mbBatchAt.toISOString().slice(0,10).split('-').reverse().join('/')
 						span= mb.sId.sName
@@ -67,6 +67,26 @@ else
 			else
 				tr
 					td.text-center(colspan="9") Chưa có đợt nhập nhập nguyên vật liệu!
+	if mtrbatchs.length > 0
+		nav.d-flex.justify-content-between.align-items-center
+			span.me-3 Tổng: #{totalB} đợt nhập NVL
+			ul.pagination.justify-content-end.mb-0
+				li.page-item(class= pageNumB==1 ? 'disabled' : '')
+					a.page-link.px-2(href=pI.url)
+						span(data-feather="chevrons-left")
+				li.page-item(class= pageNumB==1 ? 'disabled' : '')
+					a.page-link.px-2(href=`${pI.url}?pname=bat&pnum=${pageNumB}`)
+						span(data-feather="chevron-left")
+				- for (var i = 1; i <= totalBP; i++)
+					li.page-item(class= pageNumB==i ? 'active' : '')
+						a.page-link.h-100.d-flex.align-items-center.px-3(href=`${pI.url}?pname=bat&pnum=${i}`)
+							span= i
+				li.page-item(class= pageNumB==totalBP ? 'disabled' : '')
+					a.page-link.px-2(href=`${pI.url}?pname=bat&pnum=${pageNumB}`)
+						span(data-feather="chevron-right")
+				li.page-item(class= pageNumB==totalBP ? 'disabled' : '')
+					a.page-link.px-2(href=`${pI.url}?pname=bat&pnum=${totalBP}`)
+						span(data-feather="chevrons-right")
 	form#modal-mtrbatch.needs-validation.modal.fade(method="post" action="/mtrbatch/add" tabindex="-1" role="dialog" aria-hidden="true" novalidate)
 		.modal-dialog.modal-dialog-centered.modal-xl
 			.modal-content

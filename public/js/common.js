@@ -171,7 +171,6 @@ $(document).ready(function () {
   $(
     "#si_username, #si_password, #su_username, #su_password, #su_repassword, #aUsername, #aPassword"
   ).on("keydown", function (e) {
-    console.log(e.keyCode);
     if (e.keyCode == 32) {
       e.preventDefault();
       e.stopPropagation();
@@ -251,10 +250,10 @@ $(document).ready(function () {
     let curDate = new Date();
     let cases = [
       { con: val >= curDate.getTime(), mess: `${title} không hợp lệ` },
-      {
-        con: curDate.getFullYear() - $(this).val().slice(0, 4) < 18,
-        mess: `${title} không hợp lệ`,
-      },
+      // {
+      //   con: curDate.getFullYear() - $(this).val().slice(0, 4) < 18,
+      //   mess: `Nhân viên phải đủ 18 tuổi`,
+      // },
     ];
     checkValidate(cases, this);
   });

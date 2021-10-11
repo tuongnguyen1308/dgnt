@@ -5,6 +5,7 @@ const pI = { title: "Quản lý Nguyên vật liệu", url: "material" };
 const rootRoute = `/${pI.url}`;
 const imgViewSize = 300;
 const imgPreviewSize = 465;
+const PAGE_SIZE = 2;
 
 let redirectFunc = (state, text, dir, req, res) => {
   req.session.messages = {
@@ -21,12 +22,51 @@ module.exports.index = async (req, res) => {
   const messages = req.session?.messages || null;
   const sess = req.session.user;
   req.session.messages = null;
-  let materials = await Material.find({}).sort({ mName: "asc" }).populate({
-    path: "sId",
-    select: "sName",
-  });
+  //#region pagination
+  let pageNum = Math.max(req.query.pnum || 1, 1);
+  // mtr
+  let pageNumM = 1;
+  let skipPageM = (pageNumM - 1) * PAGE_SIZE;
+  let totalM = await Material.countDocuments();
+  let totalMP = Math.ceil(totalM / PAGE_SIZE);
+  // req
+  let pageNumR = 1;
+  let skipPageR = (pageNumR - 1) * PAGE_SIZE;
+  let totalR = await Mtrreq.countDocuments();
+  let totalRP = Math.ceil(totalR / PAGE_SIZE);
+  // bat
+  let pageNumB = 1;
+  let skipPageB = (pageNumB - 1) * PAGE_SIZE;
+  let totalB = await MtrBatch.countDocuments();
+  let totalBP = Math.ceil(totalB / PAGE_SIZE);
+  switch (req.query.pname) {
+    case "mtr":
+      pageNumM = pageNum;
+      skipPageM = (pageNumM - 1) * PAGE_SIZE;
+      break;
+    case "req":
+      pageNumR = pageNum;
+      skipPageR = (pageNumR - 1) * PAGE_SIZE;
+      break;
+    case "bat":
+      pageNumB = pageNum;
+      skipPageB = (pageNumB - 1) * PAGE_SIZE;
+      break;
+  }
+  //#endregion
+
+  let materials = await Material.find({})
+    .sort({ mName: "asc" })
+    .skip(skipPageM)
+    .limit(PAGE_SIZE)
+    .populate({
+      path: "sId",
+      select: "sName",
+    });
   let mtrreqs = await Mtrreq.find({})
     .sort({ createdAt: "desc" })
+    .skip(skipPageR)
+    .limit(PAGE_SIZE)
     .populate({
       path: "mrDetail.mId",
       select: "mName mUnit mImg",
@@ -41,6 +81,8 @@ module.exports.index = async (req, res) => {
     });
   let mtrbatchs = await MtrBatch.find({})
     .sort({ mbBatchAt: "desc" })
+    .skip(skipPageB)
+    .limit(PAGE_SIZE)
     .populate({ path: "mrId", select: "_id createdAt mrReason mrState" })
     .populate({
       path: "mbDetail.mId",
@@ -50,23 +92,25 @@ module.exports.index = async (req, res) => {
       path: "sId",
       select: "sName",
     });
-  let mtrsCantBeDel = new Set();
-  mtrreqs.map((mtrreq) => {
-    mtrreq.mrDetail.map((mtr) => {
-      mtrsCantBeDel.add(mtr.mId._id);
-    });
-  });
-  mtrsCantBeDel = [...mtrsCantBeDel].join(" ");
   res.render(`./staff/${pI.url}`, {
     pI,
     messages,
     materials,
     mtrreqs,
     mtrbatchs,
-    mtrsCantBeDel,
     imgViewSize,
     imgPreviewSize,
     sess,
+    pageNumM,
+    pageNumR,
+    pageNumB,
+    totalM,
+    totalR,
+    totalB,
+    totalMP,
+    totalRP,
+    totalBP,
+    pageSize: PAGE_SIZE,
   });
 };
 
@@ -160,10 +204,10 @@ module.exports.update = async (req, res) => {
 };
 
 module.exports.delete = async (req, res) => {
-  let already_req = await Mtrreq.find({
+  let mtr_in_used = await Mtrreq.find({
     "mrDetail.mId": req.params.id,
   }).countDocuments();
-  if (already_req == 0) {
+  if (mtr_in_used == 0) {
     await Material.findByIdAndDelete(req.params.id, function (err) {
       req.session.messages = {
         icon: !err ? "check-circle" : "alert-circle",
@@ -184,4 +228,11 @@ module.exports.delete = async (req, res) => {
     };
     res.json(false);
   }
+};
+
+module.exports.find = async (req, res) => {
+  let keyword = req.body.keyword;
+  Material.find({ mName: new RegExp(keyword, "i") }, async (err, materials) => {
+    res.json(materials);
+  });
 };

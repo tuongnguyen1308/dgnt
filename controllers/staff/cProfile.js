@@ -55,13 +55,13 @@ module.exports.update = async (req, res) => {
     sEmail: req.body.sEmail,
   };
 
-  let ns = new Date(updStaff.sDofB);
-  if (updStaff.sDofB) {
-    if (!(ns > 0)) {
+  if (updStaff.sDofB != "") {
+    let ns = new Date(updStaff.sDofB);
+    if (ns == "Invalid Date") {
       redirectFunc(false, "Ngày sinh không hợp lệ!", rootRoute, req, res);
       return;
     } else if (new Date().getFullYear() - updStaff.sDofB.slice(0, 4) < 18) {
-      redirectFunc(false, "Chưa đủ 18 tuổi!", rootRoute, req, res);
+      redirectFunc(false, "Nhân viên phải đủ 18 tuổi!", rootRoute, req, res);
       return;
     }
   }

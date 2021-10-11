@@ -15,5 +15,6 @@ router.get("/", controller.index);
 router.post("/add", upload.single("mImg"), controller.add);
 router.post("/update", upload.single("mImg"), controller.update);
 router.delete("/:id", controller.delete);
+router.post("/find", controller.find);
 
 module.exports = router;

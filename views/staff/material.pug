@@ -35,7 +35,7 @@ block content
 						tbody
 							each m, index in materials
 								tr.text-center
-									td.align-middle= index+1
+									td.align-middle= ((pageNumM-1)*pageSize) + index+1
 									td.align-middle
 										img.rounded.img-fluid(src=`img/materials/${m.mImg}` style="max-height:100px;")
 									td.text-start.align-middle= m.mName
@@ -47,18 +47,38 @@ block content
 											.btn-group(role="group")
 												button.btn.btn-sm.btn-outline-primary(type="button" role="edit-material" data-id=m._id data-mname=m.mName data-munit=m.mUnit data-mdesc=m.mDesc data-mimg=m.mImg data-bs-toggle="modal" data-bs-target="#modal-material" rel="tooltip" data-bs-placement="top" title="Sửa")
 													span(data-feather="edit-3")
-												if !mtrsCantBeDel.includes(m._id)
-													button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Xoá")
-														span(data-feather="x")
-													ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset")
-														li
-															a.dropdown-item.p-2.text-danger(href='#' data-id=m._id role="confirm-delete-material") Xác nhận
-														li
-															span.dropdown-item.p-2(role="button" rel="close-dropdown") Huỷ
+												button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Xoá")
+													span(data-feather="x")
+												ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset")
+													li
+														a.dropdown-item.p-2.text-danger(href='#' data-id=m._id role="confirm-delete-material") Xác nhận
+													li
+														span.dropdown-item.p-2(role="button" rel="close-dropdown") Huỷ
 							else
 								tr
 									td(colspan="7") Chưa có nguyên vật liệu!
-							//- Modal material add/update
+					if materials.length > 0
+						nav.d-flex.justify-content-between.align-items-center
+							span.me-3 Tổng: #{totalM} NVL
+							ul.pagination.justify-content-end.mb-0
+								li.page-item(class= pageNumM==1 ? 'disabled' : '')
+									a.page-link.px-2(href=pI.url)
+										span(data-feather="chevrons-left")
+								li.page-item(class= pageNumM==1 ? 'disabled' : '')
+									a.page-link.px-2(href=`${pI.url}?pname=mtr&pnum=${pageNumM}`)
+										span(data-feather="chevron-left")
+								- for (var i = 1; i <= totalMP; i++)
+									li.page-item(class= pageNumM==i ? 'active' : '')
+										a.page-link.h-100.d-flex.align-items-center.px-3(href=`${pI.url}?pname=mtr&pnum=${i}`)
+											span= i
+								li.page-item(class= pageNumM==totalMP ? 'disabled' : '')
+									a.page-link.px-2(href=`${pI.url}?pname=mtr&pnum=${pageNumM}`)
+										span(data-feather="chevron-right")
+								li.page-item(class= pageNumM==totalMP ? 'disabled' : '')
+									a.page-link.px-2(href=`${pI.url}?pname=mtr&pnum=${totalMP}`)
+										span(data-feather="chevrons-right")
+
+					//- Modal material add/update
 					form#modal-material.needs-validation.modal.fade(method="post" action="/material/add" tabindex="-1" role="dialog" aria-hidden="true" enctype="multipart/form-data" novalidate)
 						.modal-dialog.modal-dialog-centered
 							.modal-content

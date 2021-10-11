@@ -63,7 +63,7 @@ block content
 								- p.createdAt = ca.setUTCHours(ca.getUTCHours() + 7);
 								- p.updatedAt = ua.setUTCHours(ua.getUTCHours() + 7);
 								tr.text-center
-									td.align-middle= index+1
+									td.align-middle= ((pageNumP-1)*pageSize) + index+1
 									td.align-middle
 										each pi in p.pImgs
 											if pi.piIsMain
@@ -87,17 +87,37 @@ block content
 											.btn-group(role="group")
 												button.btn.btn-sm.btn-outline-primary(type="button" role="edit-product" data-id=p._id data-name=p.pName data-unit=p.pUnit data-size=p.pSize data-price=p.pPrice data-discount=p.pDiscount data-desc=p.pDesc data-state=p.pState data-imgs=p.pImgs data-mcon=p.mConsume data-pcid=p.pcId data-bs-toggle="modal" data-bs-target="#modal-product" rel="tooltip" data-bs-placement="top" title="Sửa")
 													span(data-feather="edit-3")
-												if !p_cbd.includes(p._id)
-													button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Xoá")
-														span(data-feather="x")
-													ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset")
-														li
-															a.dropdown-item.p-2.text-danger(href='#' data-id=p._id role="confirm-delete-product") Xác nhận
-														li
-															span.dropdown-item.p-2(role="button" rel="close-dropdown") Huỷ
+												button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Xoá")
+													span(data-feather="x")
+												ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset")
+													li
+														a.dropdown-item.p-2.text-danger(href='#' data-id=p._id role="confirm-delete-product") Xác nhận
+													li
+														span.dropdown-item.p-2(role="button" rel="close-dropdown") Huỷ
 							else
 								tr
 									td(colspan="8") Chưa có sản phẩm!
+					if products.length > 0
+					nav.d-flex.justify-content-between.align-items-center
+						span.me-3 Tổng: #{totalP} sản phẩm
+						ul.pagination.justify-content-end.mb-0
+							li.page-item(class= pageNumP==1 ? 'disabled' : '')
+								a.page-link.px-2(href='/product-management')
+									span(data-feather="chevrons-left")
+							li.page-item(class= pageNumP==1 ? 'disabled' : '')
+								a.page-link.px-2(href=`/product-management?pname=prd&pnum=${pageNumP}`)
+									span(data-feather="chevron-left")
+							- for (var i = 1; i <= totalPP; i++)
+								li.page-item(class= pageNumP==i ? 'active' : '')
+									a.page-link.h-100.d-flex.align-items-center.px-3(href=`/product-management?pname=prd&pnum=${i}`)
+										span= i
+							li.page-item(class= pageNumP==totalPP ? 'disabled' : '')
+								a.page-link.px-2(href=`/product-management?pname=prd&pnum=${pageNumP}`)
+									span(data-feather="chevron-right")
+							li.page-item(class= pageNumP==totalPP ? 'disabled' : '')
+								a.page-link.px-2(href=`/product-management?pname=prd&pnum=${totalPP}`)
+									span(data-feather="chevrons-right")
+
 					form#modal-product.needs-validation.modal.fade(method="post" action="/product/add" tabindex="-1" role="dialog" aria-hidden="true" enctype="multipart/form-data" novalidate)
 						.modal-dialog.modal-dialog-centered.modal-xl
 							.modal-content

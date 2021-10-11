@@ -161,16 +161,13 @@ module.exports.signup = async (req, res, next) => {
       }
     }
 
-    if (newCustomer.cDofB) {
-      let ns = new Date(newCustomer.cDofB);
-      if (!(ns > 0)) {
+    if (req.body.cDofB != "") {
+      let ns = new Date(req.body.cDofB);
+      if (ns == "Invalid Date") {
         redirectFunc(false, "Ngày sinh không hợp lệ!", prevPage, req, res);
         return;
-      } else if (
-        new Date().getFullYear() - newCustomer.cDofB.slice(0, 4) <
-        18
-      ) {
-        redirectFunc(false, "Chưa đủ 18 tuổi!", prevPage, req, res);
+      } else if (new Date().getFullYear() - req.body.cDofB.slice(0, 4) < 18) {
+        redirectFunc(false, "Khách hàng phải đủ 18 tuổi!", prevPage, req, res);
         return;
       }
     }

@@ -74,13 +74,26 @@ module.exports.update = async (req, res) => {
 };
 
 module.exports.delete = async (req, res) => {
-  await Category.findByIdAndDelete(req.params.id, function (err) {
+  let cate_in_used = await Product.find({
+    pcId: req.params.id,
+  }).countDocuments();
+  if (cate_in_used == 0) {
+    await Category.findByIdAndDelete(req.params.id, function (err) {
+      req.session.messages = {
+        icon: !err ? "check-circle" : "alert-circle",
+        color: !err ? "success" : "danger",
+        title: !err ? "Thành công!" : "Thất bại",
+        text: !err ? "Xóa danh mục thành công!" : "Xóa danh mục thất bại!",
+      };
+      res.json(!err);
+    });
+  } else {
     req.session.messages = {
-      icon: !err ? "check-circle" : "alert-circle",
-      color: !err ? "success" : "danger",
-      title: !err ? "Thành công!" : "Thất bại",
-      text: !err ? "Xóa danh mục thành công!" : "Xóa danh mục thất bại!",
+      icon: "alert-circle",
+      color: "danger",
+      title: "Thất bại",
+      text: "Không thể xóa danh mục đã có danh mục!",
     };
-    res.json(!err);
-  });
+    res.json(false);
+  }
 };

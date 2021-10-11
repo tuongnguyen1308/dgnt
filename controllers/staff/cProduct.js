@@ -1,4 +1,5 @@
 const Product = require("../../models/mProduct");
+const Prdreq = require("../../models/mPrdreq");
 const pI = { title: "Quản lý sản phẩm", url: "product" };
 const rootRoute = `/${pI.url}-management`;
 
@@ -165,15 +166,28 @@ module.exports.update = async (req, res) => {
 };
 
 module.exports.delete = async (req, res) => {
-  await Product.findByIdAndDelete(req.params.id, function (err) {
+  let prd_in_used = await Prdreq.find({
+    "prDetail.pId": req.params.id,
+  }).countDocuments();
+  if (prd_in_used == 0) {
+    await Product.findByIdAndDelete(req.params.id, function (err) {
+      req.session.messages = {
+        icon: !err ? "check-circle" : "alert-circle",
+        color: !err ? "success" : "danger",
+        title: !err ? "Thành công!" : "Thất bại",
+        text: !err ? "Xóa sản phẩm thành công!" : "Xóa sản phẩm thất bại!",
+      };
+      res.json(!err);
+    });
+  } else {
     req.session.messages = {
-      icon: !err ? "check-circle" : "alert-circle",
-      color: !err ? "success" : "danger",
-      title: !err ? "Thành công!" : "Thất bại",
-      text: !err ? "Xóa sản phẩm thành công!" : "Xóa sản phẩm thất bại!",
+      icon: "alert-circle",
+      color: "danger",
+      title: "Thất bại",
+      text: "Không thể xóa sản phẩm đã có yêu cầu bổ sung!",
     };
-    res.json(!err);
-  });
+    res.json(false);
+  }
 };
 
 module.exports.find = async (req, res) => {

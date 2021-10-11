@@ -67,7 +67,6 @@ module.exports.add = (req, res) => {
           rId: req.body.rId,
         });
         try {
-          let accSaved = await newAcc.save();
           let newStaff = new Staff({
             sName: req.body.sName.trim(),
             sDofB: req.body.sDofB,
@@ -76,12 +75,11 @@ module.exports.add = (req, res) => {
             sImg: req.file?.filename,
             sState: req.body.sState == "on",
             sJoinAt: new Date(),
-            aId: accSaved._id,
           });
 
-          if (newStaff.sDofB) {
-            let ns = new Date(newStaff.sDofB);
-            if (!(ns > 0)) {
+          if (req.body.sDofB != "") {
+            let ns = new Date(req.body.sDofB);
+            if (ns == "Invalid Date") {
               redirectFunc(
                 false,
                 "Ngày sinh không hợp lệ!",
@@ -91,16 +89,25 @@ module.exports.add = (req, res) => {
               );
               return;
             } else if (
-              new Date().getFullYear() - newStaff.sDofB.slice(0, 4) <
+              new Date().getFullYear() - req.body.sDofB.slice(0, 4) <
               18
             ) {
-              redirectFunc(false, "Chưa đủ 18 tuổi!", rootRoute, req, res);
+              redirectFunc(
+                false,
+                "Nhân viên phải đủ 18 tuổi!",
+                rootRoute,
+                req,
+                res
+              );
               return;
             }
           }
+          let accSaved = await newAcc.save();
+          newStaff.aId = accSaved._id;
           await newStaff.save();
           redirectFunc(true, "Đã thêm thành viên", rootRoute, req, res);
         } catch (error) {
+          console.error(error);
           redirectFunc(false, "Cấp tài khoản thất bại!", rootRoute, req, res);
         }
       }
@@ -118,13 +125,13 @@ module.exports.update = async (req, res) => {
     sState: req.body.sState == "on",
   };
 
-  if (updStaff.sDofB) {
+  if (updStaff.sDofB != "") {
     let ns = new Date(updStaff.sDofB);
-    if (!(ns > 0)) {
+    if (ns == "Invalid Date") {
       redirectFunc(false, "Ngày sinh không hợp lệ!", rootRoute, req, res);
       return;
     } else if (new Date().getFullYear() - updStaff.sDofB.slice(0, 4) < 18) {
-      redirectFunc(false, "Chưa đủ 18 tuổi!", rootRoute, req, res);
+      redirectFunc(false, "Nhân viên phải đủ 18 tuổi!", rootRoute, req, res);
       return;
     }
   }

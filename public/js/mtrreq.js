@@ -1,21 +1,33 @@
 $(document).ready(() => {
   const MtrreqlModal = document.getElementById("modal-mtrreq");
   //#region func
-  let generateMtrreqItem = (mId, mQuantity) => {
-    let mrItemTemplate = document.querySelector("#mr-item-template");
-    let mrItem = mrItemTemplate.content.cloneNode(true);
-    if (mId) {
-      let mIdSelector = mrItem.querySelector("[name=mId]");
-      mIdSelector.value = mId;
+  let generateMtrreqItem = (mId, mName, mQuantity) => {
+    let valided = true;
+    let list_mtr_taken = [];
+    $("#mr-list input[name=mId]").each(function () {
+      let mtr_selected_id = $(this).val();
+      list_mtr_taken[mtr_selected_id] = 1;
+      if (list_mtr_taken[mId] != 1) {
+        $("#mr-error").addClass("d-none").text("");
+      } else {
+        $("#mr-error").removeClass("d-none").text("NVL đã được thêm trước đó");
+        valided = false;
+      }
+    });
+    if (valided) {
+      let mtrItemTemplate = document.querySelector("#mr-item-template");
+      let mrItem = mtrItemTemplate.content.cloneNode(true);
+      let mIdInput = mrItem.querySelector("[name=mId]");
+      mIdInput.value = mId;
+      let pNameSpan = mrItem.querySelector("[rel=material-name]");
+      pNameSpan.innerText = mName;
+      if (mQuantity) {
+        let mQuantitySelector = mrItem.querySelector("[name=mQuantity]");
+        mQuantitySelector.value = mQuantity;
+      }
+      $("#mr-list").append(mrItem);
+      feather.replace({ "aria-hidden": "true" });
     }
-    if (mQuantity) {
-      let mQuantitySelector = mrItem.querySelector("[name=mQuantity]");
-      mQuantitySelector.value = mQuantity;
-    }
-    $("#mr-list").append(mrItem);
-    feather.replace({ "aria-hidden": "true" });
-    let cases = [{ con: true, mess: `Tên NVL là bắt buộc` }];
-    checkValidate(cases, $("#mr-list tr:last-child select").get(0), false);
   };
 
   let prepareMtrreqModal = ($btn = null) => {
@@ -45,48 +57,20 @@ $(document).ready(() => {
     if ($btn) {
       const detail = $btn.data("detail");
       detail.map((m) => {
-        generateMtrreqItem(m.mId._id, m.mQuantity);
+        generateMtrreqItem(m.mId._id, m.mId.mName, m.mQuantity);
       });
     }
-    $("select").trigger("change");
-  };
-
-  let checkSelectValue = () => {
-    $("#mr-list [name=mId]").each(function () {
-      let mtr_selected_id = $(this).find("option:selected").val();
-      let cases = [{ con: mtr_selected_id == -1, mess: `Tên NVL là bắt buộc` }];
-      checkValidate(cases, this);
-    });
   };
   //#endregion
 
   //#region validate
-  $(document).on("change", "[role=list-mtrreq_select]", function (e) {
-    let list_mtr_taken = [];
-    $("#mr-list [role=list-mtrreq_select]").each(function () {
-      let mtr_selected_id = $(this).find("option:selected").val();
-      if (mtr_selected_id != -1) {
-        if (list_mtr_taken[mtr_selected_id] != 1) {
-          list_mtr_taken[mtr_selected_id] = 1;
-          let cases = [{ con: false, mess: `` }];
-          checkValidate(cases, this);
-        } else {
-          let cases = [{ con: true, mess: `NVL này đã được thêm trước đó` }];
-          checkValidate(cases, this);
-        }
-      }
-    });
-  });
   $("#modal-mtrreq").on("submit", function (e) {
     if ($("#mr-list [name=mId]").length == 0) {
-      console.log("invalid");
       e.preventDefault();
       e.stopPropagation();
       $("#mr-error").removeClass("d-none").text("Danh sách NVL là bắt buộc");
     } else {
-      console.log("valid");
       $("#mr-error").addClass("d-none").text("");
-      checkSelectValue();
     }
   });
   //#endregion
@@ -96,9 +80,35 @@ $(document).ready(() => {
   $(".btn[role=add-mtrreq]").on("click", function () {
     prepareMtrreqModal();
   });
+  // find material
+  $("[rel=find-material]").on("click", function () {
+    const keyword = $("[name=mfind]").val();
+    $.ajax({
+      type: "POST",
+      url: "/material/find",
+      data: { keyword },
+      success: function (res) {
+        $("#listMtrreqItem").html("");
+        res.map((m) => {
+          let resultItemTemp = document.querySelector("#search-result-temp");
+          let resItem = resultItemTemp.content.cloneNode(true);
+          let iImg = resItem.querySelector("img");
+          iImg.src = `img/materials/` + m.mImg;
+          let iId = resItem.querySelector("li");
+          iId.dataset.id = m._id;
+          let iName = resItem.querySelector("h5");
+          iName.innerText = m.mName;
+          $("#listMtrreqItem").append(resItem);
+        });
+      },
+      error: function (err) {
+        console.error(err);
+      },
+    });
+  });
   // add mtr
-  $("[role=list-mtrreq_add]").on("click", function () {
-    generateMtrreqItem();
+  $(document).on("click", "[role=list-mtrreq_add]", function () {
+    generateMtrreqItem($(this).data("id"), $(this).find("h5").text());
   });
   // del mtr
   $(document).on("click", "[role=list-mtrreq_delete]", function () {

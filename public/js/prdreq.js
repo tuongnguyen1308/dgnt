@@ -70,24 +70,6 @@ $(document).ready(() => {
   //#endregion
 
   //#region validate
-  $(document).on("change", "[role=list-prdreq_select]", function (e) {
-    let list_prd_taken = [];
-    $("#pr-list [role=list-prdreq_select]").each(function () {
-      let prd_selected_id = $(this).find("option:selected").val();
-      if (prd_selected_id != -1) {
-        if (list_prd_taken[prd_selected_id] != 1) {
-          list_prd_taken[prd_selected_id] = 1;
-          let cases = [{ con: false, mess: `` }];
-          checkValidate(cases, this);
-        } else {
-          let cases = [
-            { con: true, mess: `Sản phẩm này đã được thêm trước đó` },
-          ];
-          checkValidate(cases, this);
-        }
-      }
-    });
-  });
   $("#modal-prdreq").on("submit", function (e) {
     if ($("#pr-list [name=pId]").length == 0) {
       console.log("invalid");
