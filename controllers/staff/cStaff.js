@@ -79,7 +79,7 @@ module.exports.add = (req, res) => {
             aId: accSaved._id,
           });
 
-          if (newStaff.cDofB) {
+          if (newStaff.sDofB) {
             let ns = new Date(newStaff.sDofB);
             if (!(ns > 0)) {
               redirectFunc(
@@ -118,7 +118,7 @@ module.exports.update = async (req, res) => {
     sState: req.body.sState == "on",
   };
 
-  if (updStaff.cDofB) {
+  if (updStaff.sDofB) {
     let ns = new Date(updStaff.sDofB);
     if (!(ns > 0)) {
       redirectFunc(false, "Ngày sinh không hợp lệ!", rootRoute, req, res);
