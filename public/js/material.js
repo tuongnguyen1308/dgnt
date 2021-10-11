@@ -73,7 +73,7 @@ $(document).ready(() => {
 
   $("#mDesc").on("keyup", function () {
     const title = "Mô tả";
-    const maxVal = 256;
+    const maxVal = 255;
     let val = $(this).val();
     let cases = [
       { con: val.length > maxVal, mess: `${title} tối đa ${maxVal} ký tự` },
@@ -108,8 +108,8 @@ $(document).ready(() => {
   });
 
   $("#mImg").on("change", function (e) {
-    var ext = $(this).val().split(".").pop().toLowerCase();
-    if ($.inArray(ext, ["png", "jpg", "jpeg"]) == -1) {
+    const filename = $(this).val();
+    if (!filename.match(/\.(jpg|jpeg|png)$/i)) {
       $("[role=errMessage]")
         .removeClass("d-none")
         .find("span")

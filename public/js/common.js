@@ -238,7 +238,7 @@ $(document).ready(function () {
     ];
     checkValidate(cases, this, false);
   });
-  $("#cNumber, #sNumber").on("keydown", function (e) {
+  $("#cNumber, #sNumber, #siHotline").on("keydown", function (e) {
     if (!/^[0-9]$/i.test(e.key) && !listKeyAllow.includes(e.key)) {
       e.preventDefault();
       e.stopPropagation();

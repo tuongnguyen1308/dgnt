@@ -4,12 +4,13 @@
             .d-grid.m-auto
                 #pm-title.fs-4 Thêm hình thức
                 .form-label-group
-                    input#pmName.form-control(name="pmName" type="text" placeholder="Tên hình thức" autocomplete="off" minlength="0" maxlength="50" required)
-                    label(for="pmName") Tên hình thức
-                    .invalid-feedback Tên hình thức không được để trống
+                    input#pmName.form-control(name="pmName" type="text" placeholder="Tên hình thức" autocomplete="off" minlength="0" required)
+                    label.required(for="pmName") Tên hình thức
+                    .invalid-feedback Tên hình thức là bắt buộc
                 .form-label-group
-                    input#pmDesc.form-control(name="pmDesc" type="text" placeholder="Mô tả" autocomplete="off" maxlength="256")
+                    input#pmDesc.form-control(name="pmDesc" type="text" placeholder="Mô tả" autocomplete="off")
                     label(for="pmDesc") Mô tả
+                    .invalid-feedback Mô tả tối đa 256 ký tự
                 fieldset.form-control
                     legend.small.text-secondary Trạng thái
                     .form-check.form-switch.fs-6

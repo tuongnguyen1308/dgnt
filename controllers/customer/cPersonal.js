@@ -86,14 +86,17 @@ module.exports.update = async (req, res) => {
     cEmail: req.body.cEmail,
   };
 
-  let ns = new Date(updCustomer.cDofB);
-  if (!(ns > 0)) {
-    redirectFunc(false, "Ngày sinh không hợp lệ!", rootRoute, req, res);
-    return;
-  } else if (new Date().getFullYear() - updCustomer.cDofB.slice(0, 4) < 18) {
-    redirectFunc(false, "Chưa đủ 18 tuổi!", rootRoute, req, res);
-    return;
+  if (updCustomer.cDofB != "") {
+    let ns = new Date(updCustomer.cDofB);
+    if (!(ns > 0)) {
+      redirectFunc(false, "Ngày sinh không hợp lệ!", rootRoute, req, res);
+      return;
+    } else if (new Date().getFullYear() - updCustomer.cDofB.slice(0, 4) < 18) {
+      redirectFunc(false, "Chưa đủ 18 tuổi!", rootRoute, req, res);
+      return;
+    }
   }
+
   if (updCustomer.cEmail.length != 0) {
     const re =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

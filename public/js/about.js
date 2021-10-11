@@ -34,20 +34,34 @@ $(document).ready(() => {
 
   //#region banner
   $("#bImg").on("change", function (e) {
-    var ext = $(this).val().split(".").pop().toLowerCase();
-    if ($.inArray(ext, ["png", "jpg", "jpeg"]) == -1) {
-      $("[role=errMessage]")
-        .removeClass("d-none")
-        .find("span")
-        .text("Không đúng định dạng!");
-      removeImg($(this));
+    const filename = $(this).val();
+    if (!filename.match(/\.(jpg|jpeg|png)$/i)) {
+      $("[role=errMessage]").text("Ảnh không hợp lệ");
+      removeImg($(this).parent());
     } else {
-      $("[role=errMessage]").addClass("d-none").find("span").text("");
+      $("[role=errMessage]").text("");
       var uploadedFile = URL.createObjectURL(e.target.files[0]);
-      $(this).next().next().attr("src", uploadedFile).removeClass("d-none");
+      $(this)
+        .parent()
+        .find("img")
+        .attr("src", uploadedFile)
+        .removeClass("d-none");
       $(this).next().addClass("d-none");
       $(this).parent().next().removeClass("d-none");
     }
+  });
+
+  $("#banner-form").on("submit", function () {
+    let filename = $("#bImg").val();
+    const title = "Ảnh";
+    let cases = [
+      { con: filename == "", mess: `${title} là bắt buộc` },
+      {
+        con: !filename.match(/\.(jpg|jpeg|png)$/i),
+        mess: `${title} không hợp lệ`,
+      },
+    ];
+    checkValidate(cases, document.getElementById("bImg"));
   });
 
   $(".sortable-list").sortable({
@@ -103,6 +117,29 @@ $(document).ready(() => {
   //#endregion
 
   //#region payment method
+
+  // validate
+
+  $("#pmName").on("keyup", function () {
+    const title = "Tên hình thức";
+    const maxL = 50;
+    let val = $(this).val();
+    let cases = [
+      { con: val.length > maxL, mess: `${title} tối đa ${maxL} ký tự` },
+    ];
+    checkValidate(cases, this, false);
+  });
+
+  $("#pmDesc").on("keyup", function () {
+    const title = "Mô tả";
+    const maxL = 255;
+    let val = $(this).val();
+    let cases = [
+      { con: val.length > maxL, mess: `${title} tối đa ${maxL} ký tự` },
+    ];
+    checkValidate(cases, this, false);
+  });
+
   $("#pmState").on("change", function () {
     changePMState();
   });
@@ -142,20 +179,78 @@ $(document).ready(() => {
   //#endregion
 
   //#region shop info
+  $("#siName").on("keyup", function () {
+    const title = "Tên trang";
+    const maxL = 50;
+    let val = $(this).val();
+    let cases = [
+      { con: val.length == 0, mess: `${title} la bắt buộc` },
+      { con: val.length > maxL, mess: `${title} tối đa ${maxL} ký tự` },
+    ];
+    checkValidate(cases, this, false);
+  });
+  $("#siAddress").on("keyup", function () {
+    const title = "Địa chỉ";
+    const maxL = 255;
+    let val = $(this).val();
+    let cases = [
+      { con: val.length == 0, mess: `${title} la bắt buộc` },
+      { con: val.length > maxL, mess: `${title} tối đa ${maxL} ký tự` },
+    ];
+    checkValidate(cases, this, false);
+  });
+  $("#siHotline").on("keyup", function () {
+    const title = "Đường dây nóng";
+    const lengthVal = 10;
+    let val = $(this).val();
+    let cases = [
+      { con: val.length == 0, mess: `${title} là bắt buộc` },
+      { con: isNaN(val), mess: `${title} không hợp lệ` },
+      { con: val.length != lengthVal, mess: `${title} gồm ${lengthVal} ký tự` },
+    ];
+    checkValidate(cases, this, false);
+  });
   $("#siLogo").on("change", function (e) {
-    var ext = $(this).val().split(".").pop().toLowerCase();
-    if ($.inArray(ext, ["png", "jpg", "jpeg"]) == -1) {
-      $("[role=errMessage]")
-        .removeClass("d-none")
-        .find("span")
-        .text("Không đúng định dạng!");
-      removeImg($(this));
+    const filename = $(this).val();
+    if (!filename.match(/\.(jpg|jpeg|png)$/i)) {
+      $("[role=errMessage]").text(`Logo không hợp lệ`).removeClass("d-none");
+      $(this).val("");
+      let datasrc = $(this).data("src");
+      if (datasrc) {
+        $(this)
+          .next()
+          .addClass("d-none")
+          .parent()
+          .find("img")
+          .attr("src", datasrc)
+          .removeClass("d-none");
+      } else {
+        $(this)
+          .next()
+          .removeClass("d-none")
+          .parent()
+          .find("img")
+          .attr("src", "")
+          .addClass("d-none");
+      }
     } else {
-      $("[role=errMessage]").addClass("d-none").find("span").text("");
+      $("[role=errMessage]").addClass("d-none").text("");
       var uploadedFile = URL.createObjectURL(e.target.files[0]);
-      $(this).next().next().attr("src", uploadedFile).removeClass("d-none");
-      $(this).next().addClass("d-none");
-      $(this).parent().next().removeClass("d-none");
+      $(this)
+        .next()
+        .addClass("d-none")
+        .parent()
+        .find("img")
+        .attr("src", uploadedFile)
+        .removeClass("d-none");
+    }
+  });
+  $("#shopinfo-form").on("submit", function (e) {
+    $ip_img = $("#siLogo");
+    if ($ip_img.attr("required") && $ip_img.val() == "") {
+      $("[role=errMessage]").text(`Logo là bắt buộc`).removeClass("d-none");
+      e.preventDefault();
+      e.stopPropagation();
     }
   });
   //#endregion

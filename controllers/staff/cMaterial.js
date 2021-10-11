@@ -99,8 +99,8 @@ module.exports.add = (req, res) => {
             req,
             res
           );
-        } else if (newMaterial.mDesc.length > 256) {
-          redirectFunc(false, "Mô tả tối đa 256 ký tự!", rootRoute, req, res);
+        } else if (newMaterial.mDesc.length > 255) {
+          redirectFunc(false, "Mô tả tối đa 255 ký tự!", rootRoute, req, res);
         } else if (!newMaterial.mImg.match(/\.(jpg|jpeg|png)$/i)) {
           redirectFunc(
             false,

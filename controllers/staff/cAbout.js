@@ -36,7 +36,9 @@ module.exports.index = async (req, res) => {
   let banners = await Banner.find({})
     .sort({ bNumber: "asc" })
     .populate({ path: "aId" });
-  let paymentMethods = await PaymentMethod.find({}).populate({ path: "aId" });
+  let paymentMethods = await PaymentMethod.find({})
+    .sort({ createdAt: "desc" })
+    .populate({ path: "aId" });
   let shopInfo = await ShopInfo.findOne({}).populate({ path: "aId" });
   res.render(`./staff/${pI.url}`, {
     pI,
@@ -152,11 +154,11 @@ module.exports.pmDelete = async (req, res) => {
 module.exports.siUpdate = async (req, res) => {
   let sess = req.session.user;
   let updSI = {
-    siName: req.body.siName,
-    siAddress: req.body.siAddress,
-    siHotline: req.body.siHotline,
-    siFacebook: req.body.siFacebook,
-    siZalo: req.body.siZalo,
+    siName: req.body.siName.trim(),
+    siAddress: req.body.siAddress.trim(),
+    siHotline: req.body.siHotline.trim(),
+    siFacebook: req.body.siFacebook.trim(),
+    siZalo: req.body.siZalo.trim(),
     sId: sess.sId,
   };
   let siLogo = req.file?.filename || false;
