@@ -176,7 +176,7 @@ block content
 												.col-12.col-md-6
 													.form-label-group
 														input#pDiscount.form-control(name="pDiscount" type="number" placeholder="Giảm giá" min="0" max="100")
-														label.required(for="pDiscount") Giảm giá (%)
+														label(for="pDiscount") Giảm giá (%)
 														.invalid-feedback Giảm giá là bắt buộc
 
 											.row
@@ -190,6 +190,7 @@ block content
 															input#pState.form-check-input(name="pState" type='checkbox' role="button")
 															label.form-check-label(for='pState') Ẩn
 											.fs-5.mt-3 Danh sách NVL tiêu thụ
+											#mc-error.text-danger.small.d-none
 											table.table.table-bordered.mb-0(width="100%")
 												thead
 													tr.text-center
@@ -200,11 +201,8 @@ block content
 													template#mc-item-template
 														tr.text-center
 															td.p-1.text-start.align-middle
-																select.form-select.p-1(role="list-mc_select" name="mId")
-																	option(hidden value="-1") -- Chọn NVL --
-																	each m in mtrs
-																		option(value= m._id)= m.mName
-																.invalid-feedback NVL này đã được thêm trước đó
+																span.p-1(rel="material-name")
+																input(type="hidden" name="mId" required)
 															td.p-1.align-middle
 																input.form-control.p-1(name="mQuantity" type="number" min="0" max="100" required)
 																.invalid-feedback Số lượng là bắt buộc
@@ -214,10 +212,20 @@ block content
 												tfoot
 													tr
 														td.text-center(colspan="3")
-															button.btn.btn-sm.btn-outline-success(type="button" role="list-mc_add") Thêm NVL
+															.input-group
+																input.form-control(type="text" name="mfind" placeholder="Nhập tên NVL")
+																button.btn.btn-outline-success.border-radius-end(type="button" rel="find-material" role="open-dropdown")
+																	span(data-feather="search")
+																ul#listMtrconItem.dropdown-menu.p-0.position-absolute.top-100.start-0(style="min-width:unset")
+																template#search-result-temp
+																	li(role="list-mtrcon_add")
+																		.dropdown-item.p-2
+																			.d-flex
+																				img.img-fluid.rounded(style="width:100px; max-height:100px;")
+																				.ms-2
+																					h5.fs-5
 									label(for="pDesc") Mô tả
-									textarea#pDesc.summernote(name="pDesc" type="text" placeholder="Mô tả" maxlength="256" style="min-height:80px;" required)
-									.invalid-feedback Mô tả là bắt buộc
+									textarea#pDesc.summernote(name="pDesc" type="text" placeholder="Mô tả" maxlength="256" style="min-height:80px;")
 								.modal-footer.d-grid(style="justify-content: unset")
 									button.btn.btn-primary(type="submit") Lưu
 				#nav-prdreq.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-prdreq-tab')

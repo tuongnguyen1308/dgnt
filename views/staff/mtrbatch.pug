@@ -109,9 +109,8 @@ else
 						.form-floating.mb-2
 							select#mrId.form-control(name="mrId" required)
 								option(hidden value="-1") -- Chọn Yêu cầu --
-								each mr in mtrreqs
-									if mr.mrState == 0
-										option(value= mr._id data-detail= mr.mrDetail)= mr.createdAt.toISOString().slice(0,10).split('-').reverse().join('/') + ' ' + mr.createdAt.toISOString().slice(11,19) + ' - ' + mr.mrReason
+								each mr in mtrreqs_ongoing
+									option(value= mr._id data-detail= mr.mrDetail)= mr.createdAt.toISOString().slice(0,10).split('-').reverse().join('/') + ' ' + mr.createdAt.toISOString().slice(11,19) + ' - ' + mr.mrReason
 							label.required(for="mrId") Yêu cầu nhập NVL
 							.invalid-feedback Yêu cầu nhập NVL là bắt buộc
 						.fs-4 Danh sách NVL

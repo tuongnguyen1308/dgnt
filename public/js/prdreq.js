@@ -65,7 +65,7 @@ $(document).ready(() => {
     }
     let curDate = $btn ? $btn.data("deadline") : new Date().toISOString();
     $("#prDeadlineAt").val(curDate.slice(0, 10));
-    $("select").trigger("change");
+    $("[name=pfind]").val("");
   };
   //#endregion
 

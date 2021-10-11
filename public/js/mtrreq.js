@@ -19,8 +19,8 @@ $(document).ready(() => {
       let mrItem = mtrItemTemplate.content.cloneNode(true);
       let mIdInput = mrItem.querySelector("[name=mId]");
       mIdInput.value = mId;
-      let pNameSpan = mrItem.querySelector("[rel=material-name]");
-      pNameSpan.innerText = mName;
+      let mNameSpan = mrItem.querySelector("[rel=material-name]");
+      mNameSpan.innerText = mName;
       if (mQuantity) {
         let mQuantitySelector = mrItem.querySelector("[name=mQuantity]");
         mQuantitySelector.value = mQuantity;
@@ -60,6 +60,7 @@ $(document).ready(() => {
         generateMtrreqItem(m.mId._id, m.mId.mName, m.mQuantity);
       });
     }
+    $("[name=mfind]").val("");
   };
   //#endregion
 

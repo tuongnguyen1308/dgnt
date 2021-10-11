@@ -5,7 +5,7 @@ const pI = { title: "Quản lý Nguyên vật liệu", url: "material" };
 const rootRoute = `/${pI.url}`;
 const imgViewSize = 300;
 const imgPreviewSize = 465;
-const PAGE_SIZE = 2;
+const PAGE_SIZE = 10;
 
 let redirectFunc = (state, text, dir, req, res) => {
   req.session.messages = {
@@ -79,6 +79,20 @@ module.exports.index = async (req, res) => {
       path: "suId",
       select: "sName",
     });
+  let mtrreqs_ongoing = await Mtrreq.find({ mrState: 0 })
+    .sort({ createdAt: "desc" })
+    .populate({
+      path: "mrDetail.mId",
+      select: "mName mUnit mImg",
+    })
+    .populate({
+      path: "scId",
+      select: "sName",
+    })
+    .populate({
+      path: "suId",
+      select: "sName",
+    });
   let mtrbatchs = await MtrBatch.find({})
     .sort({ mbBatchAt: "desc" })
     .skip(skipPageB)
@@ -97,6 +111,7 @@ module.exports.index = async (req, res) => {
     messages,
     materials,
     mtrreqs,
+    mtrreqs_ongoing,
     mtrbatchs,
     imgViewSize,
     imgPreviewSize,

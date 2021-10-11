@@ -4,7 +4,7 @@ const Category = require("../../models/mCategory");
 const Prdreq = require("../../models/mPrdreq");
 const Material = require("../../models/mMaterial");
 const pI = { title: "Quản lý sản phẩm", url: "product" };
-const PAGE_SIZE = 2;
+const PAGE_SIZE = 10;
 
 module.exports.index = async (req, res) => {
   const messages = req.session?.messages || null;
@@ -67,6 +67,9 @@ module.exports.index = async (req, res) => {
     .populate({
       path: "sId",
       select: "sName",
+    })
+    .populate({
+      path: "mConsume.mId",
     });
   let mtrs = await Material.find({}).sort({ mName: "asc" });
   // get product-request

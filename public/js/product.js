@@ -6,21 +6,33 @@ $(document).ready(() => {
   let imgFiles = [];
   //#region func
   // generate mtr item
-  let generatemcItem = (mId, mQuantity) => {
-    let mcItemTemplate = document.querySelector("#mc-item-template");
-    let mcItem = mcItemTemplate.content.cloneNode(true);
-    if (mId) {
-      let mIdSelector = mcItem.querySelector("[name=mId]");
-      mIdSelector.value = mId;
+  let generatemcItem = (mId, mName, mQuantity) => {
+    let valided = true;
+    let list_mtr_taken = [];
+    $("#mc-list input[name=mId]").each(function () {
+      let mtr_selected_id = $(this).val();
+      list_mtr_taken[mtr_selected_id] = 1;
+      if (list_mtr_taken[mId] != 1) {
+        $("#mc-error").addClass("d-none").text("");
+      } else {
+        $("#mc-error").removeClass("d-none").text("NVL đã được thêm trước đó");
+        valided = false;
+      }
+    });
+    if (valided) {
+      let mtrItemTemplate = document.querySelector("#mc-item-template");
+      let mrItem = mtrItemTemplate.content.cloneNode(true);
+      let mIdInput = mrItem.querySelector("[name=mId]");
+      mIdInput.value = mId;
+      let mNameSpan = mrItem.querySelector("[rel=material-name]");
+      mNameSpan.innerText = mName;
+      if (mQuantity) {
+        let mQuantitySelector = mrItem.querySelector("[name=mQuantity]");
+        mQuantitySelector.value = mQuantity;
+      }
+      $("#mc-list").append(mrItem);
+      feather.replace({ "aria-hidden": "true" });
     }
-    if (mQuantity) {
-      let mQuantitySelector = mcItem.querySelector("[name=mQuantity]");
-      mQuantitySelector.value = mQuantity;
-    }
-    $("#mc-list").append(mcItem);
-    feather.replace({ "aria-hidden": "true" });
-    let cases = [{ con: true, mess: `Tên NVL là bắt buộc` }];
-    checkValidate(cases, $("#mc-list tr:last-child select").get(0), false);
   };
   // generate prd img item
   let generateImg = (src, fname) => {
@@ -31,17 +43,17 @@ $(document).ready(() => {
     imgEle.dataset.fname = fname;
     $("#pImgs").append(imgItem);
   };
-  // let changeImgWhenModalOpen = (con, src) => {
-  //   if (con) {
-  //     $("#img-preview").attr("src", src).removeClass("d-none");
-  //     $("#pImg-preview .title").addClass("d-none");
-  //     $(".file_remove").removeClass("d-none");
-  //   }
-  // };
   let prepareModal = ($btn = null) => {
+    // remove old validate
+    $(".was-validated .is-valid, .was-validated .is-invalid").removeClass(
+      "is-valid is-invalid"
+    );
+    $(".was-validated").removeClass("was-validated");
+    $("#pImg").val("");
     $("#modal-product input#id").remove();
     $("#pImgs").html("");
     $("#mc-list>tr").html("");
+    $("#mc-error").text("");
     $("#pImg").attr("required", true);
     $("#main-img").attr("src", "").addClass("d-none");
     if ($btn) {
@@ -53,8 +65,7 @@ $(document).ready(() => {
       formModal.appendChild(inputID);
       let mConsume = $btn.data("mcon");
       mConsume.map((m) => {
-        generatemcItem(m.mId, m.mQuantity);
-        $("[name=mId]").trigger("change");
+        generatemcItem(m.mId._id, m.mId.mName, m.mQuantity);
       });
       let imgs = $btn.data("imgs");
       imgs.map((img) => {
@@ -91,27 +102,36 @@ $(document).ready(() => {
   $(".btn[role=add-product]").on("click", function () {
     prepareModal();
   });
+  // find material
+  $("[rel=find-material]").on("click", function () {
+    const keyword = $("[name=mfind]").val();
+    $.ajax({
+      type: "POST",
+      url: "/material/find",
+      data: { keyword },
+      success: function (res) {
+        $("#listMtrconItem").html("");
+        res.map((m) => {
+          let resultItemTemp = document.querySelector("#search-result-temp");
+          let resItem = resultItemTemp.content.cloneNode(true);
+          let iImg = resItem.querySelector("img");
+          iImg.src = `img/materials/` + m.mImg;
+          let iId = resItem.querySelector("li");
+          iId.dataset.id = m._id;
+          let iName = resItem.querySelector("h5");
+          iName.innerText = m.mName;
+          $("#listMtrconItem").append(resItem);
+        });
+      },
+      error: function (err) {
+        console.error(err);
+      },
+    });
+  });
 
   // add mtr
-  $("[role=list-mc_add]").on("click", function () {
-    generatemcItem();
-  });
-  // change mtr
-  $(document).on("change", "[role=list-mc_select]", function (e) {
-    let list_mtr_taken = [];
-    $("#mc-list [role=list-mc_select]").each(function () {
-      let mtr_selected_id = $(this).find("option:selected").val();
-      if (mtr_selected_id != -1) {
-        if (list_mtr_taken[mtr_selected_id] != 1) {
-          list_mtr_taken[mtr_selected_id] = 1;
-          let cases = [{ con: false, mess: `` }];
-          checkValidate(cases, this);
-        } else {
-          let cases = [{ con: true, mess: `NVL này đã được thêm trước đó` }];
-          checkValidate(cases, this);
-        }
-      }
-    });
+  $(document).on("click", "[role=list-mtrcon_add]", function () {
+    generatemcItem($(this).data("id"), $(this).find("h5").text());
   });
   // del mtr
   $(document).on("click", "[role=list-mc_delete]", function () {
@@ -193,7 +213,7 @@ $(document).ready(() => {
     checkValidate(cases, sltpcId);
   });
 
-  $("#modal-product").on("submit", function () {
+  $("#modal-product").on("submit", function (e) {
     let cases = [
       {
         con: $("#pcId").find("option:selected").val() == -1,
@@ -202,6 +222,13 @@ $(document).ready(() => {
     ];
     let sltpcId = document.getElementById("pcId");
     checkValidate(cases, sltpcId);
+    if ($("#mc-list [name=mId]").length == 0) {
+      e.preventDefault();
+      e.stopPropagation();
+      $("#mc-error").removeClass("d-none").text("Danh sách NVL là bắt buộc");
+    } else {
+      $("#mc-error").addClass("d-none").text("");
+    }
   });
 
   const calculateMtotal = () => {

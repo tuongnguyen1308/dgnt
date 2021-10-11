@@ -315,6 +315,11 @@ img {
   border-radius: 50%;
 }
 
+.border-radius-end {
+  border-end-end-radius: 0.25rem !important;
+  border-start-end-radius: 0.25rem !important;
+}
+
 .btn-42 {
   width: 42px;
   height: 42px;
