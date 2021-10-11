@@ -166,7 +166,10 @@ module.exports.signup = async (req, res, next) => {
       if (!(ns > 0)) {
         redirectFunc(false, "Ngày sinh không hợp lệ!", prevPage, req, res);
         return;
-      } else if (new Date().getFullYear - ns.slice(0, 4) < 18) {
+      } else if (
+        new Date().getFullYear() - newCustomer.cDofB.slice(0, 4) <
+        18
+      ) {
         redirectFunc(false, "Chưa đủ 18 tuổi!", prevPage, req, res);
         return;
       }

@@ -54,6 +54,14 @@ module.exports.update = async (req, res) => {
     sNumber: req.body.sNumber,
     sEmail: req.body.sEmail,
   };
+  let ns = new Date(updStaff.sDofB);
+  if (!(ns > 0)) {
+    redirectFunc(false, "Ngày sinh không hợp lệ!", rootRoute, req, res);
+    return;
+  } else if (new Date().getFullYear() - updStaff.sDofB.slice(0, 4) < 18) {
+    redirectFunc(false, "Chưa đủ 18 tuổi!", rootRoute, req, res);
+    return;
+  }
   let sImg = req.file?.filename || false;
   if (sImg) {
     updStaff.sImg = sImg;

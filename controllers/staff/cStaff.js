@@ -78,6 +78,17 @@ module.exports.add = (req, res) => {
             sJoinAt: new Date(),
             aId: accSaved._id,
           });
+          let ns = new Date(newStaff.sDofB);
+          if (!(ns > 0)) {
+            redirectFunc(false, "Ngày sinh không hợp lệ!", rootRoute, req, res);
+            return;
+          } else if (
+            new Date().getFullYear() - newStaff.sDofB.slice(0, 4) <
+            18
+          ) {
+            redirectFunc(false, "Chưa đủ 18 tuổi!", rootRoute, req, res);
+            return;
+          }
           await newStaff.save();
           redirectFunc(true, "Đã thêm thành viên", rootRoute, req, res);
         } catch (error) {
@@ -97,6 +108,14 @@ module.exports.update = async (req, res) => {
     sEmail: req.body.sEmail,
     sState: req.body.sState == "on",
   };
+  let ns = new Date(updStaff.sDofB);
+  if (!(ns > 0)) {
+    redirectFunc(false, "Ngày sinh không hợp lệ!", rootRoute, req, res);
+    return;
+  } else if (new Date().getFullYear() - updStaff.sDofB.slice(0, 4) < 18) {
+    redirectFunc(false, "Chưa đủ 18 tuổi!", rootRoute, req, res);
+    return;
+  }
   let sImg = req.file?.filename || false;
   if (sImg) {
     updStaff.sImg = sImg;
