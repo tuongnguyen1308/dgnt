@@ -39,8 +39,12 @@ html(lang="en")
                             i(data-feather="search")
                 ul.navbar-nav.list-group-horizontal
                     li.nav-item.mx-2(rel="tooltip" data-bs-placement="bottom" title="Giỏ hàng")
-                        a.nav-link.text-dark.text-hover-brown(href='/cart')
-                            i(data-feather="shopping-cart")
+                        if sess && sess.rId.rName == "Khách hàng"
+                            a.nav-link.text-dark.text-hover-brown(href='/cart')
+                                i(data-feather="shopping-cart")
+                        else
+                            a.nav-link.text-dark.text-hover-brown(role="button" data-bs-toggle="modal" data-bs-target="#modal-signin" rel="call-modal")
+                                i(data-feather="shopping-cart")
                     if sess
                         li.nav-item.dropdown
                             a#user-dropdown.nav-link.dropdown-toggle.user-select-none.text-dark.text-hover-brown(role="button" data-bs-toggle='dropdown' aria-expanded='false')
@@ -66,8 +70,6 @@ html(lang="en")
                                 each pc in rt.pcs
                                     li
                                         a.p-2.text-dark(href= pc.url)= pc.title
-                    li.nav-item.py-2.ms-auto.dropdown-trigger
-                        a.nav-link.fw-bold.text-light.px-2.px-md-4(href='shop-info') Giới thiệu
         main.flex-shrink-0.bg-light
             if messages
                 #toast.toast.position-absolute.m-2.end-0.z-index-3(role='alert' aria-live='assertive' aria-atomic='true' data-bs-animation="true")

@@ -28,18 +28,25 @@ block content
 				.mt-2.pb-2.border-bottom
 					b Miễn phí: 
 					span Tư vấn, lắp đặt, vận chuyển
-				.mt-2.pb-2
-					span.h4.text-danger= prd.priceAfter
-					del.ms-2.text-secondary= prd.price
-				.mt-2.pb-2.d-flex
-					.div
-						.input-group
-							button.btn.btn-light.border.p-1(rel="sub-quantity")
-								span(data-feather="minus")
-							input#cdQuantity.form-control.px-1.text-center(name="cdQuantity" type="text" max= prd.stock style="max-width:40px;")
-							button.btn.btn-light.border.p-1(rel="add-quantity")
-								span(data-feather="plus")
-					button.btn.btn-brown.ms-2 Thêm vào giỏ hàng
+				if prd.stock > 0
+					if sess && sess.rId.rName == "Khách hàng"
+						.mt-2.pb-2
+							span.h4.text-danger= prd.priceAfter
+							del.ms-2.text-secondary= prd.price
+						.mt-2.pb-2.d-flex
+							.div
+								.input-group
+									button.btn.btn-light.border.p-1(rel="sub-quantity")
+										span(data-feather="minus")
+									input#cdQuantity.form-control.px-1.text-center(name="cdQuantity" type="text" max= prd.stock style="max-width:40px;")
+									button.btn.btn-light.border.p-1(rel="add-quantity")
+										span(data-feather="plus")
+							button.btn.btn-brown.ms-2 Thêm vào giỏ hàng
+					else
+						button.btn.btn-brown.mt-2.pb-2(data-bs-toggle="modal" data-bs-target="#modal-signin" rel="call-modal") Đăng nhập để mua hàng
+				else
+					.mt-2.pb-2
+						i.h4.text-danger Liên hệ
 		// end product detail
 		// desc/review
 		.nav.nav-tabs.align-items-center.nav-fill(role='tablist')

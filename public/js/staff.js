@@ -65,24 +65,7 @@ $(document).ready(() => {
   };
   //#endregion
 
-  //#region validate
-  $("#sName").on("keyup", function () {
-    const title = "Tên nhân viên";
-    const maxVal = 50;
-    let val = $(this).val();
-    let cases = [
-      { con: val.length == 0, mess: `${title} là bắt buộc` },
-      { con: val.length > maxVal, mess: `${title} tối đa ${maxVal} ký tự` },
-    ];
-    checkValidate(cases, this);
-  });
-  //#endregion
-
   //#region events
-  $("#aPassword").on("keyup", function () {
-    this.setCustomValidity($(this).val().length >= 6 ? "" : "error");
-  });
-
   $(".btn[role=add-staff]").on("click", function () {
     prepareModal();
   });

@@ -190,18 +190,19 @@ $(document).ready(function () {
     checkValidate(cases, this);
   });
   $("#su_password, #aPassword").on("keyup", function () {
+    console.log($(this).val());
     const title = "Mật khẩu";
     const minVal = 6;
     const maxVal = 50;
-    let val = $.trim($(this).val());
-    $(this).val(val);
+    let val = $(this).val();
+    console.log(val.length > maxVal);
     let cases = [
       { con: val.length == 0, mess: `${title} là bắt buộc` },
       { con: val.length < minVal, mess: `${title} tối thiểu ${minVal} ký tự` },
       { con: val.includes(" "), mess: `${title} không được chứa khoảng trắng` },
       { con: val.length > maxVal, mess: `${title} tối đa ${maxVal} ký tự` },
     ];
-    checkValidate(cases, this);
+    checkValidate(cases, this, true);
   });
 
   $("#su_repassword").on("keyup", function () {
@@ -217,6 +218,16 @@ $(document).ready(function () {
 
   $("#cName").on("keyup", function () {
     const title = "Họ tên";
+    const maxVal = 50;
+    let val = $(this).val();
+    let cases = [
+      { con: val.length == 0, mess: `${title} là bắt buộc` },
+      { con: val.length > maxVal, mess: `${title} tối đa ${maxVal} ký tự` },
+    ];
+    checkValidate(cases, this);
+  });
+  $("#sName").on("keyup", function () {
+    const title = "Tên nhân viên";
     const maxVal = 50;
     let val = $(this).val();
     let cases = [
@@ -244,7 +255,7 @@ $(document).ready(function () {
     }
   });
 
-  $("#cDofB, #sDofB").on("change", function () {
+  $("#sDofB").on("change", function () {
     const title = "Ngày sinh";
     let val = new Date($(this).val()).getTime();
     let curDate = new Date();
@@ -253,6 +264,20 @@ $(document).ready(function () {
       {
         con: curDate.getFullYear() - $(this).val().slice(0, 4) < 18,
         mess: `Nhân viên phải đủ 18 tuổi`,
+      },
+    ];
+    checkValidate(cases, this);
+  });
+
+  $("#cDofB").on("change", function () {
+    const title = "Ngày sinh";
+    let val = new Date($(this).val()).getTime();
+    let curDate = new Date();
+    let cases = [
+      { con: val >= curDate.getTime(), mess: `${title} không hợp lệ` },
+      {
+        con: curDate.getFullYear() - $(this).val().slice(0, 4) < 18,
+        mess: `Khách hàng phải đủ 18 tuổi`,
       },
     ];
     checkValidate(cases, this);

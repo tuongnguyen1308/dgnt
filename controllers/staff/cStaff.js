@@ -45,19 +45,13 @@ module.exports.index = async (req, res) => {
 };
 
 module.exports.add = (req, res) => {
-  Staff.find(
-    { username: req.body.aUsername.trim().toLowerCase() },
+  Account.find(
+    { aUsername: req.body.aUsername.trim().toLowerCase() },
     async (err, users_found) => {
       if (err) {
         redirectFunc(false, "Tên tài khoản đã tồn tại!", rootRoute, req, res);
-      } else if (users_found.length) {
-        redirectFunc(
-          false,
-          "Tên đăng nhập này đã tồn tại!",
-          rootRoute,
-          req,
-          res
-        );
+      } else if (users_found.length > 0) {
+        redirectFunc(false, "Tên tài khoản đã tồn tại!", rootRoute, req, res);
       } else {
         const salt = await bcrypt.genSalt(10);
         const hashPassword = await bcrypt.hash(req.body.aPassword, salt);

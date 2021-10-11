@@ -8,10 +8,12 @@ $(document).ready(() => {
     if (Number($inpQuan.val()) > 0) changeQuantity(-1);
   });
   $("[rel=add-quantity]").on("click", function () {
+    console.log(Number($inpQuan.val()));
     if (Number($inpQuan.val()) < $inpQuan.attr("max")) changeQuantity(1);
   });
   $inpQuan.on("keydown", function (e) {
     if (!/^[0-9]$/i.test(e.key) && e.key != "Backspace") {
+      console.log(e.key);
       e.preventDefault();
       e.stopPropagation();
     }

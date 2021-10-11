@@ -77,7 +77,7 @@ module.exports.signup = async (req, res, next) => {
   let customerRole = await Role.findOne({ rName: "Khách hàng" });
   let su_repassword = req.body.su_repassword;
   let newAccount = {
-    aUsername: req.body.su_username,
+    aUsername: req.body.su_username.trim().toLowerCase(),
     aPassword: req.body.su_password,
     rId: customerRole._id,
   };
