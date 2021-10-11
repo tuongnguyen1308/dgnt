@@ -250,10 +250,10 @@ $(document).ready(function () {
     let curDate = new Date();
     let cases = [
       { con: val >= curDate.getTime(), mess: `${title} không hợp lệ` },
-      // {
-      //   con: curDate.getFullYear() - $(this).val().slice(0, 4) < 18,
-      //   mess: `Nhân viên phải đủ 18 tuổi`,
-      // },
+      {
+        con: curDate.getFullYear() - $(this).val().slice(0, 4) < 18,
+        mess: `Nhân viên phải đủ 18 tuổi`,
+      },
     ];
     checkValidate(cases, this);
   });
