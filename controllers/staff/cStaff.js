@@ -118,7 +118,7 @@ module.exports.update = async (req, res) => {
     sState: req.body.sState == "on",
   };
 
-  if (newStaff.cDofB) {
+  if (updStaff.cDofB) {
     let ns = new Date(updStaff.sDofB);
     if (!(ns > 0)) {
       redirectFunc(false, "Ngày sinh không hợp lệ!", rootRoute, req, res);
