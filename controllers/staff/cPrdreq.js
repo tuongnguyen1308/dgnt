@@ -1,5 +1,6 @@
 const Prdreq = require("../../models/mPrdreq");
 const Product = require("../../models/mProduct");
+const Material = require("../../models/mMaterial");
 const pI = { title: "Quản lý sản phẩm", url: "product" };
 const rootRoute = `/${pI.url}-management`;
 
@@ -81,15 +82,72 @@ module.exports.patch = async (req, res) => {
     suId: sess.sId,
   };
   if (updPrdreq.prState == 1) {
-    let prdreq = await Prdreq.findOne({ _id: req.params.id });
-    // update mtr_quantity
-    prdreq.prDetail.map(async (p) => {
-      let stock = await Product.findOne({ _id: p.pId });
-      let updProduct = {
-        pStock: parseInt(stock.pStock) + parseInt(p.pQuantity),
-      };
-      await Product.findByIdAndUpdate(p.pId, { $set: updProduct });
+    let prdreq = await Prdreq.findOne({ _id: req.params.id }).populate({
+      path: "prDetail.pId",
+      populate: "mConsume.mId",
     });
+    // update mtr_quantity
+    let listUpdMtr = [];
+    let listUpdPrd = [];
+    let isEnoughMtr = true;
+    let errtext = "";
+    prdreq.prDetail.map((p) => {
+      let stock = p.pId;
+      stock.mConsume.map((m) => {
+        // kiểm tra mtr đã được dùng hay chưa
+        let index = listUpdMtr.findIndex((mtr) => mtr._id == m.mId._id);
+        if (index != -1) {
+          // lấy số lượng còn lại của lần truốc đó để trừ
+          let mleft = listUpdMtr[index].mStock - p.pQuantity * m.mQuantity;
+          if (mleft < 0) {
+            isEnoughMtr = false;
+          } else listUpdMtr[index].mStock = mleft;
+        } else {
+          // lấy số lượng gốc trong kho để trừ
+          let mleft = m.mId.mStock - p.pQuantity * m.mQuantity;
+          if (mleft < 0) {
+            isEnoughMtr = false;
+          } else {
+            listUpdMtr.push({ _id: m.mId._id, mStock: mleft });
+          }
+        }
+      });
+      if (isEnoughMtr) {
+        listUpdPrd.push({
+          _id: p.pId._id,
+          pStock: parseInt(stock.pStock) + parseInt(p.pQuantity),
+        });
+      }
+    });
+    if (isEnoughMtr) {
+      try {
+        listUpdMtr.map(async (m) => {
+          await Material.findByIdAndUpdate(m._id, { $set: m });
+        });
+
+        listUpdPrd.map(async (p) => {
+          await Product.findByIdAndUpdate(p._id, { $set: p });
+        });
+      } catch (error) {
+        console.log(error);
+        req.session.messages = {
+          icon: "alert-circle",
+          color: "danger",
+          title: "Thất bại",
+          text: error,
+        };
+        res.json(false);
+      }
+    } else {
+      req.session.messages = {
+        icon: "alert-circle",
+        color: "danger",
+        title: "Thất bại",
+        text: errtext,
+      };
+      res.json(false);
+      return;
+    }
   }
   await Prdreq.findByIdAndUpdate(req.params.id, { $set: updPrdreq }, (err) => {
     req.session.messages = {

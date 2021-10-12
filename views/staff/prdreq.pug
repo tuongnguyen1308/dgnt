@@ -53,17 +53,12 @@ else
 						if pr.prState == 0 && 'Quản lý, Nhân viên bán hàng, Nhân viên sản xuất'.includes(sess.rId.rName)
 							.btn-group(role="group")
 								if 'Quản lý, Nhân viên sản xuất'.includes(sess.rId.rName)
-									button.btn.btn-sm.btn-outline-success(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Đánh dấu là đã giải quyết")
-										span(data-feather="check")
-									ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset")
-										li
-											a.dropdown-item.p-2.text-success(href='#' data-id=pr._id data-state="1" role="update-state-prdreq") Xác nhận
-										li
-											span.dropdown-item.p-2(role="button" rel="close-dropdown") Huỷ
+									button.btn.btn-sm.btn-outline-brown(type='button' data-prds=pr.prDetail data-id=pr._id rel="tooltip" data-bs-placement="top" title="Kiểm tra NVL" role="view-mcheck" data-bs-toggle="modal" data-bs-target="#modal-mcheck")
+										span(data-feather="eye")
 								if 'Quản lý, Nhân viên bán hàng'.includes(sess.rId.rName)
 									button.btn.btn-sm.btn-outline-primary(role="edit-prdreq" data-id=pr._id data-reason=pr.prReason data-detail= pr.prDetail data-deadline= pr.prDeadlineAt type='button' rel="tooltip" data-bs-placement="top" title="Sửa" data-bs-toggle="modal" data-bs-target="#modal-prdreq")
 										span(data-feather="edit-3")
-									button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Hủy")
+									button.btn.btn-sm.btn-outline-danger.border-radius-end(role="open-dropdown" type='button' rel="tooltip" data-bs-placement="top" title="Hủy")
 										span(data-feather="x")
 									ul.dropdown-menu.p-0.position-absolute.top-100.end-0(style="min-width:unset")
 										li
@@ -145,7 +140,7 @@ else
 											button.btn.btn-outline-success.border-radius-end(type="button" rel="find-product" role="open-dropdown")
 												span(data-feather="search")
 											ul#listPrdreqItem.dropdown-menu.p-0.position-absolute.top-100.start-0(style="min-width:unset")
-											template#search-result-temp
+											template#searchp-result-temp
 												li(role="list-prdreq_add")
 													.dropdown-item.p-2
 														.d-flex
@@ -155,4 +150,47 @@ else
 																p
 				.modal-footer.d-grid(style="justify-content: unset")
 					button.btn.btn-primary(type="submit") Lưu
+	#modal-mcheck.modal.fade(tabindex="-1" role="dialog")
+		.modal-dialog.modal-dialog-centered.modal-xl
+			.modal-content
+				.modal-header
+					h5.modal-title
+						span Kiểm tra số lượng NVL
+					button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
+				.modal-body
+					table.table.table-bordered.mb-0(width="100%")
+						thead
+							tr.text-center
+								th.align-middle Tên SP
+								th.align-middle Tên NVL
+								th.align-middle SL NVL/1 SP
+								th.align-middle SL SP cần
+								th.align-middle SL NVL cần
+								th.align-middle SL NVL trong kho
+						tbody#mcheck-list
+							template#mcheck-item-template
+								tr(rel="row").text-center
+									td(rel="pName").p-1.text-start.align-middle
+							template#sub-mcheck-item-template
+								td(rel="mName").p-1.text-start
+								td(rel="mQuantity").p-1.text-end.align-middle
+								td(rel="pQuantity").p-1.text-end.align-middle
+								td(rel="mQuanNeed").p-1.text-end.align-middle.fw-bold
+								td(rel="mStock").p-1.text-end.align-middle.fw-bold
+					#mcheck-result.text-end.position-relative
+					template#not-enough-template
+						span.text-danger Không đủ NVL, cần bổ sung số lượng NVL
+					template#enough-template
+						span.text-success Đủ NVL, có thể hoàn thành yêu cầu bổ sung sản phẩm
+						button.btn.btn-sm.btn-outline-success.d-flex.align-items-center.ms-auto(role="open-dropdown" type='button')
+							span(data-feather="check")
+							span.ms-2 Hoàn thành yêu cầu
+						ul.dropdown-menu.p-0.position-absolute.top-100.end-0(style="min-width:unset")
+							li
+								a.dropdown-item.p-2.text-success(href="#" data-state="1" role="update-state-prdreq") Xác nhận
+							li
+								span.dropdown-item.p-2(role="button" rel="close-dropdown") Huỷ
+
+
+
 script(src="js/prdreq.js" defer)

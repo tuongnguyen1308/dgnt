@@ -115,16 +115,19 @@ $(document).ready(function () {
   });
 
   // logout show
-  $("[role=open-dropdown]").on("click", function () {
+  $(document).click((e) => {
+    if (
+      $("[role=open-dropdown]").has(e.target).length == 0 &&
+      !$("[role=open-dropdown]").is(e.target)
+    ) {
+      $(".dropdown-menu").removeClass("show");
+    }
+  });
+  $(document).on("click", "[role=open-dropdown]", function () {
     $(this).next().toggleClass("show");
   });
-  $("[rel=close-dropdown]").on("click", function () {
+  $(document).on("click", "[rel=close-dropdown]", function () {
     $(this).parent().parent().removeClass("show");
-  });
-  $(document).click((e) => {
-    if (!["BUTTON", "line", "svg", "A"].includes(e.target.tagName)) {
-      $(".dropdown-menu.show").removeClass("show");
-    }
   });
 
   //#region customer

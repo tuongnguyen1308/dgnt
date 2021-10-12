@@ -67,6 +67,74 @@ $(document).ready(() => {
     $("#prDeadlineAt").val(curDate.slice(0, 10));
     $("[name=pfind]").val("");
   };
+
+  let prepareMtrcheckModal = (prDetail, id) => {
+    $("#mcheck-list tr").remove();
+    $("#mcheck-result").html("");
+    let listUpdMtr = [];
+    let enoughMtr = true;
+    prDetail.map((detail) => {
+      let p = detail.pId;
+      let mcheckItemTemplate = document.querySelector("#mcheck-item-template");
+      let mcItem = mcheckItemTemplate.content.cloneNode(true);
+      let pNameTd = mcItem.querySelector("[rel=pName]");
+      pNameTd.innerText = p.pName;
+      pNameTd.rowSpan = p.mConsume.length;
+      p.mConsume.map((m, i) => {
+        let subItemTemplate = document.querySelector(
+          "#sub-mcheck-item-template"
+        );
+        let smcItem = subItemTemplate.content.cloneNode(true);
+        let mNameTd = smcItem.querySelector("[rel=mName]");
+        mNameTd.innerText = m.mId.mName;
+        let mQuantityTd = smcItem.querySelector("[rel=mQuantity]");
+        mQuantityTd.innerText = m.mQuantity;
+        let pQuantityTd = smcItem.querySelector("[rel=pQuantity]");
+        pQuantityTd.innerText = detail.pQuantity;
+        let mQuanNeedTd = smcItem.querySelector("[rel=mQuanNeed]");
+        let mQuanNeed = detail.pQuantity * m.mQuantity;
+        mQuanNeedTd.innerText = mQuanNeed;
+        let mStockTd = smcItem.querySelector("[rel=mStock]");
+        mStockTd.innerText = m.mId.mStock;
+        let index = listUpdMtr.findIndex((mtr) => mtr._id == m.mId._id);
+        let mleft = 0;
+
+        if (index !== -1) {
+          mleft = listUpdMtr[index].mStock - detail.pQuantity * m.mQuantity;
+          mStockTd.innerText = `${listUpdMtr[index].mStock} (-${
+            m.mId.mStock - listUpdMtr[index].mStock
+          })`;
+          listUpdMtr[index].mStock = mleft;
+        } else {
+          mleft = m.mId.mStock - detail.pQuantity * m.mQuantity;
+          listUpdMtr.push({ _id: m.mId._id, mStock: mleft });
+        }
+        if (mleft < 0) {
+          mStockTd.classList.add("text-danger");
+          enoughMtr = false;
+        }
+        let row = mcItem.querySelector("[rel=row]");
+        if (i !== 0) {
+          let tr = document.createElement("tr");
+          tr.appendChild(smcItem);
+          mcItem.appendChild(tr);
+        } else row.appendChild(smcItem);
+      });
+      $("#mcheck-list").append(mcItem);
+    });
+    if (enoughMtr) {
+      let enoughTemp = document.querySelector("#enough-template");
+      let enoughItem = enoughTemp.content.cloneNode(true);
+      let aId = enoughItem.querySelector("a");
+      aId.dataset.id = id;
+      $("#mcheck-result").append(enoughItem);
+    } else {
+      let notEnoughTemp = document.querySelector("#not-enough-template");
+      let notEnoughItem = notEnoughTemp.content.cloneNode(true);
+      $("#mcheck-result").append(notEnoughItem);
+    }
+    feather.replace({ "aria-hidden": "true" });
+  };
   //#endregion
 
   //#region validate
@@ -90,6 +158,10 @@ $(document).ready(() => {
   $(".btn[role=add-prdreq]").on("click", function () {
     preparePrdreqModal();
   });
+  // call modal mcheck
+  $(".btn[role=view-mcheck]").on("click", function () {
+    prepareMtrcheckModal($(this).data("prds"), $(this).data("id"));
+  });
 
   // find-product
   $("[rel=find-product]").on("click", function () {
@@ -101,7 +173,7 @@ $(document).ready(() => {
       success: function (res) {
         $("#listPrdreqItem").html("");
         res.map((p) => {
-          let resultItemTemp = document.querySelector("#search-result-temp");
+          let resultItemTemp = document.querySelector("#searchp-result-temp");
           let resItem = resultItemTemp.content.cloneNode(true);
           let iImg = resItem.querySelector("img");
           iImg.src = `img/products/` + p.pImgs.find((pi) => pi.piIsMain).piImg;
@@ -136,7 +208,7 @@ $(document).ready(() => {
     preparePrdreqModal($(this));
   });
   // cancel prdreq
-  $("[role=update-state-prdreq]").on("click", function (e) {
+  $(document).on("click", "[role=update-state-prdreq]", function (e) {
     $target = $(e.target);
     const id = $target.data("id");
     const prState = $target.data("state");

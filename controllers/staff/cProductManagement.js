@@ -74,12 +74,13 @@ module.exports.index = async (req, res) => {
   let mtrs = await Material.find({}).sort({ mName: "asc" });
   // get product-request
   let prdreqs = await Prdreq.find({})
-    .sort({ prDeadlineAt: "desc" })
+    .sort({ prDeadlineAt: "desc", createdAt: "desc" })
     .skip(skipPageR)
     .limit(PAGE_SIZE)
     .populate({
       path: "prDetail.pId",
-      select: "pName pUnit pImgs",
+      select: "pName pUnit pImgs mConsume",
+      populate: "mConsume.mId",
     })
     .populate({
       path: "scId",
