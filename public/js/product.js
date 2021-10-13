@@ -256,7 +256,7 @@ $(document).ready(() => {
   });
 
   $("#pPrice").on("keyup", function () {
-    const title = "Giá gốc";
+    const title = "Giá";
     let val = $(this).val();
     let cases = [
       { con: isNaN(val), mess: `${title} không hợp lệ` },
