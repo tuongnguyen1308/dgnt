@@ -116,6 +116,9 @@ $(document).ready(function () {
 
   // logout show
   $(document).click((e) => {
+    console.log(e.target);
+    console.log($("[role=open-dropdown]").has(e.target));
+    console.log($("[role=open-dropdown]").is(e.target));
     if (
       $("[role=open-dropdown]").has(e.target).length == 0 &&
       !$("[role=open-dropdown]").is(e.target)
