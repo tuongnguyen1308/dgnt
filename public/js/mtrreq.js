@@ -65,6 +65,30 @@ $(document).ready(() => {
   //#endregion
 
   //#region validate
+  $("#mrReason").on("keyup", function () {
+    const title = "Lý do";
+    const maxVal = 255;
+    let val = $(this).val();
+    let cases = [
+      { con: val.length == 0, mess: `${title} là bắt buộc` },
+      { con: val.length >= maxVal, mess: `${title} tối đa ${maxVal} ký tự` },
+    ];
+    checkValidate(cases, this);
+  });
+
+  $(document).on("keyup", "[name=mQuantity]", function () {
+    const title = "Số lượng";
+    let val = $(this).val();
+    console.log(val);
+    let cases = [
+      { con: isNaN(val), mess: `${title} không hợp lệ` },
+      { con: val % 1 != 0, mess: `${title} không hợp lệ` },
+      { con: val.length == 0, mess: `${title} là bắt buộc` },
+      { con: val <= 0, mess: `${title} không hợp lệ` },
+    ];
+    checkValidate(cases, this);
+  });
+
   $("#modal-mtrreq").on("submit", function (e) {
     if ($("#mr-list [name=mId]").length == 0) {
       e.preventDefault();

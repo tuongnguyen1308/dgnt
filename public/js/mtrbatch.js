@@ -63,6 +63,35 @@ $(document).ready(() => {
   //#endregion
 
   //#region validate
+  $("#mbBatchAt").on("keyup", function () {
+    const title = "Ngày nhập";
+    let val = new Date($(this).val());
+    let cases = [{ con: val == "Invalid Date", mess: `${title} không hợp lệ` }];
+    checkValidate(cases, this);
+  });
+
+  $(document).on("keyup", "[name=mPrice]", function () {
+    const title = "Đơn giá";
+    let val = $(this).val();
+    let cases = [
+      { con: isNaN(val), mess: `${title} không hợp lệ` },
+      { con: val % 1 != 0, mess: `${title} không hợp lệ` },
+      { con: val.length == 0, mess: `${title} là bắt buộc` },
+      { con: val <= 0, mess: `${title} không hợp lệ` },
+    ];
+    checkValidate(cases, this);
+  });
+
+  $("#mbSupplier").on("keyup", function () {
+    const title = "Nhà cung cấp";
+    const maxVal = 50;
+    let val = $(this).val();
+    let cases = [
+      { con: val.length == 0, mess: `${title} là bắt buộc` },
+      { con: val.length >= maxVal, mess: `${title} tối đa ${maxVal} ký tự` },
+    ];
+    checkValidate(cases, this);
+  });
   $("#modal-mtrbatch").on("submit", function (e) {
     let cases = [
       {

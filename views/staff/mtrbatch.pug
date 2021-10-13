@@ -100,12 +100,12 @@ else
 								.form-label-group
 									input#mbBatchAt.form-control(name="mbBatchAt" type="date" required)
 									label.required(for="mbBatchAt") Ngày nhập
-									.invalid-feedback Ngày nhập không được để trống
+									.invalid-feedback Ngày nhập là bắt buộc
 							.col-12.col-md-6
 								.form-label-group
-									input#mbSupplier.form-control(name="mbSupplier" type="text" placeholder="Nhà cung cấp" required maxlength="256")
+									input#mbSupplier.form-control(name="mbSupplier" type="text" placeholder="Nhà cung cấp" required)
 									label.required(for="mbSupplier") Nhà cung cấp
-									.invalid-feedback Nhà cung cấp không được để trống
+									.invalid-feedback Nhà cung cấp là bắt buộc
 						.form-floating.mb-2
 							select#mrId.form-control(name="mrId" required)
 								option(hidden value="-1") -- Chọn Yêu cầu --
@@ -115,7 +115,7 @@ else
 									option(value= mr._id data-detail= mr.mrDetail)= mr.createdAt.toISOString().slice(0,10).split('-').reverse().join('/') + ' ' + mr.createdAt.toISOString().slice(11,19) + ' - ' + mr.mrReason
 							label.required(for="mrId") Yêu cầu nhập NVL
 							.invalid-feedback Yêu cầu nhập NVL là bắt buộc
-						.fs-4 Danh sách NVL
+						.fs-4.required Danh sách NVL
 						table.table.table-bordered.mb-0(width="100%")
 							thead
 								tr.text-center

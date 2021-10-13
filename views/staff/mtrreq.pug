@@ -101,10 +101,10 @@ else
 				.modal-body
 					.d-grid.m-auto
 						.form-label-group.form-floating
-							textarea#mrReason.form-control(name="mrReason" type="text" placeholder="Lý do" maxlength="256" style="min-height:80px;" required)
-							label(for="mrReason") Lý do
+							textarea#mrReason.form-control(name="mrReason" type="text" placeholder="Lý do" style="min-height:80px;" required)
+							label.required(for="mrReason") Lý do
 							.invalid-feedback Lý do là bắt buộc
-						.fs-4 Danh sách NVL
+						.fs-4.required Danh sách NVL
 						#mr-error.text-danger.small.d-none
 						table.table.table-bordered.mb-0(width="100%")
 							thead

@@ -56,7 +56,7 @@ module.exports.index = async (req, res) => {
   //#endregion
 
   let materials = await Material.find({})
-    .sort({ mName: "asc" })
+    .sort({ createdAt: "desc" })
     .skip(skipPageM)
     .limit(PAGE_SIZE)
     .populate({
