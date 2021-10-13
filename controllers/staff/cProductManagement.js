@@ -12,7 +12,6 @@ module.exports.index = async (req, res) => {
   req.session.messages = null;
   //#region pagination
   let pageNum = Math.max(req.query.pnum || 1, 1);
-  // mtr
   let pageNumP = 1;
   let skipPageP = (pageNumP - 1) * PAGE_SIZE;
   let totalP = await Product.countDocuments();
@@ -33,12 +32,12 @@ module.exports.index = async (req, res) => {
       break;
   }
   //#endregion
-  let roomtypes = await Roomtype.find({}).sort({ rtName: "asc" }).populate({
+  let roomtypes = await Roomtype.find({}).sort({ createdAt: "desc" }).populate({
     path: "sId",
     select: "sName",
   });
   let categories = await Category.find({})
-    .sort({ pcName: "asc" })
+    .sort({ createdAt: "desc" })
     .populate({
       path: "sId",
       select: "sName",
@@ -61,7 +60,7 @@ module.exports.index = async (req, res) => {
   if (keyword) con.pName = new RegExp(keyword, "i");
   // find products with condition
   let products = await Product.find(con)
-    .sort({ pName: "asc" })
+    .sort({ createdAt: "desc" })
     .skip(skipPageP)
     .limit(PAGE_SIZE)
     .populate({
@@ -71,7 +70,6 @@ module.exports.index = async (req, res) => {
     .populate({
       path: "mConsume.mId",
     });
-  let mtrs = await Material.find({}).sort({ mName: "asc" });
   // get product-request
   let prdreqs = await Prdreq.find({})
     .sort({ prDeadlineAt: "desc", createdAt: "desc" })
@@ -96,7 +94,6 @@ module.exports.index = async (req, res) => {
     roomtypes,
     categories,
     products,
-    mtrs,
     rtSelected,
     pcSelected,
     keyword,
