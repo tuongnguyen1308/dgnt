@@ -116,9 +116,6 @@ $(document).ready(function () {
 
   // logout show
   $(document).click((e) => {
-    console.log(e.target);
-    console.log($("[role=open-dropdown]").has(e.target));
-    console.log($("[role=open-dropdown]").is(e.target));
     if (
       $("[role=open-dropdown]").has(e.target).length == 0 &&
       !$("[role=open-dropdown]").is(e.target)
@@ -196,12 +193,10 @@ $(document).ready(function () {
     checkValidate(cases, this);
   });
   $("#su_password, #aPassword").on("keyup", function () {
-    console.log($(this).val());
     const title = "Mật khẩu";
     const minVal = 6;
     const maxVal = 50;
     let val = $(this).val();
-    console.log(val.length > maxVal);
     let cases = [
       { con: val.length == 0, mess: `${title} là bắt buộc` },
       { con: val.length < minVal, mess: `${title} tối thiểu ${minVal} ký tự` },

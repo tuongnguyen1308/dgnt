@@ -15,7 +15,7 @@ if sess.rId.rName == "Quản lý"
                 .text-danger.mb-3.d-none(role="errMessage")
                     span
             .form-label-group.my-2
-                input#rtName.form-control(name="rtName" type="text" placeholder="Tên loại phòng" required maxlength="50")
+                input#rtName.form-control(name="rtName" type="text" placeholder="Tên loại phòng" required)
                 label.required(for="rtName") Tên loại phòng
                 .invalid-feedback Tên loại phòng là bắt buộc
             button.btn.btn-primary(type="submit") Lưu
@@ -40,7 +40,7 @@ if sess.rId.rName == "Quản lý"
                             .btn-group(role="group")
                                 button.btn.btn-sm.btn-outline-primary(role="edit-roomtype" data-id=rt._id data-name=rt.rtName data-img= rt.rtImg type='button' rel="tooltip" data-bs-placement="top" title="Sửa")
                                     span(data-feather="edit-3")
-                                button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Hủy")
+                                button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Xóa")
                                     span(data-feather="x")
                                 ul.dropdown-menu.p-0.position-absolute.top-100.end-0(style="min-width:unset")
                                     li

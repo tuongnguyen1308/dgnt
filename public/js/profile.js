@@ -51,11 +51,9 @@ $(document).ready(() => {
     const minVal = 6;
     const maxVal = 50;
     let val = $(this).val();
-    console.log(val.length > maxVal);
     let cases = [
       { con: val.length == 0, mess: `${title} là bắt buộc` },
       { con: val.length < minVal, mess: `${title} tối thiểu ${minVal} ký tự` },
-      { con: val.includes(" "), mess: `${title} không được chứa khoảng trắng` },
       { con: val.length > maxVal, mess: `${title} tối đa ${maxVal} ký tự` },
     ];
     checkValidate(cases, this, false);
@@ -63,8 +61,7 @@ $(document).ready(() => {
 
   $("#newPassword2").on("keyup", function () {
     const title = "Nhập lại mật khẩu mới";
-    let val = $.trim($(this).val());
-    $(this).val(val);
+    let val = $(this).val();
     let cases = [
       { con: val.length == 0, mess: `${title} là bắt buộc` },
       { con: val !== $("#newPassword").val(), mess: `${title} không đúng` },

@@ -7,7 +7,7 @@ if sess.rId.rName == "Quản lý"
             .d-flex
                 .form-group.me-3
                     .form-label-group
-                        input#pcName.form-control(name="pcName" type="text" placeholder="Tên danh mục" required maxlength="50")
+                        input#pcName.form-control(name="pcName" type="text" placeholder="Tên danh mục" required)
                         label.required(for="pcName") Tên danh mục
                         .invalid-feedback Tên danh mục là bắt buộc
                     .form-floating.mb-2
@@ -51,7 +51,7 @@ if sess.rId.rName == "Quản lý"
                             .btn-group(role="group")
                                 button.btn.btn-sm.btn-outline-primary(role="edit-category" data-id=pc._id data-name=pc.pcName data-img= pc.pcImg data-rtid= pc.rtId._id type='button' rel="tooltip" data-bs-placement="top" title="Sửa")
                                     span(data-feather="edit-3")
-                                button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Hủy")
+                                button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Xóa")
                                     span(data-feather="x")
                                 ul.dropdown-menu.p-0.position-absolute.top-100.end-0(style="min-width:unset")
                                     li

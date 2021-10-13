@@ -79,7 +79,6 @@ $(document).ready(() => {
   $(document).on("keyup", "[name=mQuantity]", function () {
     const title = "Số lượng";
     let val = $(this).val();
-    console.log(val);
     let cases = [
       { con: isNaN(val), mess: `${title} không hợp lệ` },
       { con: val % 1 != 0, mess: `${title} không hợp lệ` },

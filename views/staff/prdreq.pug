@@ -109,8 +109,8 @@ else
 							label.required(for="prDeadlineAt") Hạn hoàn thành
 							.invalid-feedback Hạn hoàn thành là bắt buộc
 						.form-label-group.form-floating
-							textarea#prReason.form-control(name="prReason" type="text" placeholder="Lý do" maxlength="256" style="min-height:80px;" required)
-							label(for="prReason") Lý do
+							textarea#prReason.form-control(name="prReason" type="text" placeholder="Lý do" style="min-height:80px;" required)
+							label.required(for="prReason") Lý do
 							.invalid-feedback Lý do là bắt buộc
 						span.fs-4 Danh sách sản phẩm
 						#pr-error.text-danger.small.d-none

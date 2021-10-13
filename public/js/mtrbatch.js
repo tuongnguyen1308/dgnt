@@ -70,6 +70,13 @@ $(document).ready(() => {
     checkValidate(cases, this);
   });
 
+  $("#mbBatchAt").on("change", function () {
+    const title = "Ngày nhập";
+    let val = new Date($(this).val());
+    let cases = [{ con: val == "Invalid Date", mess: `${title} không hợp lệ` }];
+    checkValidate(cases, this);
+  });
+
   $(document).on("keyup", "[name=mPrice]", function () {
     const title = "Đơn giá";
     let val = $(this).val();

@@ -153,18 +153,18 @@ block content
 														.invalid-feedback Danh mục là bắt buộc
 												.col-12.col-md-6
 													.form-label-group
-														input#pName.form-control(name="pName" type="text" placeholder="Tên sản phẩm" maxlength="50" required)
+														input#pName.form-control(name="pName" type="text" placeholder="Tên sản phẩm" required)
 														label.required(for="pName") Tên sản phẩm
 														.invalid-feedback Tên sản phẩm là bắt buộc
 											.row
 												.col-12.col-md-6
 													.form-label-group
-														input#pUnit.form-control(name="pUnit" type="text" placeholder="Đơn vị tính" maxlength="50" required)
+														input#pUnit.form-control(name="pUnit" type="text" placeholder="Đơn vị tính" required)
 														label.required(for="pUnit") Đơn vị tính
 														.invalid-feedback Đơn vị tính là bắt buộc
 												.col-12.col-md-6
 													.form-label-group
-														input#pSize.form-control(name="pSize" type="text" placeholder="Kích thước" maxlength="50" required)
+														input#pSize.form-control(name="pSize" type="text" placeholder="Kích thước" required)
 														label.required(for="pSize") Kích thước
 														.invalid-feedback Kích thước là bắt buộc
 											.row
@@ -189,7 +189,7 @@ block content
 														.form-check.form-switch.fs-6
 															input#pState.form-check-input(name="pState" type='checkbox' role="button")
 															label.form-check-label(for='pState') Ẩn
-											.fs-5.mt-3 Danh sách NVL tiêu thụ
+											.fs-5.mt-3.required Danh sách NVL tiêu thụ
 											#mc-error.text-danger.small.d-none
 											table.table.table-bordered.mb-0(width="100%")
 												thead

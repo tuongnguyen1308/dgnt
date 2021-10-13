@@ -166,20 +166,29 @@ $(document).ready(() => {
 
   $("#pImg").on("change", function (e) {
     $("#pImgs").html("");
+    $("#main-img").attr("src", "#").addClass("d-none");
+    $("#mainimg-inp").val("");
     imgFiles = e.target.files;
+    let isValid = true;
     Array.from(imgFiles).forEach((f) => {
-      let cases = [
-        { con: f["type"].split("/")[0] !== "image", mess: `Ảnh không hợp lệ` },
-      ];
-      let pImg = document.getElementById("pImg");
-      checkValidate(cases, pImg);
-      if (f["type"].split("/")[0] === "image") {
-        var src = URL.createObjectURL(f);
-        generateImg(src, f.name);
-        $("#main-img").attr("src", src).removeClass("d-none");
-        $("#mainimg-inp").val(f.name);
-        feather.replace({ "aria-hidden": "true" });
-        $('[rel="tooltip"]').tooltip({ trigger: "hover" });
+      if (isValid) {
+        isValid = f.name.match(/\.(jpg|jpeg|png)$/i);
+        let cases = [{ con: !isValid, mess: `Ảnh không hợp lệ` }];
+        let pImg = document.getElementById("pImg");
+        checkValidate(cases, pImg);
+        if (isValid) {
+          var src = URL.createObjectURL(f);
+          generateImg(src, f.name);
+          $("#main-img").attr("src", src).removeClass("d-none");
+          $("#mainimg-inp").val(f.name);
+          feather.replace({ "aria-hidden": "true" });
+          $('[rel="tooltip"]').tooltip({ trigger: "hover" });
+        } else {
+          $("#main-img").attr("src", "#").addClass("d-none");
+          $("#mainimg-inp").val("");
+          $("#pImgs").html("");
+          $(this).val("");
+        }
       }
     });
   });
@@ -211,6 +220,77 @@ $(document).ready(() => {
     ];
     let sltpcId = document.getElementById("pcId");
     checkValidate(cases, sltpcId);
+  });
+
+  $("#pName").on("keyup", function () {
+    const title = "Tên sản phẩm";
+    const maxVal = 50;
+    let val = $(this).val();
+    let cases = [
+      { con: val.length == 0, mess: `${title} là bắt buộc` },
+      { con: val.length > maxVal, mess: `${title} tối đa ${maxVal} ký tự` },
+    ];
+    checkValidate(cases, this);
+  });
+
+  $("#pUnit").on("keyup", function () {
+    const title = "Đơn vị tính";
+    const maxVal = 50;
+    let val = $(this).val();
+    let cases = [
+      { con: val.length == 0, mess: `${title} là bắt buộc` },
+      { con: val.length > maxVal, mess: `${title} tối đa ${maxVal} ký tự` },
+    ];
+    checkValidate(cases, this);
+  });
+
+  $("#pSize").on("keyup", function () {
+    const title = "Kích thước";
+    const maxVal = 50;
+    let val = $(this).val();
+    let cases = [
+      { con: val.length == 0, mess: `${title} là bắt buộc` },
+      { con: val.length > maxVal, mess: `${title} tối đa ${maxVal} ký tự` },
+    ];
+    checkValidate(cases, this);
+  });
+
+  $("#pPrice").on("keyup", function () {
+    const title = "Giá gốc";
+    let val = $(this).val();
+    let cases = [
+      { con: isNaN(val), mess: `${title} không hợp lệ` },
+      { con: val % 1 != 0, mess: `${title} không hợp lệ` },
+      { con: val.length == 0, mess: `${title} là bắt buộc` },
+      { con: val <= 0, mess: `${title} không hợp lệ` },
+    ];
+    checkValidate(cases, this);
+  });
+
+  $("#pDiscount").on("keyup", function () {
+    const title = "Giảm giá";
+    let maxVal = 100;
+    let val = $(this).val();
+    let cases = [
+      { con: isNaN(val), mess: `${title} không hợp lệ` },
+      { con: val % 1 != 0, mess: `${title} không hợp lệ` },
+      { con: val.length == 0, mess: `${title} là bắt buộc` },
+      { con: val < 0, mess: `${title} không hợp lệ` },
+      { con: val > 100, mess: `${title} không hợp lệ` },
+    ];
+    checkValidate(cases, this);
+  });
+
+  $(document).on("keyup", "[name=mQuantity], [name=pQuantity]", function () {
+    const title = "Số lượng";
+    let val = $(this).val();
+    let cases = [
+      { con: isNaN(val), mess: `${title} không hợp lệ` },
+      { con: val % 1 != 0, mess: `${title} không hợp lệ` },
+      { con: val.length == 0, mess: `${title} là bắt buộc` },
+      { con: val <= 0, mess: `${title} không hợp lệ` },
+    ];
+    checkValidate(cases, this);
   });
 
   $("#modal-product").on("submit", function (e) {

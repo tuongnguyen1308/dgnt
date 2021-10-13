@@ -63,7 +63,9 @@ $(document).ready(() => {
         generatePrdreqItem(p.pId._id, p.pId.pName, p.pQuantity);
       });
     }
-    let curDate = $btn ? $btn.data("deadline") : new Date().toISOString();
+    let cDate = new Date();
+    cDate.setUTCHours(cDate.getUTCHours() + 7);
+    let curDate = $btn ? $btn.data("deadline") : cDate.toISOString();
     $("#prDeadlineAt").val(curDate.slice(0, 10));
     $("[name=pfind]").val("");
   };
@@ -138,16 +140,52 @@ $(document).ready(() => {
   //#endregion
 
   //#region validate
+
+  $("#prDeadlineAt").on("change", function () {
+    const title = "Hạn hoàn thành";
+    let val = new Date($(this).val());
+    let curDate = new Date();
+    curDate.setHours(0, 0, 0, 0);
+    console.log(val);
+    console.log(curDate);
+    let cases = [
+      { con: val == "Invalid Date", mess: `${title} không hợp lệ` },
+      { con: val.getTime() < curDate.getTime(), mess: `${title} không hợp lệ` },
+    ];
+    checkValidate(cases, this);
+  });
+
+  $("#prDeadlineAt").on("keyup", function () {
+    const title = "Hạn hoàn thành";
+    let val = new Date($(this).val());
+    let curDate = new Date();
+    curDate.setHours(0, 0, 0, 0);
+    let cases = [
+      { con: val == "Invalid Date", mess: `${title} không hợp lệ` },
+      { con: val.getTime() < curDate.getTime(), mess: `${title} không hợp lệ` },
+    ];
+    checkValidate(cases, this);
+  });
+
+  $("#prReason").on("keyup", function () {
+    const title = "Lý do";
+    const maxVal = 255;
+    let val = $(this).val();
+    let cases = [
+      { con: val.length == 0, mess: `${title} là bắt buộc` },
+      { con: val.length > maxVal, mess: `${title} tối đa ${maxVal} ký tự` },
+    ];
+    checkValidate(cases, this);
+  });
+
   $("#modal-prdreq").on("submit", function (e) {
     if ($("#pr-list [name=pId]").length == 0) {
-      console.log("invalid");
       e.preventDefault();
       e.stopPropagation();
       $("#pr-error")
         .removeClass("d-none")
         .text("Danh sách sản phẩm là bắt buộc");
     } else {
-      console.log("valid");
       $("#pr-error").addClass("d-none").text("");
     }
   });
