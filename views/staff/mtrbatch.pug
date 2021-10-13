@@ -75,14 +75,14 @@ else
 					a.page-link.px-2(href=pI.url)
 						span(data-feather="chevrons-left")
 				li.page-item(class= pageNumB==1 ? 'disabled' : '')
-					a.page-link.px-2(href=`${pI.url}?pname=bat&pnum=${pageNumB}`)
+					a.page-link.px-2(href=`${pI.url}?pname=bat&pnum=${pageNumB-1}`)
 						span(data-feather="chevron-left")
 				- for (var i = 1; i <= totalBP; i++)
 					li.page-item(class= pageNumB==i ? 'active' : '')
 						a.page-link.h-100.d-flex.align-items-center.px-3(href=`${pI.url}?pname=bat&pnum=${i}`)
 							span= i
 				li.page-item(class= pageNumB==totalBP ? 'disabled' : '')
-					a.page-link.px-2(href=`${pI.url}?pname=bat&pnum=${pageNumB}`)
+					a.page-link.px-2(href=`${pI.url}?pname=bat&pnum=${pageNumB+1}`)
 						span(data-feather="chevron-right")
 				li.page-item(class= pageNumB==totalBP ? 'disabled' : '')
 					a.page-link.px-2(href=`${pI.url}?pname=bat&pnum=${totalBP}`)
@@ -110,6 +110,8 @@ else
 							select#mrId.form-control(name="mrId" required)
 								option(hidden value="-1") -- Chọn Yêu cầu --
 								each mr in mtrreqs_ongoing
+									- var ca = mr.createdAt;
+									- mr.createdAt = ca.setUTCHours(ca.getUTCHours() + 7);
 									option(value= mr._id data-detail= mr.mrDetail)= mr.createdAt.toISOString().slice(0,10).split('-').reverse().join('/') + ' ' + mr.createdAt.toISOString().slice(11,19) + ' - ' + mr.mrReason
 							label.required(for="mrId") Yêu cầu nhập NVL
 							.invalid-feedback Yêu cầu nhập NVL là bắt buộc

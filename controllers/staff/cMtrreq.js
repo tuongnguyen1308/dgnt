@@ -28,17 +28,38 @@ module.exports.add = async (req, res) => {
       mQuantitys = [mQuantitys];
     }
     mIds.map((mId, index) => {
-      mrDetail.push({ mId, mQuantity: mQuantitys[index] });
+      if (mId.length == 0) {
+        redirectFunc(
+          false,
+          "Tên nguyên vật liệu là băt buộc!",
+          rootRoute,
+          req,
+          res
+        );
+        return;
+      } else if (mQuantitys[index].length == 0) {
+        redirectFunc(false, "Số lượng là băt buộc!", rootRoute, req, res);
+        return;
+      } else if (isNaN(mQuantitys[index])) {
+        redirectFunc(false, "Số lượng không hợp lệ!", rootRoute, req, res);
+        return;
+      } else mrDetail.push({ mId, mQuantity: mQuantitys[index] });
     });
     let newMtrreq = new Mtrreq({
-      mrReason: req.body.mrReason,
+      mrReason: req.body.mrReason.trim(),
       mrDetail,
       scId: sess.sId,
       suId: sess.sId,
       mrState: 0,
     });
-    await newMtrreq.save();
-    redirectFunc(true, "Thêm yêu cầu thành công!", rootRoute, req, res);
+    if (newMtrreq.mrReason.length == 0) {
+      redirectFunc(false, "Lý do là băt buộc!", rootRoute, req, res);
+    } else if (newMtrreq.mrReason.length > 255) {
+      redirectFunc(false, "Lý do tối đa 255 ký tự!", rootRoute, req, res);
+    } else {
+      await newMtrreq.save();
+      redirectFunc(true, "Thêm yêu cầu thành công!", rootRoute, req, res);
+    }
   } catch (error) {
     redirectFunc(false, "Thêm yêu cầu thất bại!", rootRoute, req, res);
   }
@@ -54,21 +75,41 @@ module.exports.update = async (req, res) => {
     mQuantitys = [mQuantitys];
   }
   mIds.map((mId, index) => {
-    mrDetail.push({ mId, mQuantity: mQuantitys[index] });
+    if (mId.length == 0) {
+      redirectFunc(
+        false,
+        "Tên nguyên vật liệu là băt buộc!",
+        rootRoute,
+        req,
+        res
+      );
+      return;
+    } else if (mQuantitys[index].length == 0) {
+      redirectFunc(false, "Số lượng là băt buộc!", rootRoute, req, res);
+      return;
+    } else if (isNaN(mQuantitys[index])) {
+      redirectFunc(false, "Số lượng không hợp lệ!", rootRoute, req, res);
+      return;
+    } else mrDetail.push({ mId, mQuantity: mQuantitys[index] });
   });
   let updMtrreq = {
-    mrReason: req.body.mrReason,
+    mrReason: req.body.mrReason.trim(),
     mrDetail,
     mrState: 0,
     suId: sess.sId,
   };
-  try {
-    await Mtrreq.findByIdAndUpdate(req.body.id, { $set: updMtrreq });
-    redirectFunc(true, "Cập nhật thành công!", rootRoute, req, res);
-  } catch (error) {
-    redirectFunc(false, "Cập nhật thất bại!", rootRoute, req, res);
+  if (updMtrreq.mrReason.length == 0) {
+    redirectFunc(false, "Lý do là băt buộc!", rootRoute, req, res);
+  } else if (updMtrreq.mrReason.length > 255) {
+    redirectFunc(false, "Lý do tối đa 255 ký tự!", rootRoute, req, res);
+  } else {
+    try {
+      await Mtrreq.findByIdAndUpdate(req.body.id, { $set: updMtrreq });
+      redirectFunc(true, "Cập nhật thành công!", rootRoute, req, res);
+    } catch (error) {
+      redirectFunc(false, "Cập nhật thất bại!", rootRoute, req, res);
+    }
   }
-  return;
 };
 
 module.exports.patch = async (req, res) => {

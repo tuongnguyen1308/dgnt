@@ -65,14 +65,14 @@ block content
 									a.page-link.px-2(href=pI.url)
 										span(data-feather="chevrons-left")
 								li.page-item(class= pageNumM==1 ? 'disabled' : '')
-									a.page-link.px-2(href=`${pI.url}?pname=mtr&pnum=${pageNumM}`)
+									a.page-link.px-2(href=`${pI.url}?pname=mtr&pnum=${pageNumM-1}`)
 										span(data-feather="chevron-left")
 								- for (var i = 1; i <= totalMP; i++)
 									li.page-item(class= pageNumM==i ? 'active' : '')
 										a.page-link.h-100.d-flex.align-items-center.px-3(href=`${pI.url}?pname=mtr&pnum=${i}`)
 											span= i
 								li.page-item(class= pageNumM==totalMP ? 'disabled' : '')
-									a.page-link.px-2(href=`${pI.url}?pname=mtr&pnum=${pageNumM}`)
+									a.page-link.px-2(href=`${pI.url}?pname=mtr&pnum=${pageNumM+1}`)
 										span(data-feather="chevron-right")
 								li.page-item(class= pageNumM==totalMP ? 'disabled' : '')
 									a.page-link.px-2(href=`${pI.url}?pname=mtr&pnum=${totalMP}`)
@@ -87,7 +87,7 @@ block content
 									button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
 								.modal-body
 									.form-label-group
-										input#mName.form-control(name="mName" type="text" placeholder="Tên nguyên vật liệu" required maxlength="50")
+										input#mName.form-control(name="mName" type="text" placeholder="Tên nguyên vật liệu" required)
 										label.required(for="mName") Tên nguyên vật liệu
 										.invalid-feedback Tên nguyên vật liệu là bắt buộc
 									.form-label-group

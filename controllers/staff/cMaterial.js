@@ -143,14 +143,22 @@ module.exports.add = (req, res) => {
       const sess = req.session.user;
       try {
         let newMaterial = new Material({
-          mName: req.body.mName,
-          mDesc: req.body.mDesc,
+          mName: req.body.mName.trim(),
+          mDesc: req.body.mDesc.trim(),
           mUnit: req.body.mUnit,
           mStock: 0,
           mImg: req.file?.filename || "default.png",
           sId: sess.sId,
         });
-        if (newMaterial.mName.length > 50) {
+        if (newMaterial.mName.length == 0) {
+          redirectFunc(
+            false,
+            "Tên nguyên vật liệu là bắt buộc!",
+            rootRoute,
+            req,
+            res
+          );
+        } else if (newMaterial.mName.length > 50) {
           redirectFunc(
             false,
             "Tên nguyên vật liệu tối đa 50 ký tự!",
@@ -158,6 +166,9 @@ module.exports.add = (req, res) => {
             req,
             res
           );
+        }
+        if (newMaterial.mUnit.length == 0) {
+          redirectFunc(false, "Đơn vị tính là bắt buộc!", rootRoute, req, res);
         } else if (newMaterial.mDesc.length > 255) {
           redirectFunc(false, "Mô tả tối đa 255 ký tự!", rootRoute, req, res);
         } else if (!newMaterial.mImg.match(/\.(jpg|jpeg|png)$/i)) {
@@ -194,13 +205,22 @@ module.exports.add = (req, res) => {
 
 module.exports.update = async (req, res) => {
   let updMaterial = {
-    mName: req.body.mName,
-    mDesc: req.body.mDesc,
+    mName: req.body.mName.trim(),
+    mDesc: req.body.mDesc.trim(),
     mUnit: req.body.mUnit,
   };
   let mImg = req.file?.filename || false;
   if (mImg) {
     updMaterial.mImg = mImg;
+    if (!updMaterial.mImg.match(/\.(jpg|jpeg|png)$/i)) {
+      redirectFunc(
+        false,
+        "Ảnh nguyên vật liệu không hợp lệ!",
+        rootRoute,
+        req,
+        res
+      );
+    }
   }
   const mFound = await Material.find({
     mName: updMaterial.mName,
@@ -208,13 +228,34 @@ module.exports.update = async (req, res) => {
   });
   if (mFound.length > 0) {
     redirectFunc(false, "Tên nguyên vật liệu đã tồn tại!", rootRoute, req, res);
-  } else
-    try {
-      await Material.findByIdAndUpdate(req.body.id, { $set: updMaterial });
-      redirectFunc(true, "Cập nhật thành công!", rootRoute, req, res);
-    } catch (error) {
-      redirectFunc(false, "Cập nhật thất bại!", rootRoute, req, res);
-    }
+  } else if (updMaterial.mName.length == 0) {
+    redirectFunc(
+      false,
+      "Tên nguyên vật liệu là bắt buộc!",
+      rootRoute,
+      req,
+      res
+    );
+  } else if (updMaterial.mName.length > 50) {
+    redirectFunc(
+      false,
+      "Tên nguyên vật liệu tối đa 50 ký tự!",
+      rootRoute,
+      req,
+      res
+    );
+  }
+  if (updMaterial.mUnit.length == 0) {
+    redirectFunc(false, "Đơn vị tính là bắt buộc!", rootRoute, req, res);
+  } else if (updMaterial.mDesc.length > 255) {
+    redirectFunc(false, "Mô tả tối đa 255 ký tự!", rootRoute, req, res);
+  }
+  try {
+    await Material.findByIdAndUpdate(req.body.id, { $set: updMaterial });
+    redirectFunc(true, "Cập nhật thành công!", rootRoute, req, res);
+  } catch (error) {
+    redirectFunc(false, "Cập nhật thất bại!", rootRoute, req, res);
+  }
   return;
 };
 
