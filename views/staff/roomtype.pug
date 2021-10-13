@@ -20,7 +20,7 @@ if sess.rId.rName == "Quản lý"
                 .invalid-feedback Tên loại phòng là bắt buộc
             button.btn.btn-primary(type="submit") Lưu
             button.btn.btn-light.ms-2(role="form-roomtype-reset" type="reset") Hủy
-.div(style="max-height:700px; overflow: scroll;")
+.div.overflow-y-scroll(style="max-height:700px")
     table.table.table-responsive.table-bordered(width="100%")
         thead.text-center
             th.align-middle STT

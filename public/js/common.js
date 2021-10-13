@@ -222,18 +222,8 @@ $(document).ready(function () {
     checkValidate(cases, this);
   });
 
-  $("#cName").on("keyup", function () {
+  $("#cName, #sName").on("keyup", function () {
     const title = "Họ tên";
-    const maxVal = 50;
-    let val = $(this).val();
-    let cases = [
-      { con: val.length == 0, mess: `${title} là bắt buộc` },
-      { con: val.length > maxVal, mess: `${title} tối đa ${maxVal} ký tự` },
-    ];
-    checkValidate(cases, this);
-  });
-  $("#sName").on("keyup", function () {
-    const title = "Tên nhân viên";
     const maxVal = 50;
     let val = $(this).val();
     let cases = [

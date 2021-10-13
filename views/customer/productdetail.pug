@@ -17,7 +17,7 @@ block content
 				each pi in prd.pImgs
 					if pi.piIsMain
 						img.main-image(src=`img/products/${pi.piImg}` width="100%")
-				.d-flex.mt-3.pb-2(style="overflow-x: scroll;")
+				.d-flex.overflow-x-scroll.mt-3.pb-2
 					each pi,i in prd.pImgs
 						.sub-img.h-100(class=i==0 ? '' : 'ms-2')
 							img(src=`img/products/${pi.piImg}` width="100px" style="height:100px;")
