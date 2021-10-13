@@ -64,15 +64,15 @@ module.exports.add = async (req, res) => {
       redirectFunc(false, "Nhà cung cấp tối đa 50 ký tự!", rootRoute, req, res);
       return;
     } else if (req.body.mbBatchAt == "") {
-      redirectFunc(false, "Ngày cấp là bắt buộc!", rootRoute, req, res);
+      redirectFunc(false, "Ngày nhập là bắt buộc!", rootRoute, req, res);
       return;
     } else {
       let batchAt = new Date(req.body.mbBatchAt);
       if (batchAt == "Invalid Date") {
-        redirectFunc(false, "Ngày cấp không hợp lệ!", rootRoute, req, res);
+        redirectFunc(false, "Ngày nhập không hợp lệ!", rootRoute, req, res);
         return;
       } else if (batchAt.getTime() > new Date().getTime()) {
-        redirectFunc(false, "Ngày cấp không hợp lệ!", rootRoute, req, res);
+        redirectFunc(false, "Ngày nhập không hợp lệ!", rootRoute, req, res);
         return;
       } else {
         let mr = await MtrReq.findOne({ _id: newMtrbatch.mrId });
@@ -81,7 +81,7 @@ module.exports.add = async (req, res) => {
         if (requireAt.getTime() > batchAt.getTime()) {
           redirectFunc(
             false,
-            "Ngày cấp không nhỏ hơn ngày yêu cầu!",
+            "Ngày nhập không nhỏ hơn ngày yêu cầu!",
             rootRoute,
             req,
             res
@@ -148,15 +148,15 @@ module.exports.update = async (req, res) => {
     redirectFunc(false, "Nhà cung cấp tối đa 50 ký tự!", rootRoute, req, res);
     return;
   } else if (req.body.mbBatchAt == "") {
-    redirectFunc(false, "Ngày cấp là bắt buộc!", rootRoute, req, res);
+    redirectFunc(false, "Ngày nhập là bắt buộc!", rootRoute, req, res);
     return;
   } else {
     let batchAt = new Date(req.body.mbBatchAt);
     if (batchAt == "Invalid Date") {
-      redirectFunc(false, "Ngày cấp không hợp lệ!", rootRoute, req, res);
+      redirectFunc(false, "Ngày nhập không hợp lệ!", rootRoute, req, res);
       return;
     } else if (batchAt.getTime() > new Date().getTime()) {
-      redirectFunc(false, "Ngày cấp không hợp lệ!", rootRoute, req, res);
+      redirectFunc(false, "Ngày nhập không hợp lệ!", rootRoute, req, res);
       return;
     } else {
       try {
@@ -167,7 +167,7 @@ module.exports.update = async (req, res) => {
         if (requireAt.getTime() > batchAt.getTime()) {
           redirectFunc(
             false,
-            "Ngày cấp không nhỏ hơn ngày yêu cầu!",
+            "Ngày nhập không nhỏ hơn ngày yêu cầu!",
             rootRoute,
             req,
             res

@@ -113,7 +113,7 @@ $(document).ready(() => {
       $("[role=errMessage]")
         .removeClass("d-none")
         .find("span")
-        .text("Không đúng định dạng!");
+        .text("Ảnh không hợp lệ!");
     } else {
       $("[role=errMessage]").addClass("d-none").find("span").text("");
       var uploadedFile = URL.createObjectURL(e.target.files[0]);
