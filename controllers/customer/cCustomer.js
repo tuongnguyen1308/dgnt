@@ -55,6 +55,7 @@ module.exports.auth = async (req, res, next) => {
       return;
     }
     // đúng user
+    let cFound = await Customer.findOne({ aId: accFound._id });
     let user = {
       _id: accFound._id,
       aUsername: accFound.aUsername.toLowerCase(),
@@ -62,6 +63,7 @@ module.exports.auth = async (req, res, next) => {
       rId: accFound.rId,
       sId: null,
       sState: null,
+      cId: cFound._id,
     };
     req.session.user = user;
     redirectFunc(true, "Đăng nhập thành công!", prevPage, req, res);
@@ -208,6 +210,7 @@ module.exports.signup = async (req, res, next) => {
       rId: customerRole,
       sId: null,
       sState: null,
+      cId: newSess._id,
     };
     req.session.user = user;
     redirectFunc(true, "Đăng ký thành công!", prevPage, req, res);

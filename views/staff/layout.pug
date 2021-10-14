@@ -42,7 +42,7 @@ html(lang="en")
 						span.me-1
 						strong.me-auto
 						//- small.text-muted just now
-						button.btn-close(type='button' data-bs-dismiss='toast' aria-label='Close' style="opacity:.8;filter:invert(1);")
+						button.btn-close(type='button' data-bs-dismiss='toast' aria-label='Close' style="opacity:.9;filter:invert(1);")
 					.toast-body
 			if messages
 				#toast.toast.position-absolute.m-2.top-0.end-0.z-index-3(role='alert' aria-live='assertive' aria-atomic='true' data-bs-animation="true")
@@ -50,7 +50,7 @@ html(lang="en")
 						span.me-1(data-feather=messages.icon)
 						strong#message-title.me-auto= messages.title
 						//- small.text-muted just now
-						button.btn-close(type='button' data-bs-dismiss='toast' aria-label='Close' style="opacity:.8;filter:invert(1);")
+						button.btn-close(type='button' data-bs-dismiss='toast' aria-label='Close' style="opacity:.9;filter:invert(1);")
 					#messages-text.toast-body= messages.text
 			.row
 				nav#sidebarMenu.col-md-3.col-lg-2.d-md-block.bg-light.sidebar.collapse

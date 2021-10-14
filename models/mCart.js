@@ -18,6 +18,7 @@ let Cart = Schema(
     cId: {
       type: Schema.Types.ObjectId,
       require: true,
+      unique: true,
       ref: "col_customer",
     },
   },

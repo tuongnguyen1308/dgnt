@@ -1,9 +1,7 @@
 const Shopinfo = require("../../models/mShopInfo");
-const Account = require("../../models/mAccount");
-const Roomtype = require("../../models/mRoomtype");
-const Category = require("../../models/mCategory");
 const Product = require("../../models/mProduct");
-const Banner = require("../../models/mBanner");
+const Customer = require("../../models/mCustomer");
+const Cart = require("../../models/mCart");
 
 const pI = { title: "Giỏ hàng", url: "cart" };
 
@@ -21,227 +19,71 @@ let redirectFunc = (state, text, dir, req, res) => {
   return;
 };
 
-let GetDataDisplay = async () => {
-  menubar = [];
-  shopinfo = await Shopinfo.findOne({});
-  //#region menubar
-  let categories = await Category.find({}).sort({ pcName: "asc" }).populate({
-    path: "rtId",
-    select: "rtName slugName",
-  });
-  categories.map((pc) => {
-    let index = menubar.findIndex((mb) => mb.title == pc.rtId.rtName);
-    if (index == -1) {
-      menubar.push({
-        title: pc.rtId.rtName,
-        url: "/" + pc.rtId.slugName,
-        pcs: [{ title: pc.pcName, url: "/" + pc.slugName }],
-      });
-    } else {
-      menubar[index].pcs.push({
-        title: pc.pcName,
-        url: "/" + pc.slugName,
-      });
-    }
-  });
-  menubar.sort((first, second) => (first.title > second.title ? 1 : -1));
-  //#endregion
-};
-
 module.exports.index = async (req, res) => {
   const messages = req.session?.messages || null;
   const sess = req.session?.user;
   req.session.messages = null;
-  await GetDataDisplay();
-  let roomtypes = await Roomtype.find({}).sort({ rtName: "asc" });
+  let shopinfo = await Shopinfo.findOne({});
 
-  //#region products
-  let groupPrdByRt = [];
-  let products = await Product.find({ pState: true })
-    .sort({ createdAt: "desc" })
-    .populate({
-      path: "pcId",
-      select: "rtId slugName",
-      populate: { path: "rtId", select: "rtName slugName" },
-    });
-  products.map((p) => {
-    let prd = {
-      title: p.pName,
-      disc: p.pDiscount,
-      price: p.pPrice.toLocaleString("vi", {
-        style: "currency",
-        currency: "VND",
-      }),
-      priceAfter: (
-        p.pPrice -
-        Math.floor(p.pPrice * p.pDiscount) / 100
-      ).toLocaleString("vi", { style: "currency", currency: "VND" }),
-      img: p.pImgs.find((pi) => pi.piIsMain).piImg,
-      url: "/" + p.slugName,
-      pcUrl: "/" + p.pcId.slugName,
-    };
-    let rtTitle = p.pcId.rtId.rtName;
-    let rtUrl = "/" + p.pcId.rtId.slugName;
-    let index = groupPrdByRt.findIndex((rt) => rt.title == rtTitle);
-    if (index == -1) {
-      groupPrdByRt.push({
-        title: rtTitle,
-        url: rtUrl,
-        pcs: menubar.find((mb) => mb.title == rtTitle).pcs,
-        ps: [prd],
-      });
-    } else {
-      if (groupPrdByRt[index].ps.length < 6) {
-        groupPrdByRt[index].ps.push(prd);
-      }
-    }
-  });
-  //#endregion
-  // banner
-  let banners = await Banner.find({}).sort({ bNumber: "asc" });
+  let cart = Cart.findOne({ cId: sess.cId }).populate("products.pId");
+
   res.render(`./customer/${pI.url}`, {
     pI,
     messages,
     sess,
     shopinfo,
-    menubar,
-    banners,
-    roomtypes,
-    groupPrdByRt,
-    products,
+    cart,
   });
 };
 
-module.exports.filter = async (req, res) => {
-  const messages = req.session?.messages || null;
+module.exports.add = async (req, res) => {
   const sess = req.session?.user;
-  req.session.messages = null;
 
-  await GetDataDisplay();
-  let keyword = req.params.keyword;
-  let pcFound;
-  let rtFound = await Roomtype.findOne({
-    slugName: keyword,
-  });
+  let pId = req.body.pId;
+  let pQuantity = req.body.pQuantity;
 
-  if (!rtFound) {
-    pcFound = await Category.findOne({ slugName: keyword });
-    if (pcFound) {
-      rtFound = await Roomtype.findById(pcFound.rtId);
-    } else {
-      //#region PRODUCT DETAIL PAGE
-      let pFound = await Product.findOne({ slugName: keyword }).populate({
-        path: "pcId",
-        populate: { path: "rtId" },
-      });
-      if (!pFound) {
-        redirectFunc(false, "Không tìm thấy trang yêu cầu", "/", req, res);
-        return;
+  if (pId == "") res.json({ s: false, m: "Sản phẩm là bắt buộc!" });
+  else if (pQuantity <= 0) res.json({ s: false, m: "Số lượng không hợp lệ!" });
+  else if (!sess) res.json({ s: false, m: "Vui lòng đăng nhập!" });
+  else {
+    let cFound = Customer.findOne({ _id: sess.cId }).countDocuments();
+    if (cFound == 0) res.json({ s: false, m: "Tài khoản không hợp lệ!" });
+    else {
+      let pFound = Product.findOne({ _id: pId, pState: true }).select("pStock");
+      if (!pFound) res.json({ s: false, m: "Sản phẩm không hợp lệ!" });
+      else if (pFound.pStock < pQuantity)
+        res.json({ s: false, m: "Số lượng không hợp lệ!" });
+      else {
+        Cart.findOne({ cId: sess.cId }, async function (err, cartF) {
+          try {
+            if (!cartF) {
+              let newCart = new Cart({
+                cId: sess.cId,
+                products: { pId, pQuantity },
+              });
+              await newCart.save();
+              res.json({ s: true, d: newCart });
+            } else {
+              let pF = false;
+              let products = cartF.products.map((p) => {
+                if (p.pId == pId) {
+                  pF = true;
+                  p.pQuantity = Number(p.pQuantity) + Number(pQuantity);
+                }
+                return p;
+              });
+              if (!pF) {
+                products.push({ pId, pQuantity });
+              }
+              cartF.products = products;
+              cartF.save();
+              res.json({ s: true, d: cartF });
+            }
+          } catch (error) {
+            res.json({ s: false, m: error });
+          }
+        });
       }
-      let prd = {
-        _id: pFound._id,
-        name: pFound.pName,
-        unit: pFound.pUnit,
-        size: pFound.pSize,
-        stock: pFound.pStock,
-        price: pFound.pPrice.toLocaleString("vi", {
-          style: "currency",
-          currency: "VND",
-        }),
-        disc: pFound.pDiscount,
-        priceAfter: (
-          pFound.pPrice -
-          Math.floor(pFound.pPrice * pFound.pDiscount) / 100
-        ).toLocaleString("vi", { style: "currency", currency: "VND" }),
-        img: pFound.pImgs.find((pi) => pi.piIsMain).piImg,
-        url: "/" + pFound.slugName,
-        desc: pFound.pDesc,
-        pImgs: pFound.pImgs,
-        pcId: pFound.pcId,
-      };
-
-      let relatePrdFound = await Product.find({
-        pcId: pFound.pcId._id,
-        _id: { $ne: pFound._id },
-      }).limit(4);
-      let relatePrd = relatePrdFound.map((p) => {
-        let pformat = {
-          title: p.pName,
-          disc: p.pDiscount,
-          price: p.pPrice.toLocaleString("vi", {
-            style: "currency",
-            currency: "VND",
-          }),
-          priceAfter: (
-            p.pPrice -
-            Math.floor(p.pPrice * p.pDiscount) / 100
-          ).toLocaleString("vi", { style: "currency", currency: "VND" }),
-          img: p.pImgs.find((pi) => pi.piIsMain).piImg,
-          url: "/" + p.slugName,
-          pcUrl: "/" + p.pcId.slugName,
-        };
-        return pformat;
-      });
-
-      res.render(`./customer/productdetail`, {
-        pI,
-        messages,
-        sess,
-        shopinfo,
-        menubar,
-        prd,
-        relatePrd,
-      });
-      return;
-      //#endregion
     }
   }
-
-  let pcFounds = await Category.find({ rtId: rtFound._id }).sort({
-    pcName: "asc",
-  });
-  let pcArr = pcFounds.map((pc) => pc._id);
-  if (pcFound) {
-    pcArr = [];
-    pcArr.push(pcFound._id);
-  }
-  let pFounds = await Product.find({ pcId: { $in: pcArr }, pState: true })
-    .sort({
-      pName: "asc",
-    })
-    .populate({
-      path: "pcId",
-      select: "rtId slugName",
-      populate: { path: "rtId", select: "slugName" },
-    });
-  let prds = pFounds.map((p) => {
-    let prd = {
-      title: p.pName,
-      disc: p.pDiscount,
-      price: p.pPrice.toLocaleString("vi", {
-        style: "currency",
-        currency: "VND",
-      }),
-      priceAfter: (
-        p.pPrice -
-        Math.floor(p.pPrice * p.pDiscount) / 100
-      ).toLocaleString("vi", { style: "currency", currency: "VND" }),
-      img: p.pImgs.find((pi) => pi.piIsMain).piImg,
-      url: "/" + p.slugName,
-      pcUrl: "/" + p.pcId.slugName,
-    };
-    return prd;
-  });
-
-  res.render(`./customer/filter`, {
-    pI,
-    messages,
-    sess,
-    shopinfo,
-    menubar,
-    rtFound,
-    pcFounds,
-    pcFound,
-    prds,
-  });
 };

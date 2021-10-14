@@ -35,15 +35,25 @@ html(lang="en")
                     li.nav-item
                         span.text-brown(href='#') Hotline: #{shopinfo.siHotline}
                 form.w-50
-                    .input-group
-                        input.form-control.border-dark.border-end-0.border-brown.pe-0(type='text' placeholder='Tìm kiếm sản phẩm' aria-label="Recipient's username" aria-describedby='button-addon2')
-                        button#button-addon2.btn.btn-outline-brown.text-brown.border-start-0.p-2(type='button')
+                    .input-group.position-relative
+                        input#search-input.form-control.border-dark.border-end-0.border-brown.pe-0(name="keyword" type="text" placeholder="Tìm kiếm sản phẩm" role="open-dropdown")
+                        button.btn.btn-outline-brown.border-start-0.p-2(type='submit')
                             i(data-feather="search")
+                        ul#listPrdFound.dropdown-menu.p-0.position-absolute.top-100.start-0(style="min-width:unset; z-index:2000;")
+                    template#searchp-result-temp
+                        li(role="list-prdreq_add")
+                            a.dropdown-item.p-2
+                                .d-flex
+                                    img.img-fluid.rounded(style="width:100px; max-height:100px;")
+                                    .ms-2
+                                        h5.fs-5
+                                        p
                 ul.navbar-nav.list-group-horizontal
                     li.nav-item.mx-2(rel="tooltip" data-bs-placement="bottom" title="Giỏ hàng")
                         if sess && sess.rId.rName == "Khách hàng"
-                            a.nav-link.text-dark.text-hover-brown(href='/cart')
+                            a.nav-link.text-dark.text-hover-brown.position-relative.p-0.m-2(href='/cart')
                                 i(data-feather="shopping-cart")
+                                span#cartNum.position-absolute.top-0.start-100.translate-middle.badge.rounded-pill.bg-danger(class= cartPrdQuan==0 ? "d-none" : '' )= cartPrdQuan
                         else
                             a.nav-link.text-dark.text-hover-brown(role="button" data-bs-toggle="modal" data-bs-target="#modal-signin" rel="call-modal")
                                 i(data-feather="shopping-cart")
@@ -62,16 +72,17 @@ html(lang="en")
                         li.nav-item.mx-2(rel="tooltip" data-bs-placement="bottom" title="Đăng nhập/Đăng ký")
                             a.nav-link.text-dark.text-hover-brown(role="button" data-bs-toggle="modal" data-bs-target="#modal-signin" rel="call-modal")
                                 i(data-feather="log-in")
-        header.mt-2.bg-brown
-            .container-fluid(style=`max-width: ${maxWidth}px;`)
-                ul.nav
-                    each rt, index in menubar
-                        li.nav-item.py-2.dropdown-trigger.position-relative
-                            a.nav-link.fw-bold.text-light.px-2.px-md-4(href= rt.url)= rt.title
-                            ul.dropdown-items.bg-white.mt-2.w-100
-                                each pc in rt.pcs
-                                    li
-                                        a.p-2.text-dark(href= pc.url)= pc.title
+        if !cart
+            header.mt-2.bg-brown
+                .container-fluid(style=`max-width: ${maxWidth}px;`)
+                    ul.nav
+                        each rt, index in menubar
+                            li.nav-item.py-2.dropdown-trigger.position-relative
+                                a.nav-link.fw-bold.text-light.px-2.px-md-4(href= rt.url)= rt.title
+                                ul.dropdown-items.bg-white.mt-2.w-100
+                                    each pc in rt.pcs
+                                        li
+                                            a.p-2.text-dark(href= pc.url)= pc.title
         main.flex-shrink-0.bg-light
             if messages
                 #toast.toast.position-absolute.m-2.end-0.z-index-3(role='alert' aria-live='assertive' aria-atomic='true' data-bs-animation="true")
@@ -79,7 +90,7 @@ html(lang="en")
                         span.me-1(data-feather=messages.icon)
                         strong#message-title.me-auto= messages.title
                         //- small.text-muted just now
-                        button.btn-close(type='button' data-bs-dismiss='toast' aria-label='Close' style="opacity:.8;filter:invert(1);")
+                        button.btn-close(type='button' data-bs-dismiss='toast' aria-label='Close' style="opacity:.9;filter:invert(1);")
                     #messages-text.toast-body= messages.text
             block content
 
@@ -89,10 +100,11 @@ html(lang="en")
                     .row
                         .col-6
                             h5.text-light= shopinfo.siName || ""
-                            ul.list-unstyled.text-small.mb-0
-                                each rt in menubar
-                                    li
-                                        a.link-secondary.text-decoration-none(href= rt.url)= rt.title
+                            if !cart
+                                ul.list-unstyled.text-small.mb-0
+                                    each rt in menubar
+                                        li
+                                            a.link-secondary.text-decoration-none(href= rt.url)= rt.title
                         .col-6
                             h5.text-light Về cửa hàng
                             ul.list-unstyled.text-small.mb-0

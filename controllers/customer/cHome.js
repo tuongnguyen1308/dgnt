@@ -3,6 +3,7 @@ const Roomtype = require("../../models/mRoomtype");
 const Category = require("../../models/mCategory");
 const Product = require("../../models/mProduct");
 const Banner = require("../../models/mBanner");
+const Cart = require("../../models/mCart");
 
 const pI = { title: "Trang chủ", url: "home" };
 
@@ -53,6 +54,16 @@ module.exports.index = async (req, res) => {
   req.session.messages = null;
   await GetDataDisplay();
   let roomtypes = await Roomtype.find({}).sort({ rtName: "asc" });
+  let cartPrdQuan = 0;
+  if (sess) {
+    await Cart.findOne({ cId: sess.cId }, function (err, cart) {
+      if (cart)
+        cartPrdQuan = cart.products.reduce(
+          (pp, np) => Number(pp) + Number(np.pQuantity),
+          0
+        );
+    });
+  }
 
   //#region products
   let groupPrdByRt = [];
@@ -104,6 +115,7 @@ module.exports.index = async (req, res) => {
     sess,
     shopinfo,
     menubar,
+    cartPrdQuan,
     banners,
     roomtypes,
     groupPrdByRt,
@@ -116,6 +128,15 @@ module.exports.filter = async (req, res) => {
   const sess = req.session?.user;
   req.session.messages = null;
 
+  let cartPrdQuan = 0;
+  if (sess) {
+    await Cart.findOne({ cId: sess.cId }, function (err, cart) {
+      if (cart)
+        cartPrdQuan = cart.products.reduce((pp, np) => {
+          return Number(pp) + Number(np.pQuantity);
+        }, 0);
+    });
+  }
   await GetDataDisplay();
   let keyword = req.params.keyword;
   let pcFound;
@@ -188,6 +209,7 @@ module.exports.filter = async (req, res) => {
         sess,
         shopinfo,
         menubar,
+        cartPrdQuan,
         prd,
         relatePrd,
       });
@@ -238,9 +260,17 @@ module.exports.filter = async (req, res) => {
     sess,
     shopinfo,
     menubar,
+    cartPrdQuan,
     rtFound,
     pcFounds,
     pcFound,
     prds,
+  });
+};
+
+module.exports.find = async (req, res) => {
+  let keyword = req.body.keyword;
+  Product.find({ pName: new RegExp(keyword, "i") }, async (err, products) => {
+    res.json(products);
   });
 };
