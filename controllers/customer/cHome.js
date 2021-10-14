@@ -152,10 +152,10 @@ module.exports.filter = async (req, res) => {
           pFound.pPrice -
           Math.floor(pFound.pPrice * pFound.pDiscount) / 100
         ).toLocaleString("vi", { style: "currency", currency: "VND" }),
-        img: pFound.pImgs.find((pi) => pi.piIsMain).piImg,
+        imgMain: pFound.pImgs.find((pi) => pi.piIsMain).piImg,
+        imgSub: pFound.pImgs.filter((pi) => !pi.piIsMain),
         url: "/" + pFound.slugName,
         desc: pFound.pDesc,
-        pImgs: pFound.pImgs,
         pcId: pFound.pcId,
       };
 

@@ -413,3 +413,16 @@ img {
 .overflow-y-scroll {
   overflow-y: scroll;
 }
+
+.main-img img {
+  height: 450px !important;
+}
+
+.product-detail .sub-img:hover {
+  opacity: 0.8;
+}
+
+.product-detail .main-img,
+.product-detail .sub-img {
+  cursor: zoom-in;
+}

@@ -77,6 +77,7 @@ $(document).ready(() => {
         }
       });
       $("#pImg").attr("required", false);
+      $('[rel="tooltip"]').tooltip({ trigger: "hover" });
     }
     formModal.action = $btn ? "/product/update" : "/product/add";
     modalTitle.innerText = $btn ? "Sửa" : "Thêm";

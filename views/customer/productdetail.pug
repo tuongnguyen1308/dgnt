@@ -12,15 +12,13 @@ block content
 				li.breadcrumb-item.active
 					span.text-decoration-none= prd.name
 		// product detail
-		.row.row-cols-2.row-cols-md-2.g-0.mb-5
-			.col.bg-white.p-3
-				each pi in prd.pImgs
-					if pi.piIsMain
-						img.main-image(src=`img/products/${pi.piImg}` width="100%")
-				.d-flex.overflow-x-scroll.mt-3.pb-2
-					each pi,i in prd.pImgs
-						.sub-img.h-100(class=i==0 ? '' : 'ms-2')
-							img(src=`img/products/${pi.piImg}` width="100px" style="height:100px;")
+		.row.row-cols-1.row-cols-md-2.g-0.mb-5
+			.product-detail.col.bg-white.p-3
+				a.main-img.w-100(data-gallery="photoviewer" href=`img/products/${prd.imgMain}`)
+					img(src=`img/products/${prd.imgMain}` width="100%" data-enlargeable)
+				each pi, i in prd.imgSub
+					a.sub-img.h-100.mt-2(data-gallery="photoviewer" href=`img/products/${pi.piImg}` class=i==0 ? '' : 'ms-2')
+						img.mt-2(src=`img/products/${pi.piImg}` width="100px" style="height:100px;")
 
 			.col.bg-white.p-3
 				.h4.text-brown.pb-4.pt-3= prd.name

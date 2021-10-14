@@ -113,7 +113,8 @@ module.exports.update = async (req, res) => {
 
         // product imgs
         let pImgs = [];
-        if (req.files.length > 0) {
+        console.log(req.files.pImg);
+        if (req.files.pImg.length > 0) {
           req.files.pImg.map((img) => {
             pImgs.push({
               piImg: img.filename,
@@ -129,6 +130,7 @@ module.exports.update = async (req, res) => {
             });
           });
         }
+        console.log(pImgs);
         let updProduct = {
           pName: req.body.pName,
           slugName: createSlug(req.body.pName),

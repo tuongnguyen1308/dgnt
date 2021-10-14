@@ -68,7 +68,7 @@ const listKeyAllow = [
   "Ctrl",
 ];
 
-const specialChar = "~`!#$%^&*()-=+[{}]|\\;:'<>/?";
+const specialChar = "~`!#$%^&*()-=+[{}]|\\;:'\"<>/?";
 //#endregion
 
 $(document).ready(function () {
