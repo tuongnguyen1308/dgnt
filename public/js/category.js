@@ -14,6 +14,7 @@ $(document).ready(() => {
     );
     $(".was-validated").removeClass("was-validated");
     $("#category-form input#id").remove();
+    $("#category-form details").attr("open", $btn ? true : false);
     if ($btn) {
       let inputID = document.createElement("input");
       inputID.id = "id";
@@ -37,10 +38,6 @@ $(document).ready(() => {
   //#endregion
 
   //#region events
-  $(".btn[role=add-category]").on("click", function () {
-    prepareForm();
-  });
-
   $(".btn[role=edit-category]").on("click", function () {
     prepareForm($(this));
   });

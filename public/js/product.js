@@ -143,6 +143,54 @@ $(document).ready(() => {
     prepareModal($(this));
   });
 
+  $(document).on("click", ".btn[role=view-product]", function () {
+    $(".prd-name").text($(this).data("name"));
+    $(".prd-cate").val($(this).data("pcid"));
+    $(".prd-unit").text($(this).data("unit"));
+    $(".prd-size").text($(this).data("size"));
+    let price = $(this).data("price");
+    let discount = $(this).data("discount");
+    let priceA = (price - (price * discount) / 100).toLocaleString("vi", {
+      style: "currency",
+      currency: "VND",
+    });
+    $(".prd-priceA").text(priceA);
+    $(".prd-priceB").text(
+      price.toLocaleString("vi", { style: "currency", currency: "VND" })
+    );
+    $(".prd-disc").text(` (-${discount}%)`);
+    $(".prd-state").text($(this).data("state") === "" ? "Hiện" : "Ẩn");
+    $(".prd-desc").html($(this).data("desc"));
+    $("#mcv-list>tr").html("");
+    let mConsume = $(this).data("mcon");
+    mConsume.map((m) => {
+      let mtrviewTemplate = document.querySelector("#mcv-item-template");
+      let mvItem = mtrviewTemplate.content.cloneNode(true);
+      let mNameSpan = mvItem.querySelector("[rel=material-name]");
+      mNameSpan.innerText = m.mId.mName;
+      let mQuantitySpan = mvItem.querySelector("[rel=material-quantity]");
+      mQuantitySpan.innerText = m.mQuantity;
+      $("#mcv-list").append(mvItem);
+    });
+    $(".main-img").attr("src", "");
+    $("#v-imgs .sub-img").remove();
+    let imgs = $(this).data("imgs");
+    imgs.map((img) => {
+      let src = `img/products/${img.piImg}`;
+      if (img.piIsMain) {
+        $(".main-img").attr("href", src).find("img").attr("src", src);
+      } else {
+        let imgTemp = document.querySelector("#si-template");
+        let imgItem = imgTemp.content.cloneNode(true);
+        let aEle = imgItem.querySelector("a");
+        aEle.href = src;
+        let imgEle = imgItem.querySelector("img");
+        imgEle.src = src;
+        $("#v-imgs").append(imgItem);
+      }
+    });
+  });
+
   $(document).on("click", "[role=confirm-delete-product]", function (e) {
     $target = $(e.target);
     const id = $target.data("id");
@@ -256,18 +304,6 @@ $(document).ready(() => {
     checkValidate(cases, this);
   });
 
-  $("#pPrice").on("keyup", function () {
-    const title = "Giá";
-    let val = $(this).val();
-    let cases = [
-      { con: isNaN(val), mess: `${title} không hợp lệ` },
-      { con: val % 1 != 0, mess: `${title} không hợp lệ` },
-      { con: val.length == 0, mess: `${title} là bắt buộc` },
-      { con: val <= 0, mess: `${title} không hợp lệ` },
-    ];
-    checkValidate(cases, this);
-  });
-
   $("#pDiscount").on("keyup", function () {
     const title = "Giảm giá";
     let maxVal = 100;
@@ -277,7 +313,7 @@ $(document).ready(() => {
       { con: val % 1 != 0, mess: `${title} không hợp lệ` },
       { con: val.length == 0, mess: `${title} là bắt buộc` },
       { con: val < 0, mess: `${title} không hợp lệ` },
-      { con: val > 100, mess: `${title} không hợp lệ` },
+      { con: val > maxVal, mess: `${title} không hợp lệ` },
     ];
     checkValidate(cases, this);
   });
@@ -325,6 +361,15 @@ $(document).ready(() => {
   };
 
   $("#pPrice").on("keyup", function () {
+    const title = "Giá";
+    let val = $(this).val();
+    let cases = [
+      { con: isNaN(val), mess: `${title} không hợp lệ` },
+      { con: val % 1 != 0, mess: `${title} không hợp lệ` },
+      { con: val.length == 0, mess: `${title} là bắt buộc` },
+      { con: val <= 0, mess: `${title} không hợp lệ` },
+    ];
+    checkValidate(cases, this);
     calculateMtotal();
   });
 

@@ -23,32 +23,6 @@ $(document).ready(() => {
       e.stopPropagation();
     }
   });
-  $("[data-gallery=photoviewer]").click(function (e) {
-    e.preventDefault();
-
-    var items = [],
-      options = {
-        index: $(this).index(),
-        resizable: false,
-        initMaximized: true,
-        headerToolbar: ["close"],
-      };
-
-    $("[data-gallery=photoviewer]").each(function () {
-      items.push({
-        src: $(this).attr("href"),
-        title: $(this).attr("data-title"),
-      });
-    });
-
-    new PhotoViewer(items, options);
-    $(document).on("keyup", function (e) {
-      // esc
-      if (e.keyCode == 27) {
-        $(".photoviewer-button-close").click();
-      }
-    });
-  });
 
   // add product to cart
   $("#cart-add-product").on("click", function () {

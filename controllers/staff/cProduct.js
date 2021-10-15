@@ -55,13 +55,13 @@ module.exports.add = async (req, res) => {
       });
       try {
         let newProduct = new Product({
-          pName: req.body.pName,
+          pName: req.body.pName.trim(),
           slugName: createSlug(req.body.pName),
           pUnit: req.body.pUnit,
           pSize: req.body.pSize,
           pPrice: req.body.pPrice,
-          pDiscount: req.body.pDiscount,
-          pDesc: req.body.pDesc,
+          pDiscount: req.body.pDiscount || 0,
+          pDesc: req.body.pDesc.trim(),
           pState: req.body.pState == "on",
           pStock: 0,
           mConsume,
@@ -113,7 +113,6 @@ module.exports.update = async (req, res) => {
 
         // product imgs
         let pImgs = [];
-        console.log(req.files.pImg);
         if (req.files.pImg.length > 0) {
           req.files.pImg.map((img) => {
             pImgs.push({

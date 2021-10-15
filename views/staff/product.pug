@@ -85,6 +85,8 @@ block content
 									if sess.rId.rName == "Quản lý"
 										td.align-middle
 											.btn-group(role="group")
+												button.btn.btn-sm.btn-outline-brown(type="button" role="view-product" data-id=p._id data-name=p.pName data-unit=p.pUnit data-size=p.pSize data-price=p.pPrice data-discount=p.pDiscount data-desc=p.pDesc data-state=p.pState data-imgs=p.pImgs data-mcon=p.mConsume data-pcid=p.pcId data-bs-toggle="modal" data-bs-target="#modal-view-product" rel="tooltip" data-bs-placement="top" title="Chi tiết")
+													span(data-feather="eye")
 												button.btn.btn-sm.btn-outline-primary(type="button" role="edit-product" data-id=p._id data-name=p.pName data-unit=p.pUnit data-size=p.pSize data-price=p.pPrice data-discount=p.pDiscount data-desc=p.pDesc data-state=p.pState data-imgs=p.pImgs data-mcon=p.mConsume data-pcid=p.pcId data-bs-toggle="modal" data-bs-target="#modal-product" rel="tooltip" data-bs-placement="top" title="Sửa")
 													span(data-feather="edit-3")
 												button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Xoá")
@@ -228,6 +230,54 @@ block content
 									textarea#pDesc.summernote(name="pDesc" type="text" placeholder="Mô tả" maxlength="256" style="min-height:80px;")
 								.modal-footer.d-grid(style="justify-content: unset")
 									button.btn.btn-primary(type="submit") Lưu
+					#modal-view-product.modal.fade(tabindex="-1" role="dialog" aria-hidden="true")
+						.modal-dialog.modal-dialog-centered.modal-xl
+							.modal-content
+								.modal-header
+									h5.modal-title
+										span#modal-view-title Xem chi tiết sản phẩm
+									button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
+								.modal-body
+									.row.row-cols-1.row-cols-md-2.g-0.mb-5
+										#v-imgs.col.product-detail.bg-white.p-3
+											a.main-img.w-100(data-gallery="photoviewer")
+												img(width="100%")
+											template#si-template
+												a.sub-img.h-100.mt-2.me-2(data-gallery="photoviewer")
+													img.mt-2(width="100px" style="height:100px;")
+										.col.bg-white.p-3
+											.prd-name.h4.text-brown.pb-4.pt-3
+											.mt-2.pb-2.border-bottom
+												b Danh mục: 
+												select.prd-cate.form-control.d-inline.border-0(disabled style="width:unset;")
+													each pc in categories
+														option(value=pc._id)= pc.pcName
+											.mt-2.pb-2.border-bottom
+												b Kích thước: 
+												span.prd-size
+											.mt-2.pb-2.border-bottom
+												b Đơn vị tính: 
+												span.prd-unit
+											.mt-2.pb-2.border-bottom
+												b Trạng thái: 
+												span.prd-state
+											.mt-2.pb-2
+												span.h4.text-danger.prd-priceA
+												del.ms-2.text-secondary.prd-priceB
+												span.ms-2.prd-disc
+											.fs-5.mt-3 Danh sách NVL tiêu thụ
+											table.table.table-bordered.mb-0(width="100%")
+												thead
+													tr.text-center
+														th.align-middle(width="50%") NVL
+														th.align-middle(width="20%") Số lượng
+												tbody#mcv-list
+													template#mcv-item-template
+														tr.text-center
+															td.p-1.text-start.align-middle(rel="material-name")
+															td.p-1.align-middle(rel="material-quantity")
+									label Mô tả
+									.prd-desc
 				#nav-prdreq.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-prdreq-tab')
 					include ./prdreq.pug
 

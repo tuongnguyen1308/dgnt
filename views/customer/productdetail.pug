@@ -15,7 +15,7 @@ block content
 		.row.row-cols-1.row-cols-md-2.g-0.mb-5
 			.col.product-detail.bg-white.p-3
 				a.main-img.w-100(data-gallery="photoviewer" href=`img/products/${prd.imgMain}`)
-					img(src=`img/products/${prd.imgMain}` width="100%" data-enlargeable)
+					img(src=`img/products/${prd.imgMain}` width="100%")
 				each pi, i in prd.imgSub
 					a.sub-img.h-100.mt-2(data-gallery="photoviewer" href=`img/products/${pi.piImg}` class=`${i==0 ? '' : 'ms-2'} ${i > 4 ? 'd-none': ''}`)
 						if i != 4

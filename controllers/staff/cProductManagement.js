@@ -59,6 +59,7 @@ module.exports.index = async (req, res) => {
   let keyword = req.query?.productName || "";
   if (keyword) con.pName = new RegExp(keyword, "i");
   // find products with condition
+  totalP = await Product.find(con).countDocuments();
   let products = await Product.find(con)
     .sort({ createdAt: "desc" })
     .skip(skipPageP)

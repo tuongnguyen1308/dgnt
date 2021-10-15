@@ -4,7 +4,7 @@ if sess.rId.rName == "Quản lý"
         i *Phân loại sản phẩm theo loại phòng
         details(style=`max-width:${imgheight}px`)
             summary.form-title.fs-5 Thêm loại phòng
-            .position-relative(style="width:100px")
+            .position-relative(style=`width:${imgheight}px`)
                 label.upload-before.img-box.align-middle.d-flex.justify-content-center.align-items-center(for="rtImg" style=`height:${imgheight}px; width: ${imgheight}px;`)
                     input#rtImg.btn.btn-success(style="z-index:-1;" type="file" name="rtImg" accept="image/png, image/jpeg" role="button" required)
                     .title.h-100.d-flex.justify-content-center.align-items-center.p-2

@@ -14,6 +14,7 @@ $(document).ready(() => {
     );
     $(".was-validated").removeClass("was-validated");
     $("#roomtype-form input#id").remove();
+    $("#roomtype-form details").attr("open", $btn ? true : false);
     if ($btn) {
       let inputID = document.createElement("input");
       inputID.id = "id";
@@ -38,10 +39,6 @@ $(document).ready(() => {
   //#endregion
 
   //#region events
-  $(".btn[role=add-roomtype]").on("click", function () {
-    prepareForm();
-  });
-
   $(".btn[role=edit-roomtype]").on("click", function () {
     prepareForm($(this));
   });

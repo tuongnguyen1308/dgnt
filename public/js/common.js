@@ -56,6 +56,13 @@ $(document).on("keydown", "[max]", function (e) {
   }
 });
 
+$(document).on("keydown", "input[type=number]", function (e) {
+  if ([69, 231].includes(e.keyCode)) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+});
+
 const listKeyAllow = [
   "ArrowLeft",
   "ArrowUp",
@@ -304,4 +311,31 @@ $(document).ready(function () {
   //#endregion
 
   //#endregion
+
+  $(document).on("click", "[data-gallery=photoviewer]", function (e) {
+    e.preventDefault();
+
+    var items = [],
+      options = {
+        index: $(this).index(),
+        resizable: false,
+        initMaximized: true,
+        headerToolbar: ["close"],
+      };
+
+    $("[data-gallery=photoviewer]").each(function () {
+      items.push({
+        src: $(this).attr("href"),
+        title: $(this).attr("data-title"),
+      });
+    });
+
+    new PhotoViewer(items, options);
+    $(document).on("keyup", function (e) {
+      // esc
+      if (e.keyCode == 27) {
+        $(".photoviewer-button-close").click();
+      }
+    });
+  });
 });

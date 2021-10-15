@@ -1,4 +1,5 @@
 const Category = require("../../models/mCategory");
+const Product = require("../../models/mProduct");
 const pI = { title: "Quản lý sản phẩm", url: "product" };
 const rootRoute = `/${pI.url}-management`;
 
@@ -26,7 +27,7 @@ module.exports.index = async (req, res) => {
 };
 
 module.exports.add = async (req, res) => {
-  let pcName = req.body.pcName;
+  let pcName = req.body.pcName.trim();
   if (pcName.length == 0) {
     redirectFunc(false, "Tên danh mục là bắt buộc!", rootRoute, req, res);
   } else if (pcName.length > 50) {
@@ -110,7 +111,7 @@ module.exports.delete = async (req, res) => {
       icon: "alert-circle",
       color: "danger",
       title: "Thất bại",
-      text: "Không thể xóa danh mục đã có danh mục!",
+      text: "Không thể xóa danh mục đã có sản phẩm!",
     };
     res.json(false);
   }
