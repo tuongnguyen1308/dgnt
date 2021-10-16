@@ -18,9 +18,16 @@ $(document).ready(() => {
   });
   $inpQuan.on("keydown", function (e) {
     if (!/^[0-9]$/i.test(e.key) && e.key != "Backspace") {
-      console.log(e.key);
       e.preventDefault();
       e.stopPropagation();
+    }
+    switch (e.keyCode) {
+      case 38:
+        if (Number($inpQuan.val()) < $inpQuan.attr("max")) changeQuantity(1);
+        break;
+      case 40:
+        if (Number($inpQuan.val()) > 0) changeQuantity(-1);
+        break;
     }
   });
 

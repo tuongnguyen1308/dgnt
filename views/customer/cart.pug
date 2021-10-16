@@ -12,29 +12,33 @@ block content
 		table.table
 			thead
 				tr
-					th(scope='col' colspan="2") Sản phẩm
+					th(scope='col' colspan="2")
+						span Sản phẩm 
+						span= `(${prds.length})`
 					th.text-end(scope='col') Đơn giá
 					th.text-center(scope='col') Số lượng
 					th.text-end(scope='col') Thành tiền
 					th(scope='col')
-			tbody
+			tbody#cart-prds
 				each p in prds
 					tr
 						th
-							img.rounded.img-fluid(src=p.img style="max-height:100px;")
-						td.align-middle(scope='row')= p.pname
+							a.text-decoration-none.text-brown(href=p.url)
+								img.rounded.img-fluid(src=p.img style="max-height:100px;")
+						td.align-middle(scope='row')
+							a.text-decoration-none.text-brown(href=p.url)= p.pname
 						td.align-middle.text-end= p.priceDisplay
 						td.align-middle.text-center
 							if p.stock > 0
 								.input-group.justify-content-center
 									button.btn.btn-light.border.p-1(rel="sub-quantity")
 										span(data-feather="minus")
-									input.form-control.p-1.text-center(type="text" max=p.stock data-price=p.price data-id=p.id value= p.quantity style="max-width:40px;")
+									input.form-control.p-1.text-center(name="prd-quan" data-pid=p.id type="text" max=p.stock data-price=p.price value= p.quantity style="max-width:40px;")
 									button.btn.btn-light.border.p-1(rel="add-quantity")
 										span(data-feather="plus")
 							else
 								span Sản phẩm đã hết hàng
-						td.align-middle.text-end.fw-bold= p.totalDisplay
+						td.align-middle.text-end.fw-bold(rel="total-prd-price")= p.totalDisplay
 						td.align-middle.text-center
 							.wrap.position-relative
 								button.btn.btn-sm.btn-outline-danger.border-0(role="open-dropdown" type='button' rel="tooltip" data-bs-placement="top" title="Xoá")
@@ -49,6 +53,6 @@ block content
 				else
 					tr
 						td(colspan="6") Chưa có sản phẩm nào trong giỏ hàng
-		.h4.fw-bold.text-end.text-brown(colspan="6")= total
+		.h4.fw-bold.text-end.text-brown(rel="total-cart-price")= total
 		.text-end
 			button.btn.btn-brown.fs-4.px-4(type="submit") Đặt hàng

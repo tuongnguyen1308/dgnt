@@ -94,7 +94,7 @@ module.exports.index = async (req, res) => {
       select: "sName",
     });
   let mtrbatchs = await MtrBatch.find({})
-    .sort({ mbBatchAt: "desc" })
+    .sort({ mbBatchAt: "desc", createdAt: "desc" })
     .skip(skipPageB)
     .limit(PAGE_SIZE)
     .populate({ path: "mrId", select: "_id createdAt mrReason mrState" })

@@ -3,26 +3,75 @@ $(document).ready(() => {
     $(".desc").parent().html($(".desc").data("desc"));
   }
   //#region func
-  const changeQuantity = ($ip, num) => {
-    $ip.val(Number($ip.val()) + Number(num));
+  const updateQuantity = (pId, pQuantity) => {
+    $.ajax({
+      type: "PATCH",
+      url: "/cart/update",
+      data: { pId, pQuantity },
+      success: function (res) {
+        console.log(res.m);
+      },
+      error: function (err) {
+        console.error(err);
+      },
+    });
+  };
+
+  const changeQuantity = ($ip, num = 0) => {
+    if (num != 0) $ip.val(Number($ip.val()) + Number(num));
+    let totalPrdPrice = ($ip.data("price") * $ip.val()).toLocaleString("vi", {
+      style: "currency",
+      currency: "VND",
+    });
+    // update total product price
+    $ip
+      .parentsUntil("#cart-prds")
+      .find("[rel=total-prd-price]")
+      .text(totalPrdPrice);
+    // update total cart price
+    let totalCartPrice = 0;
+    $("#cart-prds [name=prd-quan]").each(function () {
+      totalCartPrice += Number($(this).data("price") * $(this).val());
+    });
+    $("[rel=total-cart-price]").text(
+      totalCartPrice.toLocaleString("vi", {
+        style: "currency",
+        currency: "VND",
+      })
+    );
+    if ($ip.val() != "" && $ip.val() != 0)
+      updateQuantity($ip.data("pid"), $ip.val());
   };
   //#endregion
 
   //#region event
   $("[rel=sub-quantity]").on("click", function () {
-    if (Number($ip.val()) > 0) changeQuantity(-1);
+    $ip = $(this).next();
+    if (Number($ip.val()) > 1) changeQuantity($ip, -1);
   });
   $("[rel=add-quantity]").on("click", function () {
-    if (Number($ip.val()) < $ip.attr("max")) changeQuantity(1);
+    $ip = $(this).prev();
+    if (Number($ip.val()) < $ip.attr("max")) changeQuantity($ip, 1);
   });
-  $ip.on("keydown", function (e) {
-    if (!/^[0-9]$/i.test(e.key) && e.key != "Backspace") {
-      console.log(e.key);
+  $("[name=prd-quan]").on("keydown", function (e) {
+    const specialChar = "~`!@#$%^&*()-=+[{}]|\\;,.:'\"<>/?";
+    if (specialChar.includes(e.key)) {
       e.preventDefault();
       e.stopPropagation();
     }
+    switch (e.keyCode) {
+      case 38:
+        if (Number($(this).val()) < $(this).attr("max"))
+          changeQuantity($(this), 1);
+        break;
+      case 40:
+        if (Number($(this).val()) > 1) changeQuantity($(this), -1);
+        break;
+    }
   });
-
+  $("[name=prd-quan]").on("keyup", function (e) {
+    changeQuantity($(this));
+  });
   // add product to cart
   $("#cart-add-product").on("click", function () {
     let pId = $(this).val();
