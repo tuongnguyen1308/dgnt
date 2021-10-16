@@ -56,6 +56,16 @@ module.exports.auth = async (req, res, next) => {
     }
     // đúng user
     let cFound = await Customer.findOne({ aId: accFound._id });
+    if (!cFound) {
+      redirectFunc(
+        false,
+        "Vui lòng đăng nhập bằng tài khoản khách hàng!",
+        prevPage,
+        req,
+        res
+      );
+      return;
+    }
     let user = {
       _id: accFound._id,
       aUsername: accFound.aUsername.toLowerCase(),

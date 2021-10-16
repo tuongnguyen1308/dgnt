@@ -25,14 +25,52 @@ module.exports.index = async (req, res) => {
   req.session.messages = null;
   let shopinfo = await Shopinfo.findOne({});
 
-  let cart = Cart.findOne({ cId: sess.cId }).populate("products.pId");
+  let cart = await Cart.findOne({ cId: sess.cId }).populate("products.pId");
+  let prds = [];
+  let total = 0;
+  if (cart) {
+    prds = cart.products.map((p) => {
+      total +=
+        (p.pId.pPrice - (p.pId.pPrice * p.pId.pDiscount) / 100) * p.pQuantity;
+      return {
+        id: p.pId._id,
+        pname: p.pId.pName,
+        price: p.pId.pPrice - (p.pId.pPrice * p.pId.pDiscount) / 100,
+        priceDisplay: (
+          p.pId.pPrice -
+          (p.pId.pPrice * p.pId.pDiscount) / 100
+        ).toLocaleString("vi", {
+          style: "currency",
+          currency: "VND",
+        }),
+        total:
+          (p.pId.pPrice - (p.pId.pPrice * p.pId.pDiscount) / 100) * p.pQuantity,
+        totalDisplay: (
+          (p.pId.pPrice - (p.pId.pPrice * p.pId.pDiscount) / 100) *
+          p.pQuantity
+        ).toLocaleString("vi", {
+          style: "currency",
+          currency: "VND",
+        }),
+        img: "/img/products/" + p.pId.pImgs.find((pi) => pi.piIsMain).piImg,
+        url: "/" + p.pId.slugName,
+        quantity: p.pQuantity,
+        stock: p.pId.pStock,
+      };
+    });
+  }
+  total = total.toLocaleString("vi", {
+    style: "currency",
+    currency: "VND",
+  });
 
   res.render(`./customer/${pI.url}`, {
     pI,
     messages,
     sess,
     shopinfo,
-    cart,
+    prds,
+    total,
   });
 };
 

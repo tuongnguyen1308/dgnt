@@ -311,7 +311,6 @@ $(document).ready(() => {
     let cases = [
       { con: isNaN(val), mess: `${title} không hợp lệ` },
       { con: val % 1 != 0, mess: `${title} không hợp lệ` },
-      { con: val.length == 0, mess: `${title} là bắt buộc` },
       { con: val < 0, mess: `${title} không hợp lệ` },
       { con: val > maxVal, mess: `${title} không hợp lệ` },
     ];

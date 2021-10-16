@@ -72,7 +72,7 @@ html(lang="en")
                         li.nav-item.mx-2(rel="tooltip" data-bs-placement="bottom" title="Đăng nhập/Đăng ký")
                             a.nav-link.text-dark.text-hover-brown(role="button" data-bs-toggle="modal" data-bs-target="#modal-signin" rel="call-modal")
                                 i(data-feather="log-in")
-        if !cart
+        if !total
             header.mt-2.bg-brown
                 .container-fluid(style=`max-width: ${maxWidth}px;`)
                     ul.nav
@@ -100,7 +100,7 @@ html(lang="en")
                     .row
                         .col-6
                             h5.text-light= shopinfo.siName || ""
-                            if !cart
+                            if !total
                                 ul.list-unstyled.text-small.mb-0
                                     each rt in menubar
                                         li

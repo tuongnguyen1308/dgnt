@@ -59,7 +59,7 @@ module.exports.add = async (req, res) => {
 
 module.exports.update = async (req, res) => {
   let updCategory = {
-    pcName: req.body.pcName,
+    pcName: req.body.pcName.trim(),
     slugName: createSlug(req.body.pcName),
     rtId: req.body.rtId,
   };

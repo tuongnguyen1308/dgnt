@@ -27,7 +27,7 @@ module.exports.index = async (req, res) => {
 };
 
 module.exports.add = async (req, res) => {
-  Product.find({ pName: req.body.pName }, async (err, pFound) => {
+  Product.find({ pName: req.body.pName.trim() }, async (err, pFound) => {
     if (pFound.length > 0) {
       redirectFunc(false, "Tên sản phẩm đã tồn tại!", rootRoute, req, res);
     } else {
@@ -61,7 +61,7 @@ module.exports.add = async (req, res) => {
           pSize: req.body.pSize,
           pPrice: req.body.pPrice,
           pDiscount: req.body.pDiscount || 0,
-          pDesc: req.body.pDesc.trim(),
+          pDesc: req.body.pDesc,
           pState: req.body.pState == "on",
           pStock: 0,
           mConsume,
@@ -92,7 +92,7 @@ module.exports.add = async (req, res) => {
 
 module.exports.update = async (req, res) => {
   Product.find(
-    { pName: req.body.pName, _id: { $ne: req.body.id } },
+    { pName: req.body.pName.trim(), _id: { $ne: req.body.id } },
     async (err, pFound) => {
       if (pFound.length > 0) {
         redirectFunc(false, "Tên sản phẩm đã tồn tại!", rootRoute, req, res);
@@ -113,7 +113,7 @@ module.exports.update = async (req, res) => {
 
         // product imgs
         let pImgs = [];
-        if (req.files.pImg.length > 0) {
+        if (req.files.pImg?.length > 0) {
           req.files.pImg.map((img) => {
             pImgs.push({
               piImg: img.filename,
@@ -131,12 +131,12 @@ module.exports.update = async (req, res) => {
         }
         console.log(pImgs);
         let updProduct = {
-          pName: req.body.pName,
-          slugName: createSlug(req.body.pName),
+          pName: req.body.pName.trim(),
+          slugName: createSlug(req.body.pName.trim()),
           pUnit: req.body.pUnit,
           pSize: req.body.pSize,
           pPrice: req.body.pPrice,
-          pDiscount: req.body.pDiscount,
+          pDiscount: req.body.pDiscount || 0,
           pDesc: req.body.pDesc,
           pState: req.body.pState == "on",
           mConsume,

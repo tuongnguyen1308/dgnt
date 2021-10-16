@@ -1,3 +1,54 @@
 extends ./layout.pug
 block content
-	h1 hé
+	.container-fluid.pb-5(style=`max-width: ${maxWidth}px;`)
+		nav.py-3.mt-3(aria-label="breadcrumb")
+			ol.breadcrumb.m-0
+				li.breadcrumb-item
+					a.text-brown.text-decoration-none(href="/") Trang chủ
+				li.breadcrumb-item.active
+					span.text-decoration-none= pI.title
+		// cart
+		.h4.text-brown= pI.title
+		table.table
+			thead
+				tr
+					th(scope='col' colspan="2") Sản phẩm
+					th.text-end(scope='col') Đơn giá
+					th.text-center(scope='col') Số lượng
+					th.text-end(scope='col') Thành tiền
+					th(scope='col')
+			tbody
+				each p in prds
+					tr
+						th
+							img.rounded.img-fluid(src=p.img style="max-height:100px;")
+						td.align-middle(scope='row')= p.pname
+						td.align-middle.text-end= p.priceDisplay
+						td.align-middle.text-center
+							if p.stock > 0
+								.input-group.justify-content-center
+									button.btn.btn-light.border.p-1(rel="sub-quantity")
+										span(data-feather="minus")
+									input.form-control.p-1.text-center(type="text" max=p.stock data-price=p.price data-id=p.id value= p.quantity style="max-width:40px;")
+									button.btn.btn-light.border.p-1(rel="add-quantity")
+										span(data-feather="plus")
+							else
+								span Sản phẩm đã hết hàng
+						td.align-middle.text-end.fw-bold= p.totalDisplay
+						td.align-middle.text-center
+							.wrap.position-relative
+								button.btn.btn-sm.btn-outline-danger.border-0(role="open-dropdown" type='button' rel="tooltip" data-bs-placement="top" title="Xoá")
+									span(data-feather="trash")
+								ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset; left:50%; transform: translate(-50%,0%)")
+									li
+										a.dropdown-item.p-2.text-danger(href='#' data-id=p.id role="confirm-delete-product" rel="tooltip" data-bs-placement="right" title="Xác nhận")
+											span(data-feather="check")
+									li
+										span.dropdown-item.p-2(role="button" rel="tooltip" data-bs-placement="right" title="Hủy")
+											span(data-feather="x")
+				else
+					tr
+						td(colspan="6") Chưa có sản phẩm nào trong giỏ hàng
+		.h4.fw-bold.text-end.text-brown(colspan="6")= total
+		.text-end
+			button.btn.btn-brown.fs-4.px-4(type="submit") Đặt hàng

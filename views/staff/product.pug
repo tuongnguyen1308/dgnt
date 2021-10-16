@@ -89,7 +89,7 @@ block content
 													span(data-feather="eye")
 												button.btn.btn-sm.btn-outline-primary(type="button" role="edit-product" data-id=p._id data-name=p.pName data-unit=p.pUnit data-size=p.pSize data-price=p.pPrice data-discount=p.pDiscount data-desc=p.pDesc data-state=p.pState data-imgs=p.pImgs data-mcon=p.mConsume data-pcid=p.pcId data-bs-toggle="modal" data-bs-target="#modal-product" rel="tooltip" data-bs-placement="top" title="Sửa")
 													span(data-feather="edit-3")
-												button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Xoá")
+												button.btn.btn-sm.btn-outline-danger.border-radius-end(role="open-dropdown" type='button' rel="tooltip" data-bs-placement="top" title="Xoá")
 													span(data-feather="x")
 												ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset")
 													li
@@ -179,7 +179,6 @@ block content
 													.form-label-group
 														input#pDiscount.form-control(name="pDiscount" type="number" placeholder="Giảm giá" min="0" max="100")
 														label(for="pDiscount") Giảm giá (%)
-														.invalid-feedback Giảm giá là bắt buộc
 
 											.row
 												.col-12.col-md-6
