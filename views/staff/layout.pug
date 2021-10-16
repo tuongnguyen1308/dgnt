@@ -76,6 +76,10 @@ html(lang="en")
 							//- 		span(data-feather="bar-chart-2")
 							//- 		|  Reports
 							li.nav-item
+								a.nav-link(class=(pI.url == "appointmentM") ? "active" : "" href="/appointmentM")
+									span(data-feather="calendar")
+									|  Quản lý lịch hẹn
+							li.nav-item
 								a.nav-link(class=(pI.url == "product") ? "active" : "" href="/product-management")
 									span(data-feather="box")
 									|  Quản lý sản phẩm

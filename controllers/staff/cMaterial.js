@@ -129,7 +129,7 @@ module.exports.index = async (req, res) => {
   });
 };
 
-module.exports.add = (req, res) => {
+module.exports.add = async (req, res) => {
   Material.find({ mName: req.body.mName }, async (err, mFound) => {
     if (mFound.length > 0) {
       redirectFunc(

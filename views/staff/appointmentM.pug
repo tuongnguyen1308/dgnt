@@ -1,0 +1,160 @@
+extends ./layout.pug
+block content
+	main.col-md-9.ms-sm-auto.col-lg-10.px-md-4
+		.d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pt-3.pb-2.mb-3.border-bottom.flex-column.flex-lg-row
+			h1.h3.mb-0= pI.title
+			.btn-toolbar.mt-2.mb-mt-0
+		table.table.table-bordered(width="100%")
+			thead
+				if "Quản lý, Nhân viên bán hàng".includes(sess.rId.rName)
+					tr
+						td(colspan="8")
+							button.btn.w-100.btn-outline-success.d-flex.align-items-center.justify-content-center(type="button" role="add-app" data-bs-toggle="modal" data-bs-target="#modal-app")
+								span(data-feather="plus")
+								span Thêm lịch hẹn
+				tr.text-center
+					th.align-middle(width="1%") STT
+					th.align-middle Thời gian
+					th.align-middle Địa điểm
+					th.align-middle Khách hàng
+					th.align-middle Nhân viên tạo
+					th.align-middle Thời gian, Nhân viên cập nhật
+					th.align-middle Kết quả
+					if "Quản lý, Nhân viên bán hàng, Nhân viên sản xuất".includes(sess.rId.rName)
+						th.align-middle Tác vụ
+			tbody
+				each ap, index in appointments
+					- var at = ap.apTime;
+					- var ua = ap.updatedAt;
+					- var curTime = new Date()
+					- var upComing = curTime.getTime() < at.getTime()
+					- ap.apTime = at.setUTCHours(at.getUTCHours() + 7);
+					- ap.updatedAt = ua.setUTCHours(ua.getUTCHours() + 7);
+					tr
+						td.align-middle.text-center= ((pageNum-1)*pageSize) + index+1
+						td.align-middle(class=`${upComing ? 'fw-bold' : ''} ${ap.apResult ? 'text-secondary' : ''}`)
+							span= ap.apTime.toISOString().slice(0,10).split('-').reverse().join('/') + ' ' + ap.apTime.toISOString().slice(11,19)
+							if upComing && !ap.apResult
+								span.ms-md-2.badge.bg-danger Sắp tới
+							else if ap.apResult
+								span.ms-md-2.badge.bg-secondary Đã xong
+						td.align-middle.text-start= ap.apLocation
+						td.align-middle.text-start= ap.cId.cName
+						td.align-middle= ap.scId.sName
+						td.align-middle
+							if ap.suId
+								div= ap.updatedAt.toISOString().slice(0,10).split('-').reverse().join('/') + ' ' + ap.updatedAt.toISOString().slice(11,19)
+								span= ap.suId.sName
+						td.align-middle= ap.apResult
+						if "Quản lý, Nhân viên bán hàng, Nhân viên sản xuất".includes(sess.rId.rName)
+							td.align-middle.text-center
+								.btn-group(role="group")
+									if "Nhân viên sản xuất".includes(sess.rId.rName)
+										button.btn.btn-sm.btn-outline-primary(type="button" role="upd-app" data-id=ap._id data-time=ap.apTime data-location=ap.apLocation data-customer=ap.cId data-res=ap.apResult data-bs-toggle="modal" data-bs-target="#modal-app-res" rel="tooltip" data-bs-placement="top" title="Cập nhật kết quả")
+											span(data-feather="file-text")
+									if "Quản lý, Nhân viên bán hàng".includes(sess.rId.rName)
+										button.btn.btn-sm.btn-outline-primary(type="button" role="edit-app" data-id=ap._id data-time=ap.apTime data-location=ap.apLocation data-customer=ap.cId data-bs-toggle="modal" data-bs-target="#modal-app" rel="tooltip" data-bs-placement="top" title="Sửa")
+											span(data-feather="edit-3")
+										button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Xoá")
+											span(data-feather="x")
+										ul.dropdown-menu.p-0.position-absolute.top-100.end-0(style="min-width:unset")
+											li
+												a.dropdown-item.p-2.text-danger(href='#' data-id=ap._id rel="delete-app") Xác nhận
+											li
+												span.dropdown-item.p-2(role="button" rel="close-dropdown") Huỷ
+				else
+					tr
+						td(colspan="8") Chưa có lịch hẹn!
+		if appointments.length > 0
+			nav.d-flex.justify-content-between.align-items-center
+				span.me-3 Tổng: #{totalApp} lịch hẹn
+				ul.pagination.justify-content-end.mb-0
+					li.page-item(class= pageNum==1 ? 'disabled' : '')
+						a.page-link.px-2(href=pI.url)
+							span(data-feather="chevrons-left")
+					li.page-item(class= pageNum==1 ? 'disabled' : '')
+						a.page-link.px-2(href=`${pI.url}?pname=mtr&pnum=${pageNum-1}`)
+							span(data-feather="chevron-left")
+					- for (var i = 1; i <= totalPage; i++)
+						li.page-item(class= pageNum==i ? 'active' : '')
+							a.page-link.h-100.d-flex.align-items-center.px-3(href=`${pI.url}?pname=mtr&pnum=${i}`)
+								span= i
+					li.page-item(class= pageNum==totalPage ? 'disabled' : '')
+						a.page-link.px-2(href=`${pI.url}?pname=mtr&pnum=${pageNum+1}`)
+							span(data-feather="chevron-right")
+					li.page-item(class= pageNum==totalPage ? 'disabled' : '')
+						a.page-link.px-2(href=`${pI.url}?pname=mtr&pnum=${totalPage}`)
+							span(data-feather="chevrons-right")
+
+		//- Modal appointment add/update
+		form#modal-app.needs-validation.modal.fade(method="post" action="/appointmentM/add" tabindex="-1" role="dialog" aria-hidden="true" novalidate)
+			.modal-dialog.modal-dialog-centered
+				.modal-content
+					.modal-header
+						h5.modal-title
+							span#modal-app-title Thêm 
+							span lịch hẹn
+						button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
+					.modal-body
+						.form-label-group
+							input#apTime.form-control(name="apTime" type="datetime-local" placeholder="Thời gian" required)
+							label.required(for="apTime") Thời gian
+							.invalid-feedback Thời gian là bắt buộc
+						.form-label-group
+							input#apLocation.form-control(name="apLocation" type="text" placeholder="Địa điểm" required)
+							label.required(for="apLocation") Địa điểm
+							.invalid-feedback Địa điểm là bắt buộc
+						.input-group
+							input#cfind.form-control(type="text" name="cfind" placeholder="Nhập Tên/SĐT khách hàng")
+							button.btn.btn-outline-success.border-radius-end(type="button" rel="find-customer" role="open-dropdown")
+								span(data-feather="search")
+							ul#customers-found.dropdown-menu.p-0.position-absolute.top-100.start-0(style="min-width:unset")
+							template#customers-found-temp
+								li(role="button" rel="select-customer" data-id data-cimg data-cname data-cnumber)
+									.dropdown-item.p-2
+										.d-flex
+											img.img-fluid.rounded(style="width:100px; max-height:100px;")
+											.ms-2
+												h4
+												span
+							.invalid-feedback
+						.row.row-cols-2.g-2.my-2
+							.col
+								img.img-fluid(rel="cimg" width="100%")
+							.col
+								h4.p-1(rel="cname")
+								input(type="hidden" name="cId" required)
+								span.p-1(rel="cnumber")
+					.modal-footer.d-grid.gap-2(style="justify-content: unset")
+						button.btn.btn-primary(type="submit") Lưu
+		//- End Modal appointment add/update
+
+		//- Modal appointment add/update
+		form#modal-app-res.needs-validation.modal.fade(method="post" action="/appointmentM/updres" tabindex="-1" role="dialog" aria-hidden="true" novalidate)
+			.modal-dialog.modal-dialog-centered
+				.modal-content
+					.modal-header
+						h5#modal-app-title.modal-title Cập nhật kết quả lịch hẹn
+						button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
+					.modal-body
+						input(name="id" type="hidden" required)
+						.mt-2.pb-2.border-bottom
+							b Thời gian: 
+							span(rel="time")
+						.mt-2.pb-2.border-bottom
+							b Địa điểm: 
+							span(rel="location")
+						.row.row-cols-2.g-2.my-2
+							.col
+								img.img-fluid(rel="cimg" width="100%")
+							.col
+								h4.p-1(rel="cname")
+								span.p-1(rel="cnumber")
+						.form-label-group.form-floating
+							textarea#apResult.form-control(type="text" name="apResult" placeholder="Kết quả" style="min-height:80px;" required)
+							label.required(for="apResult") Kết quả
+							.invalid-feedback Kết quả là bắt buộc
+					.modal-footer.d-grid.gap-2(style="justify-content: unset")
+						button.btn.btn-primary(type="submit") Lưu
+		//- End Modal appointment add/update
+

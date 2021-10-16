@@ -63,11 +63,12 @@ const sAboutR = require("./routes/staff/rAbout");
 const sMaterialR = require("./routes/staff/rMaterial");
 const sMtrreqR = require("./routes/staff/rMtrreq");
 const sMtrbatchR = require("./routes/staff/rMtrbatch");
-const sProductMnmRoute = require("./routes/staff/rProductManagement");
+const sProductMnmR = require("./routes/staff/rProductManagement");
 const sRoomtypeR = require("./routes/staff/rRoomtype");
 const sCategoryR = require("./routes/staff/rCategory");
 const sProductRoute = require("./routes/staff/rProduct");
 const sPrdreqRoute = require("./routes/staff/rPrdreq");
+const sAppointmentMR = require("./routes/staff/rAppointmentM");
 
 const cHomeR = require("./routes/customer/rHome");
 const cCustomerR = require("./routes/customer/rCustomer");
@@ -86,11 +87,13 @@ app.use("/material", mwAuthS.Auth, sMaterialR);
 app.use("/mtrreq", mwAuthS.Auth, sMtrreqR);
 app.use("/mtrbatch", mwAuthS.Auth, sMtrbatchR);
 // quan ly sp
-app.use("/product-management", mwAuthS.Auth, sProductMnmRoute);
+app.use("/product-management", mwAuthS.Auth, sProductMnmR);
 app.use("/roomtype", mwAuthS.Auth, sRoomtypeR);
 app.use("/category", mwAuthS.Auth, sCategoryR);
 app.use("/product", mwAuthS.Auth, sProductRoute);
 app.use("/prdreq", mwAuthS.Auth, sPrdreqRoute);
+// quản lý lịch hẹn
+app.use("/appointmentM", mwAuthS.Auth, sAppointmentMR);
 //#endregion
 
 //#region customber
