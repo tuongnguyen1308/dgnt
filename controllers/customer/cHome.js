@@ -4,6 +4,7 @@ const Category = require("../../models/mCategory");
 const Product = require("../../models/mProduct");
 const Banner = require("../../models/mBanner");
 const Cart = require("../../models/mCart");
+const PAGE_SIZE = 9;
 
 const pI = { title: "Trang chủ", url: "home" };
 
@@ -226,10 +227,21 @@ module.exports.filter = async (req, res) => {
     pcArr = [];
     pcArr.push(pcFound._id);
   }
+  //#region pagination
+  let pageNum = Math.max(req.query.pnum || 1, 1);
+  let skipPage = (pageNum - 1) * PAGE_SIZE;
+  let totalPrd = await Product.find({
+    pcId: { $in: pcArr },
+    pState: true,
+  }).countDocuments();
+  let totalPage = Math.ceil(totalPrd / PAGE_SIZE);
+  //#endregion
   let pFounds = await Product.find({ pcId: { $in: pcArr }, pState: true })
     .sort({
       pName: "asc",
     })
+    .skip(skipPage)
+    .limit(PAGE_SIZE)
     .populate({
       path: "pcId",
       select: "rtId slugName",
@@ -265,6 +277,11 @@ module.exports.filter = async (req, res) => {
     pcFounds,
     pcFound,
     prds,
+    pageNum,
+    totalPrd,
+    totalPage,
+    keyword,
+    pageSize: PAGE_SIZE,
   });
 };
 

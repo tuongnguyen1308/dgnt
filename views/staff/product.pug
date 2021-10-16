@@ -104,20 +104,20 @@ block content
 						span.me-3 Tổng: #{totalP} sản phẩm
 						ul.pagination.justify-content-end.mb-0
 							li.page-item(class= pageNumP==1 ? 'disabled' : '')
-								a.page-link.px-2(href='/product-management')
+								a.page-link.px-2(href=`/product-management?prdRoom=${rtSelected}&prdCate=${pcSelected}&productName=${keyword}`)
 									span(data-feather="chevrons-left")
 							li.page-item(class= pageNumP==1 ? 'disabled' : '')
-								a.page-link.px-2(href=`/product-management?pname=prd&pnum=${pageNumP-1}`)
+								a.page-link.px-2(href=`/product-management?prdRoom=${rtSelected}&prdCate=${pcSelected}&productName=${keyword}&pname=prd&pnum=${pageNumP-1}`)
 									span(data-feather="chevron-left")
 							- for (var i = 1; i <= totalPP; i++)
 								li.page-item(class= pageNumP==i ? 'active' : '')
-									a.page-link.h-100.d-flex.align-items-center.px-3(href=`/product-management?pname=prd&pnum=${i}`)
+									a.page-link.h-100.d-flex.align-items-center.px-3(href=`/product-management?prdRoom=${rtSelected}&prdCate=${pcSelected}&productName=${keyword}&pname=prd&pnum=${i}`)
 										span= i
 							li.page-item(class= pageNumP==totalPP ? 'disabled' : '')
-								a.page-link.px-2(href=`/product-management?pname=prd&pnum=${pageNumP+1}`)
+								a.page-link.px-2(href=`/product-management?prdRoom=${rtSelected}&prdCate=${pcSelected}&productName=${keyword}&pname=prd&pnum=${pageNumP+1}`)
 									span(data-feather="chevron-right")
 							li.page-item(class= pageNumP==totalPP ? 'disabled' : '')
-								a.page-link.px-2(href=`/product-management?pname=prd&pnum=${totalPP}`)
+								a.page-link.px-2(href=`/product-management?prdRoom=${rtSelected}&prdCate=${pcSelected}&productName=${keyword}&pname=prd&pnum=${totalPP}`)
 									span(data-feather="chevrons-right")
 
 					form#modal-product.needs-validation.modal.fade(method="post" action="/product/add" tabindex="-1" role="dialog" aria-hidden="true" enctype="multipart/form-data" novalidate)

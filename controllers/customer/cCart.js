@@ -146,9 +146,8 @@ module.exports.update = async (req, res) => {
       if (!pFound) res.json({ s: false, m: "Sản phẩm không hợp lệ!" });
       else {
         Cart.findOne({ cId: sess.cId }, async function (err, cartF) {
-          if (!cartF) {
-            res.json({ s: false, m: "Giỏ hàng chưa tồn tại!" });
-          } else {
+          if (!cartF) res.json({ s: false, m: "Giỏ hàng chưa tồn tại!" });
+          else {
             let pF = false;
             let products = cartF.products.map((p) => {
               if (p.pId == pId) {
@@ -165,6 +164,37 @@ module.exports.update = async (req, res) => {
             cartF.products = products;
             cartF.save();
             res.json({ s: true, m: "Cập nhật số lượng thành công!" });
+          }
+        });
+      }
+    }
+  }
+};
+
+module.exports.remove = async (req, res) => {
+  const sess = req.session?.user;
+  let pId = req.body.pId;
+  if (pId == "") res.json({ s: false, m: "Sản phẩm là bắt buộc!" });
+  else if (!sess) res.json({ s: false, m: "Vui lòng đăng nhập!" });
+  else {
+    let cFound = Customer.findOne({ _id: sess.cId }).countDocuments();
+    if (cFound == 0) res.json({ s: false, m: "Tài khoản không hợp lệ!" });
+    else {
+      let pFound = Product.findOne({ _id: pId, pState: true });
+      if (!pFound) res.json({ s: false, m: "Sản phẩm không hợp lệ!" });
+      else {
+        Cart.findOne({ cId: sess.cId }, async function (err, cartF) {
+          try {
+            if (!cartF) res.json({ s: false, m: "Giỏ hàng chưa tồn tại!" });
+            else {
+              let pF = false;
+              let products = cartF.products.filter((p) => p.pId != pId);
+              cartF.products = products;
+              cartF.save();
+              res.json({ s: true, d: cartF });
+            }
+          } catch (error) {
+            res.json({ s: false, m: error });
           }
         });
       }

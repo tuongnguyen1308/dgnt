@@ -28,6 +28,12 @@ $(document).ready(() => {
       .parentsUntil("#cart-prds")
       .find("[rel=total-prd-price]")
       .text(totalPrdPrice);
+    calcCartPrice();
+    if ($ip.val() != "" && $ip.val() != 0)
+      updateQuantity($ip.data("pid"), $ip.val());
+  };
+
+  const calcCartPrice = () => {
     // update total cart price
     let totalCartPrice = 0;
     $("#cart-prds [name=prd-quan]").each(function () {
@@ -39,8 +45,6 @@ $(document).ready(() => {
         currency: "VND",
       })
     );
-    if ($ip.val() != "" && $ip.val() != 0)
-      updateQuantity($ip.data("pid"), $ip.val());
   };
   //#endregion
 
@@ -73,73 +77,33 @@ $(document).ready(() => {
     changeQuantity($(this));
   });
   // add product to cart
-  $("#cart-add-product").on("click", function () {
-    let pId = $(this).val();
-    let pQuantity = $("#cdQuantity").val();
+  $("[role=remove-product]").on("click", function () {
+    $tr = $(this).parentsUntil("tbody").last();
+    let pId = $(this).data("pid");
     $.ajax({
-      type: "POST",
-      url: "/cart/add",
-      data: { pId, pQuantity },
+      type: "PATCH",
+      url: "/cart/remove-product",
+      data: { pId },
       success: function (res) {
         if (!res.s) {
           console.log(res.m);
-          $("#err-text")
-            .removeClass("text-success")
-            .addClass("text-danger")
-            .text(res.m);
+          $("#err-text").text(res.m);
         } else {
+          $("#cart-prd-num").text(`(${res.d.products.length})`);
           let cartNum = res.d.products.reduce(
             (pp, np) => Number(pp) + Number(np.pQuantity),
             0
           );
           $("#cartNum").text(cartNum);
-          $("#err-text")
-            .removeClass("text-danger")
-            .addClass("text-success")
-            .text("Đã thêm vào giỏ hàng");
+          $("#err-text").text("");
+          $tr.remove();
+          calcCartPrice();
         }
       },
       error: function (err) {
         console.error(err);
       },
     });
-  });
-
-  // find-product
-  $("#search-input").on("keyup", function () {
-    const keyword = $(this).val();
-    if (keyword.length > 0)
-      $.ajax({
-        type: "POST",
-        url: "/find-product",
-        data: { keyword },
-        success: function (res) {
-          $("#listPrdFound").html("").addClass("show");
-          res.map((p) => {
-            let resultItemTemp = document.querySelector("#searchp-result-temp");
-            let resItem = resultItemTemp.content.cloneNode(true);
-            let iImg = resItem.querySelector("img");
-            iImg.src =
-              `img/products/` + p.pImgs.find((pi) => pi.piIsMain).piImg;
-            let aHref = resItem.querySelector("a");
-            aHref.href = `/${p.slugName}`;
-            let iId = resItem.querySelector("li");
-            iId.dataset.id = p._id;
-            let iName = resItem.querySelector("h5");
-            iName.innerText = p.pName;
-            let iPrice = resItem.querySelector("p");
-            iPrice.innerText = (
-              p.pPrice -
-              (p.pPrice * p.pDiscount) / 100
-            ).toLocaleString("vi", { style: "currency", currency: "VND" });
-            $("#listPrdFound").append(resItem);
-          });
-        },
-        error: function (err) {
-          console.error(err);
-        },
-      });
-    else $("#listPrdFound").html("").removeClass("show");
   });
   //#endregion
 });

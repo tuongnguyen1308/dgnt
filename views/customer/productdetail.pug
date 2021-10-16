@@ -65,7 +65,7 @@ block content
 			button#nav-desc-tab.nav-link.text-secondary.active(data-bs-toggle='tab' data-bs-target='#nav-desc' type='button' aria-controls='nav-desc' aria-selected='true') Mô tả
 			button#nav-review-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-review' type='button' aria-controls='nav-review' aria-selected='false') Đánh giá
 		.tab-content.mb-5
-			#nav-desc.tab-pane.fade.pt-3.active.show(role='tabpanel' aria-labelledby='nav-desc-tab')
+			#nav-desc.tab-pane.fade.pt-3.active.show.bg-white.p-3(role='tabpanel' aria-labelledby='nav-desc-tab')
 				.desc.d-none(data-desc= prd.desc)
 			#nav-review.tab-pane.fade.pt-3(role='tabpanel' aria-labelledby='nav-review-tab')
 				//- form.needs-validation(method="post" action="/customer/review" tabindex="-1" role="dialog" aria-hidden="true" enctype="multipart/form-data" novalidate)

@@ -39,3 +39,24 @@ block content
 					else
 						.col-12.text-center
 							h4 Không tìm thấy sản phẩm nào!
+
+				if prds.length > 0
+					nav.d-flex.justify-content-between.align-items-center
+						span.me-3 Tổng: #{totalPrd} Sản phẩm
+						ul.pagination.justify-content-end.mb-0
+							li.page-item(class= pageNum==1 ? 'disabled' : '')
+								a.page-link.px-2(href=keyword)
+									span(data-feather="chevrons-left")
+							li.page-item(class= pageNum==1 ? 'disabled' : '')
+								a.page-link.px-2(href=`${keyword}?pnum=${pageNum-1}`)
+									span(data-feather="chevron-left")
+							- for (var i = 1; i <= totalPage; i++)
+								li.page-item(class= pageNum==i ? 'active' : '')
+									a.page-link.h-100.d-flex.align-items-center.px-3(href=`${keyword}?pnum=${i}`)
+										span= i
+							li.page-item(class= pageNum==totalPage ? 'disabled' : '')
+								a.page-link.px-2(href=`${keyword}?pnum=${pageNum+1}`)
+									span(data-feather="chevron-right")
+							li.page-item(class= pageNum==totalPage ? 'disabled' : '')
+								a.page-link.px-2(href=`${keyword}?pnum=${totalPage}`)
+									span(data-feather="chevrons-right")

@@ -9,12 +9,13 @@ block content
 					span.text-decoration-none= pI.title
 		// cart
 		.h4.text-brown= pI.title
+		#err-text.text-danger
 		table.table
 			thead
 				tr
 					th(scope='col' colspan="2")
 						span Sản phẩm 
-						span= `(${prds.length})`
+						span#cart-prd-num= `(${prds.length})`
 					th.text-end(scope='col') Đơn giá
 					th.text-center(scope='col') Số lượng
 					th.text-end(scope='col') Thành tiền
@@ -45,7 +46,7 @@ block content
 									span(data-feather="trash")
 								ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset; left:50%; transform: translate(-50%,0%)")
 									li
-										a.dropdown-item.p-2.text-danger(href='#' data-id=p.id role="confirm-delete-product" rel="tooltip" data-bs-placement="right" title="Xác nhận")
+										a.dropdown-item.p-2.text-danger(href='#' data-pid=p.id role="remove-product" rel="tooltip" data-bs-placement="right" title="Xác nhận")
 											span(data-feather="check")
 									li
 										span.dropdown-item.p-2(role="button" rel="tooltip" data-bs-placement="right" title="Hủy")
