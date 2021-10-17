@@ -30,9 +30,9 @@ block content
 					- var upComing = curTime.getTime() < at.getTime()
 					- ap.apTime = at.setUTCHours(at.getUTCHours() + 7);
 					- ap.updatedAt = ua.setUTCHours(ua.getUTCHours() + 7);
-					tr
+					tr(class=`${ap.apResult ? 'text-secondary' : ''}`)
 						td.align-middle.text-center= ((pageNum-1)*pageSize) + index+1
-						td.align-middle(class=`${upComing ? 'fw-bold' : ''} ${ap.apResult ? 'text-secondary' : ''}`)
+						td.align-middle(class=`${upComing ? 'fw-bold' : ''}`)
 							span= ap.apTime.toISOString().slice(0,10).split('-').reverse().join('/') + ' ' + ap.apTime.toISOString().slice(11,19)
 							if upComing && !ap.apResult
 								span.ms-md-2.badge.bg-danger Sắp tới
@@ -52,7 +52,7 @@ block content
 									if "Nhân viên sản xuất".includes(sess.rId.rName)
 										button.btn.btn-sm.btn-outline-primary(type="button" role="upd-app" data-id=ap._id data-time=ap.apTime data-location=ap.apLocation data-customer=ap.cId data-res=ap.apResult data-bs-toggle="modal" data-bs-target="#modal-app-res" rel="tooltip" data-bs-placement="top" title="Cập nhật kết quả")
 											span(data-feather="file-text")
-									if "Quản lý, Nhân viên bán hàng".includes(sess.rId.rName)
+									if "Quản lý, Nhân viên bán hàng".includes(sess.rId.rName) && !ap.apResult
 										button.btn.btn-sm.btn-outline-primary(type="button" role="edit-app" data-id=ap._id data-time=ap.apTime data-location=ap.apLocation data-customer=ap.cId data-bs-toggle="modal" data-bs-target="#modal-app" rel="tooltip" data-bs-placement="top" title="Sửa")
 											span(data-feather="edit-3")
 										button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Xoá")

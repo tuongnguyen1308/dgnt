@@ -29,7 +29,7 @@ else
 				- var ua = mb.mrId.createdAt;
 				- mb.mbBatchAt = ca.setUTCHours(ca.getUTCHours() + 7);
 				- mb.mrId.createdAt = ua.setUTCHours(ua.getUTCHours() + 7);
-				tr
+				tr(class=mb.mrId.mrState!=0 ? 'text-secondary' : '')
 					td.align-middle.text-center= ((pageNumB-1)*pageSize) + index+1
 					td.align-middle
 						div= mb.mbBatchAt.toISOString().slice(0,10).split('-').reverse().join('/')
@@ -42,7 +42,7 @@ else
 						table.table.m-0(width="100%")
 							tbody
 								each m in mb.mbDetail
-									tr.text-end
+									tr.text-end(class=mb.mrId.mrState!=0 ? 'text-secondary' : '')
 										td.border-bottom.border-end.text-start
 											span(rel="tooltip" data-bs-placement="top" title=`<img width='100px;' src='/img/materials/${m.mId.mImg}'>` data-bs-html="true")= m.mId.mName
 										td.border-bottom.border-end(width="10%")= m.mQuantity

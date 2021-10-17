@@ -1,5 +1,6 @@
 const Account = require("../../models/mAccount");
 const Customer = require("../../models/mCustomer");
+const DA = require("../../models/mDeliveryAddress");
 const Category = require("../../models/mCategory");
 const Shopinfo = require("../../models/mShopInfo");
 const bcrypt = require("bcrypt");
@@ -66,6 +67,7 @@ module.exports.index = async (req, res) => {
     cEmail: customer.cEmail,
     aId: customer.aId,
   };
+  let das = await DA.find({ cId: personal._id });
   res.render(`./customer/${pI.url}`, {
     pI,
     messages,
@@ -74,6 +76,7 @@ module.exports.index = async (req, res) => {
     menubar,
     imgPreviewSize,
     personal,
+    das,
   });
 };
 

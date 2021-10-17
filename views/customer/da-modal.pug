@@ -1,0 +1,49 @@
+form#modal-da.needs-validation.modal.fade(method="post" action="/da/add" tabindex="-1" role="dialog" aria-hidden="true" novalidate)
+    .modal-dialog.modal-dialog-centered.modal-lg
+        .modal-content
+            .modal-header
+                h5.modal-title
+                    span#modal-da-title Thêm 
+                    span địa chỉ
+                button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
+            .modal-body
+                .row
+                    .col-12.col-md-6
+                        .form-label-group
+                            input#adReceiver.form-control(name="adReceiver" type="text" placeholder="Tên người nhận" required)
+                            label.required(for="adReceiver") Tên người nhận
+                            .invalid-feedback Tên người nhận là bắt buộc
+                    .col-12.col-md-6
+                        .form-label-group
+                            input#adNumber.form-control(name="adNumber" type="text" placeholder="Số điện thoại" required)
+                            label.required(for="adNumber") Số điện thoại
+                            .invalid-feedback Số điện thoại là bắt buộc
+                .row
+                    .col-12.col-md-4
+                        .form-label-group
+                            input#adProvince.form-control(name="adProvince" list="provinces" placeholder="Tỉnh/TP" required)
+                            label.required(for="adProvince") Tỉnh/TP
+                            datalist#provinces
+                            .invalid-feedback Tỉnh/TP là bắt buộc
+                    .col-12.col-md-4
+                        .form-label-group
+                            input#adDistrict.form-control(name="adDistrict" list="districts" placeholder="Quận/Huyện" required)
+                            label.required(for="adDistrict") Quận/Huyện
+                            datalist#districts
+                            .invalid-feedback Quận/Huyện là bắt buộc
+                    .col-12.col-md-4
+                        .form-label-group
+                            input#adWard.form-control(name="adWard" list="wards" placeholder="Phường/Xã" required)
+                            label.required(for="adWard") Phường/Xã
+                            datalist#wards
+                            .invalid-feedback Phường/Xã là bắt buộc
+                .form-label-group
+                    input#adDetail.form-control(name="adDetail" type="text" placeholder="Địa chỉ cụ thể" required)
+                    label.required(for="adDetail") Địa chỉ cụ thể
+                    .invalid-feedback Địa chỉ cụ thể là bắt buộc
+                .form-check
+                    input#adIsDefault.form-check-input(name="adIsDefault" type="checkbox" value="on" placeholder="Đặt làm địa chỉ mặc định")
+                    label.form-check-label(for="adIsDefault") Đặt làm địa chỉ mặc định
+            .modal-footer.d-grid(style="justify-content: unset")
+                button.btn.btn-primary(type="submit") Lưu
+script(src="js/da.js" defer) 

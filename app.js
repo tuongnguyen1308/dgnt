@@ -74,6 +74,7 @@ const cHomeR = require("./routes/customer/rHome");
 const cCustomerR = require("./routes/customer/rCustomer");
 const cPersonalR = require("./routes/customer/rPersonal");
 const cCartR = require("./routes/customer/rCart");
+const cDAR = require("./routes/customer/rDA");
 //#region staff
 app.use("/dashboard", mwAuthS.Auth, sDashboardR);
 // quan ly tai khoan
@@ -100,6 +101,7 @@ app.use("/appointmentM", mwAuthS.Auth, sAppointmentMR);
 app.use("/customer", cCustomerR);
 app.use("/personal", mwAuthC.Auth, cPersonalR);
 app.use("/cart", mwAuthC.Auth, cCartR);
+app.use("/da", mwAuthC.Auth, cDAR);
 app.use("/", cHomeR);
 //#endregion
 //#endregion

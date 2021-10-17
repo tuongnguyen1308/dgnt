@@ -28,7 +28,7 @@ else
 				- var ua = pr.updatedAt;
 				- pr.createdAt = ca.setUTCHours(ca.getUTCHours() + 7);
 				- pr.updatedAt = ua.setUTCHours(ua.getUTCHours() + 7);
-				tr
+				tr(class=pr.prState==1 ? 'text-secondary' : '')
 					td.align-middle.text-center= index+1
 					td.align-middle
 						div= pr.createdAt.toISOString().slice(0,10).split('-').reverse().join('/') + ' ' + pr.createdAt.toISOString().slice(11,19)
@@ -41,7 +41,7 @@ else
 						table.table.m-0(width="100%")
 							tbody
 								each p, index in pr.prDetail
-									tr.border-bottom-none
+									tr.border-bottom-none(class=pr.prState==1 ? 'text-secondary' : '')
 										td.border-end
 											each pimg in p.pId.pImgs
 												if pimg.piIsMain

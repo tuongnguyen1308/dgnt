@@ -1,0 +1,36 @@
+
+.fs-4 Danh sách địa chỉ
+button.btn.w-100.btn-outline-success.d-flex.align-items-center.justify-content-center(type="button" role="add-da" data-bs-toggle="modal" data-bs-target="#modal-da")
+    span(data-feather="plus")
+    span Thêm địa chỉ
+table.table.table-responsive(width="100%")
+    thead.text-center
+        tr
+            th.align-middle Thông tin người nhận
+            th.align-middle Địa chỉ
+            th.align-middle  
+    tbody
+        each ad, index in das
+            tr.align-items-center
+                td.align-middle
+                    span= ad.adReceiver + ' - ' + ad.adNumber
+                    if ad.adIsDefault
+                        span.badge.bg-success Mặc định
+                td.align-middle
+                    div= ad.adWard + ', ' + ad.adDistrict + ', ' + ad.adProvince
+                    span= ad.adDetail
+                td.align-middle.text-center
+                    .btn-group(role="group")
+                        button.btn.btn-sm.btn-outline-primary(role="edit-da" data-id=ad._id data-rec=ad.adReceiver data-num=ad.adNumber data-pro=ad.adProvince data-dis=ad.adDistrict data-war=ad.adWard data-detail=ad.adDetail data-default=ad.adIsDefault type='button' rel="tooltip" data-bs-placement="top" title="Sửa" data-bs-toggle="modal" data-bs-target="#modal-da")
+                            span(data-feather="edit-3")
+                        button.btn.btn-sm.btn-outline-danger.border-radius-end(role="open-dropdown" type='button' rel="tooltip" data-bs-placement="top" title="Xoá")
+                            span(data-feather="x")
+                        ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset")
+                            li
+                                a.dropdown-item.p-2.text-danger(href='#' data-id=ad._id role="del-da") Xác nhận
+                            li
+                                span.dropdown-item.p-2(role="button" rel="close-dropdown") Huỷ
+        else
+            tr
+                td(colspan="3") Chưa có địa chỉ nào.
+include ./da-modal.pug

@@ -235,7 +235,7 @@ $(document).ready(function () {
     checkValidate(cases, this);
   });
 
-  $("#cNumber, #sNumber").on("keyup", function () {
+  $("#cNumber, #sNumber, #adNumber").on("keyup", function () {
     const title = "Số điện thoại";
     const lengthVal = 10;
     let val = $(this).val();
@@ -246,7 +246,7 @@ $(document).ready(function () {
     ];
     checkValidate(cases, this, false);
   });
-  $("#cNumber, #sNumber, #siHotline, [name=prd-quan]").on(
+  $("#cNumber, #sNumber, #siHotline, #adNumber, [name=prd-quan]").on(
     "keydown",
     function (e) {
       if (!/^[0-9]$/i.test(e.key) && !listKeyAllow.includes(e.key)) {

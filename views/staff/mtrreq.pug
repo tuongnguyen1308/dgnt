@@ -27,7 +27,7 @@ else
 				- var ua = mr.updatedAt;
 				- mr.createdAt = ca.setUTCHours(ca.getUTCHours() + 7);
 				- mr.updatedAt = ua.setUTCHours(ua.getUTCHours() + 7);
-				tr
+				tr(class=mr.mrState==1 ? 'text-secondary' : '')
 					td.align-middle.text-center= ((pageNumR-1)*pageSize) + index+1
 					td.align-middle
 						div= mr.createdAt.toISOString().slice(0,10).split('-').reverse().join('/') + ' ' + mr.createdAt.toISOString().slice(11,19)
@@ -40,7 +40,7 @@ else
 						table.table.m-0(width="100%")
 							tbody
 								each m, index in mr.mrDetail
-									tr.border-bottom-none
+									tr.border-bottom-none(class=mr.mrState==1 ? 'text-secondary' : '')
 										td.border-end
 											span(rel="tooltip" data-bs-placement="top" title=`<img width='100px;' src='/img/materials/${m.mId.mImg}'>` data-bs-html="true")= m.mId.mName
 										td.text-end.border-end(width="12.5%")= m.mQuantity
@@ -49,7 +49,7 @@ else
 						if mr.mrState == 0
 							.btn-group(role="group")
 								if 'Quản lý, Nhân viên kế toán'.includes(sess.rId.rName)
-									button.btn.btn-sm.btn-outline-success(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Đánh dấu là đã giải quyết")
+									button.btn.btn-sm.btn-outline-success.border-radius-end(role="open-dropdown" type='button' rel="tooltip" data-bs-placement="top" title="Đánh dấu là đã giải quyết")
 										span(data-feather="check")
 									ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset")
 										li
@@ -58,7 +58,7 @@ else
 											span.dropdown-item.p-2(role="button" rel="close-dropdown") Huỷ
 								button.btn.btn-sm.btn-outline-primary(role="edit-mtrreq" data-id=mr._id data-reason=mr.mrReason data-detail= mr.mrDetail type='button' rel="tooltip" data-bs-placement="top" title="Sửa" data-bs-toggle="modal" data-bs-target="#modal-mtrreq")
 									span(data-feather="edit-3")
-								button.btn.btn-sm.btn-outline-danger(role="open-dropdown" type='button' style="border-top-right-radius:.2rem;border-bottom-right-radius:.2rem;" rel="tooltip" data-bs-placement="top" title="Hủy")
+								button.btn.btn-sm.btn-outline-danger.border-radius-end(role="open-dropdown" type='button' rel="tooltip" data-bs-placement="top" title="Hủy")
 									span(data-feather="x")
 								ul.dropdown-menu.p-0.position-absolute.top-100.end-0(style="min-width:unset")
 									li
