@@ -25,7 +25,7 @@ $(document).ready(() => {
 
     // edit url & modal title
     $("#modal-da").attr("action", $btn ? "/da/update" : "/da/add");
-    $("#modal-da-title").text($btn ? "Sửa" : "Thêm");
+    $("#modal-da-title").text($btn ? "Sửa " : "Thêm ");
   };
 
   let provinces = [];

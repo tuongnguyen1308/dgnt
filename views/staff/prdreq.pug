@@ -52,7 +52,7 @@ else
 					td.align-middle.text-center
 						if pr.prState == 0 && 'Quản lý, Nhân viên bán hàng, Nhân viên sản xuất'.includes(sess.rId.rName)
 							.btn-group(role="group")
-								if 'Quản lý, Nhân viên sản xuất'.includes(sess.rId.rName)
+								if 'Nhân viên sản xuất'.includes(sess.rId.rName)
 									button.btn.btn-sm.btn-outline-brown(type='button' data-prds=pr.prDetail data-id=pr._id rel="tooltip" data-bs-placement="top" title="Kiểm tra NVL" role="view-mcheck" data-bs-toggle="modal" data-bs-target="#modal-mcheck")
 										span(data-feather="eye")
 								if 'Quản lý, Nhân viên bán hàng'.includes(sess.rId.rName)

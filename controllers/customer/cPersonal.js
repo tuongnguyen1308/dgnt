@@ -3,6 +3,7 @@ const Customer = require("../../models/mCustomer");
 const DA = require("../../models/mDeliveryAddress");
 const Category = require("../../models/mCategory");
 const Shopinfo = require("../../models/mShopInfo");
+const Cart = require("../../models/mCart");
 const bcrypt = require("bcrypt");
 const pI = { title: "Thông tin cá nhân", url: "personal" };
 const rootRoute = `/${pI.url}`;
@@ -68,12 +69,21 @@ module.exports.index = async (req, res) => {
     aId: customer.aId,
   };
   let das = await DA.find({ cId: personal._id });
+  let cartPrdQuan = 0;
+  await Cart.findOne({ cId: sess.cId }, function (err, cart) {
+    if (cart)
+      cartPrdQuan = cart.products.reduce(
+        (pp, np) => Number(pp) + Number(np.pQuantity),
+        0
+      );
+  });
   res.render(`./customer/${pI.url}`, {
     pI,
     messages,
     sess,
     shopinfo,
     menubar,
+    cartPrdQuan,
     imgPreviewSize,
     personal,
     das,

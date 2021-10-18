@@ -5,17 +5,6 @@ const Cart = require("../../models/mCart");
 
 const pI = { title: "Giỏ hàng", url: "cart" };
 
-let redirectFunc = (state, text, dir, req, res) => {
-  req.session.messages = {
-    icon: state ? "check-circle" : "alert-circle",
-    color: state ? "success" : "danger",
-    title: state ? "Thành công" : "Thất bại",
-    text,
-  };
-  res.redirect(dir);
-  return;
-};
-
 module.exports.index = async (req, res) => {
   const messages = req.session?.messages || null;
   const sess = req.session?.user;

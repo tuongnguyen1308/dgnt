@@ -62,8 +62,10 @@ module.exports.add = async (req, res) => {
     else {
       if (newDa.adIsDefault) {
         await DA.findOne({ adIsDefault: true }, async (err, defaultA) => {
-          if (defaultA) defaultA.adIsDefault = false;
-          defaultA.save();
+          if (defaultA) {
+            defaultA.adIsDefault = false;
+            defaultA.save();
+          }
         });
       }
       await newDa.save();
@@ -129,8 +131,10 @@ module.exports.update = async (req, res) => {
         else {
           if (daFound.adIsDefault) {
             await DA.findOne({ adIsDefault: true }, async (err, defaultA) => {
-              if (defaultA) defaultA.adIsDefault = false;
-              defaultA.save();
+              if (defaultA) {
+                defaultA.adIsDefault = false;
+                defaultA.save();
+              }
             });
           }
           await daFound.save();

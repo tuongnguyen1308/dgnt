@@ -33,7 +33,7 @@ module.exports.add = async (req, res) => {
       prDetail.push({ pId, pQuantity: pQuantitys[index] });
     });
     let newPrdreq = new Prdreq({
-      prReason: req.body.prReason,
+      prReason: req.body.prReason.trim(),
       prDeadlineAt: req.body.prDeadlineAt,
       prDetail: prDetail,
       scId: sess.sId,
@@ -60,7 +60,7 @@ module.exports.update = async (req, res) => {
     prDetail.push({ pId, pQuantity: pQuantitys[index] });
   });
   let updPrdreq = {
-    prReason: req.body.prReason,
+    prReason: req.body.prReason.trim(),
     prDeadlineAt: req.body.prDeadlineAt,
     prDetail,
     prState: 0,
