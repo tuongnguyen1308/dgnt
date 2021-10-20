@@ -137,6 +137,11 @@ $(document).ready(function () {
     $(this).parent().parent().removeClass("show");
   });
 
+  // switch tab
+  $("[rel=switch-tab]").on("click", function () {
+    $($(this).data("to")).click();
+  });
+
   //#region customer
   // set height cho banner
   if (document.getElementsByClassName("carousel-item"))

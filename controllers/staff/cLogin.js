@@ -1,11 +1,48 @@
 const Account = require("../../models/mAccount");
 const Staff = require("../../models/mStaff");
+const Role = require("../../models/mRole");
+const col_roles = require("../../data/col_roles.json");
 const bcrypt = require("bcrypt");
+
+const checkDB = async () => {
+  await Role.find({}, (err, roles) => {
+    if (roles.length == 0) {
+      col_roles.map(async (r) => {
+        let newRole = new Role({
+          rName: r.rName,
+        });
+        console.log(newRole);
+        await newRole.save();
+      });
+    }
+  });
+  await Account.findOne({ aUsername: "admin" }, async (err, acc) => {
+    if (!acc) {
+      const salt = await bcrypt.genSalt(10);
+      const hashPassword = await bcrypt.hash("123123", salt);
+      let adminRole = await Role.findOne({ rName: "Quản lý" });
+      let newAcc = new Account({
+        aUsername: "admin",
+        aPassword: hashPassword,
+        rId: adminRole._id,
+      });
+      let accSaved = await newAcc.save();
+      let newStaff = new Staff({
+        aId: accSaved._id,
+        sJoinAt: new Date(),
+        sState: true,
+      });
+      await newStaff.save();
+    }
+  });
+};
+
 module.exports.index = async (req, res) => {
   const title = "Đăng nhập";
   const username = req.session?.username || null;
   const errMessage = req.session?.errMessage || null;
   const messages = req.session?.messages || null;
+  checkDB();
   req.session.username = null;
   req.session.errMessage = null;
   req.session.messages = null;

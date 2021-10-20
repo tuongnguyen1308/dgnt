@@ -7,6 +7,7 @@ const cors = require("cors");
 const path = require("path");
 const mwAuthS = require("./middlewares/mwAuthS");
 const mwAuthC = require("./middlewares/mwAuthC");
+const provinces = require("./data/provinces.json");
 require("dotenv/config");
 //#endregion
 
@@ -76,6 +77,13 @@ const cPersonalR = require("./routes/customer/rPersonal");
 const cCartR = require("./routes/customer/rCart");
 const cDAR = require("./routes/customer/rDA");
 const cPrepareOrderR = require("./routes/customer/rPrepareOrder");
+
+//#region db
+app.get("/provinces", (req, res) => {
+  res.send(provinces);
+});
+//#endregion
+
 //#region staff
 app.use("/dashboard", mwAuthS.Auth, sDashboardR);
 // quan ly tai khoan

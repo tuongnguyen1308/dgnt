@@ -63,7 +63,6 @@ let Order = Schema(
     },
     scId: {
       type: Schema.Types.ObjectId,
-      require: true,
       ref: "col_staff",
     },
     suId: {

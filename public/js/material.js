@@ -126,7 +126,4 @@ $(document).ready(() => {
   });
   //#endregion
   //#endregion
-  $("[rel=switch-tab]").on("click", function () {
-    $($(this).data("to")).click();
-  });
 });

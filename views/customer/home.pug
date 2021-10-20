@@ -2,9 +2,8 @@ extends ./layout.pug
 block content
 	#myCarousel.carousel.slide.carousel-dark(data-bs-ride='carousel')
 		.carousel-indicators
-			button.active(type='button' data-bs-target='#myCarousel' data-bs-slide-to='0' aria-current='true' aria-label='Slide 1')
-			button(type='button' data-bs-target='#myCarousel' data-bs-slide-to='1' aria-label='Slide 2')
-			button(type='button' data-bs-target='#myCarousel' data-bs-slide-to='2' aria-label='Slide 3')
+			each b,i in banners
+				button(class=i==0?"active":"" type='button' data-bs-target='#myCarousel' data-bs-slide-to=i aria-current='true' aria-label='Slide 1')
 		.carousel-inner
 			each b,index in banners
 				.carousel-item(class= (index == 0)? "active" : "")

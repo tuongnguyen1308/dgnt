@@ -1,6 +1,6 @@
 extends ./layout.pug
 block content
-	.container-fluid.pb-5(style=`max-width: ${maxWidth}px;`)
+	form.needs-validation.container-fluid.pb-5(style=`max-width: ${maxWidth}px;` action="/prepare-order/add" method="post" novalidate)
 		nav.py-3.mt-3(aria-label="breadcrumb")
 			ol.breadcrumb.m-0
 				li.breadcrumb-item
@@ -10,7 +10,7 @@ block content
 		// cart
 		.h4.text-brown= pI.title
 		.card.mb-3
-			.card-header.fw-bold.text-brown Thông tin giao hàng
+			.card-header.fw-bold.text-brown.required Thông tin giao hàng
 			.card-body
 				.input-group
 					select.form-select(name="adId")
@@ -18,10 +18,9 @@ block content
 							option(value=da._id selected= da.adIsDefault)= `${da.adReceiver} - ${da.adNumber}. ${da.adDetail}, ${da.adWard}, ${da.adDistrict}, ${da.adProvince} ${da.adIsDefault ? '(Mặc định)': ''}`
 					button.btn.btn-outline-brown(role="add-da" rel="tooltip" data-bs-placement="top" title="Thêm địa chỉ" data-bs-toggle="modal" data-bs-target="#modal-da")
 						span(data-feather="plus")
-		include da-modal.pug
 
 		.card.mb-3
-			.card-header.fw-bold.text-brown Danh sách sản phẩm
+			.card-header.fw-bold.text-brown.required Danh sách sản phẩm
 			.card-body.py-2
 				table.table.table-borderless
 					thead
@@ -50,15 +49,21 @@ block content
 								td.align-middle.text-end.fw-bold(rel="total-prd-price")= p.totalDisplay
 
 		.card.mb-3
-			.card-header.fw-bold.text-brown Hình thức thanh toán
+			.card-header.fw-bold.text-brown.required Hình thức thanh toán
 			.card-body
 				each pm, idx in pms
 					.form-check.mb-2
-						input.form-check-input(id=`pm${idx}` type="radio" name="pmId" value= pm._id)
+						input.form-check-input(id=`pm${idx}` type="radio" name="pmId" value= pm._id checked=idx==0 required)
 						label.form-check-label.fw-bold(for=`pm${idx}`)= pm.pmName
-						.bg-light.p-2.d-none(rel="pmDesc" style="border-radius:.5rem; transition: .5s")= pm.pmDesc
+						.bg-light.p-2(class=idx==0?"":"d-none" rel="pmDesc" style="border-radius:.5rem; transition: .5s")= pm.pmDesc
 
+		.card.mb-3
+			.card-header.fw-bold.text-brown Ghi chú
+			.card-body
+				textarea#oNote.form-control(name="oNote" type="text" placeholder="Ghi chú cho đơn hàng" style="min-height:80px;")
 		.h4.fw-bold.text-end.text-brown(rel="total-cart-price")= 'Tổng tiền: ' + total
 		.text-end
 			button.btn.btn-brown.fs-4.px-4(type="submit") Đặt hàng
+
+	include da-modal.pug
 	script(src="/js/da.js" defer) 

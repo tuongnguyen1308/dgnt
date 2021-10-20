@@ -33,7 +33,7 @@ $(document).ready(() => {
   let wards = [];
   $.ajax({
     type: "GET",
-    url: "https://provinces.open-api.vn/api/?depth=3",
+    url: "/provinces",
     success: function (res) {
       provinces = res;
       provinces.map((p) => {

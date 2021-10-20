@@ -2,8 +2,6 @@ const router = require("express").Router();
 const controller = require("../../controllers/customer/cPrepareOrder");
 
 router.get("/", controller.index);
-// router.post("/add", controller.add);
-// router.patch("/update", controller.update);
-// router.patch("/remove-product", controller.remove);
+router.post("/add", controller.add);
 
 module.exports = router;
