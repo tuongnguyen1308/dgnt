@@ -1,0 +1,67 @@
+extends ./layout.pug
+block content
+	form.needs-validation.container-fluid.pb-5(style=`max-width: ${maxWidth}px;` action="/prepare-order/add" method="post" novalidate)
+		nav.py-3.mt-3(aria-label="breadcrumb")
+			ol.breadcrumb.m-0
+				li.breadcrumb-item
+					a.text-brown.text-decoration-none(href="/") Trang chủ
+				li.breadcrumb-item.active
+					span.text-decoration-none= pI.title
+		#nav-tab.nav.nav-tabs.brown(role='tablist')
+			button#nav-allorder-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-allorder' type='button' role='tab' aria-controls='nav-allorder' aria-selected='true') Thông tin cá nhân
+			button#nav-changepassword-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-changepassword' type='button' role='tab' aria-controls='nav-changepassword' aria-selected='false') Đổi mật khẩu
+			button#nav-da-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-da' type='button' role='tab' aria-controls='nav-da' aria-selected='false') Thông tin giao hàng
+		#nav-tabContent.tab-content
+			#nav-allorder.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-allorder-tab')
+				each o in allorders
+					form(method="post" action="/order/update")
+						.card.mb-3
+							.card-header.d-flex.justify-content-between
+								span= `Mã đơn: ${o.oId}`
+								span
+									span Trạng thái: 
+									span.fw-bold.text-brown= o.amountpaid > 0 ? o.stateName : o.paidState
+							.card-body.p-2
+								table.table.table-borderless.mb-0
+									thead
+										tr
+											th(scope='col' colspan="2")
+												span Sản phẩm 
+												span#cart-prd-num= `(${o.products.length})`
+											th.text-end(scope='col') Đơn giá
+											th.text-center(scope='col') Số lượng
+											th.text-end(scope='col') Thành tiền
+									tbody
+										each p in o.products
+											tr
+												th
+													a.text-decoration-none.text-brown(href=p.url)
+														img.rounded.img-fluid(src=p.img style="max-height:100px;")
+												td.align-middle(scope='row')
+													a.text-decoration-none.text-brown.fw-bold(href=p.url)= p.pname
+													div= `Kích thước: ${p.size}`
+												td.align-middle.text-end= p.priceDisplay
+												td.align-middle.text-center
+													if p.stock > 0
+														.input-group.justify-content-center
+															.text-center= p.quantity
+													else
+														span Sản phẩm đã hết hàng
+												td.align-middle.text-end.fw-bold(rel="total-prd-price")= p.totalDisplay
+									tfoot
+										tr
+											td.text-end(colspan="5")
+												span Tổng tiền: 
+												span.fs-4.fw-bold= o.totalDisplay
+										if o.amountpaid > 0
+											tr
+												td.text-end(colspan="5")= `Đã thanh toán: ${o.amountDisplay}`
+								.text-end
+									if o.amountpaid != o.total
+										button.btn.btn-brown(type="button" name="thanh-toan") Thanh toán
+									//- if o.stateName == "Đang giao hàng"
+									button.btn.btn-outline-brown.ms-2(type="button" name="update-state") Đã nhận hàng
+
+
+			#nav-changepassword.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-changepassword-tab')
+				include ./changepassword.pug

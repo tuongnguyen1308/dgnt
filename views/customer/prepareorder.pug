@@ -16,7 +16,7 @@ block content
 					select.form-select(name="adId")
 						each da in das
 							option(value=da._id selected= da.adIsDefault)= `${da.adReceiver} - ${da.adNumber}. ${da.adDetail}, ${da.adWard}, ${da.adDistrict}, ${da.adProvince} ${da.adIsDefault ? '(Mặc định)': ''}`
-					button.btn.btn-outline-brown(role="add-da" rel="tooltip" data-bs-placement="top" title="Thêm địa chỉ" data-bs-toggle="modal" data-bs-target="#modal-da")
+					button.btn.btn-outline-brown(type="button" role="add-da" rel="tooltip" data-bs-placement="top" title="Thêm địa chỉ" data-bs-toggle="modal" data-bs-target="#modal-da")
 						span(data-feather="plus")
 
 		.card.mb-3

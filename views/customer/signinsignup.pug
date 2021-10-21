@@ -12,11 +12,11 @@
                         form.d-grid.needs-validation(method="post" action="/customer/auth" tabindex="-1" role="dialog" aria-hidden="true" novalidate)
                             input(type="hidden" name="curPage" value=pI.url)
                             .form-label-group
-                                input#si_username.form-control(name="si_username" type="text" placeholder="Tên tài khoản" required="true" maxlength="50")
+                                input#si_username.form-control(name="si_username" type="text" placeholder="Tên tài khoản" required="true")
                                 label(for="si_username") Tên tài khoản
                                 .invalid-feedback Tên tài khoản là bắt buộc
                             .form-label-group
-                                input#si_password.form-control(name="si_password" type="password" placeholder="Mật khẩu" required="true" maxlength="50")
+                                input#si_password.form-control(name="si_password" type="password" placeholder="Mật khẩu" required="true")
                                 label(for="si_password") Mật khẩu
                                 .invalid-feedback Mật khẩu là bắt buộc
                             button.btn.btn-block.btn-brown(type="submit") Đăng nhập
@@ -25,7 +25,7 @@
                             input(type="hidden" name="curPage" value=pI.url)
                             span Thông tin tài khoản
                             .form-label-group
-                                input#su_username.form-control(name="su_username" type="text" placeholder="Tên tài khoản" required="true" maxlength="50")
+                                input#su_username.form-control(name="su_username" type="text" placeholder="Tên tài khoản" required="true")
                                 label.required(for="su_username") Tên tài khoản
                                 .invalid-feedback Tên tài khoản là bắt buộc
                             .row
@@ -34,13 +34,13 @@
                                     label.ms-2.ps-3.required(for="su_password") Mật khẩu
                                     .invalid-feedback Mật khẩu là bắt buộc
                                 .col-12.col-md-6.form-label-group
-                                    input#su_repassword.form-control(name="su_repassword" type="password" placeholder="Nhập lại mật khẩu" required="true" maxlength="50")
+                                    input#su_repassword.form-control(name="su_repassword" type="password" placeholder="Nhập lại mật khẩu" required="true")
                                     label.ms-2.ps-3.required(for="su_repassword") Nhập lại mật khẩu
                                     .invalid-feedback Nhập lại mật khẩu không đúng
                             span Thông tin cá nhân
                             .row
                                 .col-12.col-md-6.form-label-group
-                                    input#cName.form-control(name="cName" type="text" placeholder="Họ tên" required maxlength="50")
+                                    input#cName.form-control(name="cName" type="text" placeholder="Họ tên" required)
                                     label.ms-2.ps-3.required(for="cName") Họ tên
                                     .invalid-feedback Họ tên là bắt buộc
                                 .col-12.col-md-6.form-label-group

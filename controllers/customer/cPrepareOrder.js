@@ -6,6 +6,8 @@ const DA = require("../../models/mDeliveryAddress");
 const PM = require("../../models/mPaymentMethod");
 const Order = require("../../models/mOrder");
 const State = require("../../models/mState");
+const Role = require("../../models/mRole");
+const col_states = require("../../data/col_states.json");
 
 const pI = { title: "Mua hàng", url: "prepareorder" };
 const rootRoute = `/`;
@@ -22,8 +24,19 @@ let redirectFunc = (state, text, dir, req, res) => {
 };
 
 const checkDB = async () => {
+  let rs = await Role.find({});
   await State.find({}, (err, states) => {
     if (states.length == 0) {
+      col_states.map(async (s) => {
+        let roles = s.rName.map((rName) => {
+          return { rId: rs.find((r) => r.rName == rName).rId };
+        });
+        let newState = new State({
+          osName: s.osName,
+          roles,
+        });
+        await newState.save();
+      });
     }
   });
 };
@@ -32,7 +45,7 @@ module.exports.index = async (req, res) => {
   const messages = req.session?.messages || null;
   const sess = req.session?.user;
   req.session.messages = null;
-
+  checkDB();
   let cart = await Cart.findOne({ cId: sess.cId }).populate("products.pId");
   if (cart) {
     let cartPrdQuan = 0;
@@ -90,7 +103,6 @@ module.exports.index = async (req, res) => {
 
 module.exports.add = async (req, res) => {
   const sess = req.session?.user;
-  let createOrderStatus = false;
   if (!sess) res.json({ s: false, m: "Vui lòng đăng nhập!" });
   else {
     let cFound = await Customer.findById(sess.cId).populate("aId");
@@ -129,13 +141,16 @@ module.exports.add = async (req, res) => {
                 oTotal,
                 oAmountPaid: 0,
                 oNote: req.body.oNote,
-                // sdId: 'chwa cos trang thai',
+                sdId: await State.findOne({ osName: "Đã tạo đơn hàng" }),
                 products,
                 cId: cFound._id,
                 adId: req.body.adId,
                 pmId: req.body.pmId,
               });
-              createOrderStatus = await newOrder.save();
+              let createOrderStatus = await newOrder.save();
+              if (createOrderStatus) {
+                await Cart.deleteOne({ cId: sess.cId });
+              }
               redirectFunc(
                 true,
                 "Tạo đơn hàng thành công!",
@@ -148,8 +163,5 @@ module.exports.add = async (req, res) => {
           }
         });
     }
-  }
-  if (createOrderStatus) {
-    await Cart.deleteOne({ cId: sess.cId });
   }
 };
