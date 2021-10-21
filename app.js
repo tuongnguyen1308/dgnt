@@ -3,6 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const session = require("express-session");
+const MongoStore = require("connect-mongo");
 const cors = require("cors");
 const path = require("path");
 const mwAuthS = require("./middlewares/mwAuthS");
@@ -17,14 +18,19 @@ app.use(cors());
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.set("trust proxy", 1);
 app.use(
   session({
     name: process.env.SESS_NAME,
     cookie: {
-      maxAge: 7200000,
+      maxAge: 86400000,
       sameSite: true,
       secure: process.env.NODE_ENV === "production",
     },
+    store: MongoStore.create({
+      mongoUrl: process.env.DB_CONNECTION,
+      ttl: 14 * 24 * 60 * 60,
+    }),
     secret: process.env.SESS_SECRET,
     resave: false,
     saveUninitialized: false,
@@ -77,6 +83,7 @@ const cPersonalR = require("./routes/customer/rPersonal");
 const cCartR = require("./routes/customer/rCart");
 const cDAR = require("./routes/customer/rDA");
 const cPrepareOrderR = require("./routes/customer/rPrepareOrder");
+const cOrderR = require("./routes/customer/rOrder");
 
 //#region db
 app.get("/provinces", (req, res) => {
@@ -112,6 +119,7 @@ app.use("/personal", mwAuthC.Auth, cPersonalR);
 app.use("/cart", mwAuthC.Auth, cCartR);
 app.use("/da", mwAuthC.Auth, cDAR);
 app.use("/prepare-order", mwAuthC.Auth, cPrepareOrderR);
+app.use("/order", mwAuthC.Auth, cOrderR);
 app.use("/", cHomeR);
 //#endregion
 //#endregion

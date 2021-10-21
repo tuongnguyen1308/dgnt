@@ -1,4 +1,4 @@
-form#shopinfo-form.needs-validation(method="post" action="/about/si-update" enctype="multipart/form-data" novalidate)
+form#shopInfo-form.needs-validation(method="post" action="/about/si-update" enctype="multipart/form-data" novalidate)
     .d-flex.flex-lg-row.flex-column.w-100.m-auto(style="max-width:900px")
         .flex-fill.w-100.position-relative
             label.upload-before.img-box.w-100.align-middle(for="siLogo" style=`height:${imgViewHeight-1}px`).d-flex.justify-content-center.align-items-center
@@ -6,16 +6,16 @@ form#shopinfo-form.needs-validation(method="post" action="/about/si-update" enct
                     input#siLogo.btn.btn-success(type="file" name="siLogo" accept="image/png, image/jpeg" data-src='img/logo/'+shopInfo.siLogo)
                 else
                     input#siLogo.btn.btn-success(type="file" name="siLogo" accept="image/png, image/jpeg" required)
-                .title.h-100.d-flex.justify-content-center.align-items-center(class=`${(shopinfo && shopInfo.siLogo) ? 'd-none' : ''}`)
+                .title.h-100.d-flex.justify-content-center.align-items-center(class=`${(shopInfo && shopInfo.siLogo) ? 'd-none' : ''}`)
                     span(data-feather="image")
                     span.ms-2 Chọn ảnh
-                img#img-preview(src=`${(shopinfo && shopInfo.siLogo) ? 'img/logo/'+shopInfo.siLogo : ''}` style="max-width:398px;" height=`${imgViewHeight}px` class=`${(shopinfo && shopInfo.siLogo) ? '' : 'd-none'}`)
-            .text-danger.mb-3(role="errMessage" class=`${(shopinfo && shopInfo.siLogo) ? 'd-none' : ''}`)
+                img#img-preview(src=`${(shopInfo && shopInfo.siLogo) ? 'img/logo/'+shopInfo.siLogo : ''}` style="max-width:398px;" height=`${imgViewHeight}px` class=`${(shopInfo && shopInfo.siLogo) ? '' : 'd-none'}`)
+            .text-danger.mb-3(role="errMessage" class=`${(shopInfo && shopInfo.siLogo) ? 'd-none' : ''}`)
                 span
         .flex-fill.w-100
             .form.pe-0.ps-lg-3.pt-3.pt-lg-0
                 .form-label-group
-                    input#siName.form-control(name="siName" type="text" placeholder="Tên trang" value= shopinfo ? shopInfo.siName : "" required)
+                    input#siName.form-control(name="siName" type="text" placeholder="Tên trang" value= shopInfo ? shopInfo.siName : "" required)
                     label.required(for="siName") Tên trang
                     .invalid-feedback Tên trang là bắt buộc
                 .form-label-group
