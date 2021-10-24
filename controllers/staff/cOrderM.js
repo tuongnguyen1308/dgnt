@@ -1,14 +1,12 @@
-const Shopinfo = require("../../models/mShopInfo");
 const Order = require("../../models/mOrder");
 const State = require("../../models/mState");
-const Cart = require("../../models/mCart");
-const Category = require("../../models/mCategory");
-const pI = { title: "Đơn đặt hàng", url: "order" };
+const PM = require("../../models/mPaymentMethod");
+const DA = require("../../models/mDeliveryAddress");
+const Customer = require("../../models/mCustomer");
+const Product = require("../../models/mProduct");
+const pI = { title: "Đơn đặt hàng", url: "orderM" };
 const rootRoute = `/${pI.url}`;
-
-let menubar = [];
-
-let cartPrdQuan = 0;
+const PAGE_SIZE = 10;
 
 let formatDate = (d) => {
   d.setUTCHours(d.getUTCHours() + 7);
@@ -19,7 +17,7 @@ let formatDate = (d) => {
   );
 };
 
-let redirFunc = (state, text, dir, req, res) => {
+let redirectFunc = (state, text, dir, req, res) => {
   req.session.messages = {
     icon: state ? "check-circle" : "alert-circle",
     color: state ? "success" : "danger",
@@ -30,49 +28,24 @@ let redirFunc = (state, text, dir, req, res) => {
   return;
 };
 
-let GetDataDisplay = async (sess) => {
-  menubar = [];
-  shopinfo = await Shopinfo.findOne({});
-  //#region menubar
-  let categories = await Category.find({}).sort({ pcName: "asc" }).populate({
-    path: "rtId",
-    select: "rtName slugName",
-  });
-  categories.map((pc) => {
-    let index = menubar.findIndex((mb) => mb.title == pc.rtId.rtName);
-    if (index == -1) {
-      menubar.push({
-        title: pc.rtId.rtName,
-        url: "/" + pc.rtId.slugName,
-        pcs: [{ title: pc.pcName, url: "/" + pc.slugName }],
-      });
-    } else {
-      menubar[index].pcs.push({
-        title: pc.pcName,
-        url: "/" + pc.slugName,
-      });
-    }
-  });
-  menubar.sort((first, second) => (first.title > second.title ? 1 : -1));
-  //#endregion
-  //#region số lượng sản phẩm trong cart
-  if (sess) {
-    await Cart.findOne({ cId: sess.cId }, function (err, cart) {
-      if (cart)
-        cartPrdQuan = cart.products.reduce((pp, np) => {
-          return Number(pp) + Number(np.pQuantity);
-        }, 0);
-    });
-  }
-  //#endregion
-};
-
 module.exports.index = async (req, res) => {
   const messages = req.session?.messages || null;
-  const sess = req.session?.user;
+  const sess = req.session.user;
   req.session.messages = null;
-  GetDataDisplay(sess);
-  let orders = await Order.find({ cId: sess.cId })
+  //#region pagination
+  // let pageNum = Math.max(req.query.pnum || 1, 1);
+  // let skipPageP = (pageNum - 1) * PAGE_SIZE;
+  //#endregion
+  // filter/search
+  let con = {};
+  let keyword = req.query?.oId || "";
+  if (keyword) con.oId = new RegExp(keyword, "i");
+  // find products with condition
+  // let totalO = await Order.countDocuments();
+  // let totalOP = Math.ceil(totalO / PAGE_SIZE);
+  let orders = await Order.find(con)
+    // .skip(skipPageP)
+    // .limit(PAGE_SIZE)
     .sort({ createdAt: "desc" })
     .populate("products.pId")
     .populate("sdId")
@@ -134,7 +107,7 @@ module.exports.index = async (req, res) => {
       style: "currency",
       currency: "VND",
     });
-    if (!["Hủy", "Đã nhận hàng"].includes(stateName)) {
+    if (stateName != "Hủy") {
       if (o.gh.sdId) stateName = o.gh.sdId.osName;
       else if (o.sx.sdId) stateName = o.sx.sdId.osName;
       else if (o.bh.sdId) stateName = o.bh.sdId.osName;
@@ -209,34 +182,156 @@ module.exports.index = async (req, res) => {
     else if (o.stateName == "Hủy") o_ceds.push(o);
     else o_pings.push(o);
   });
-  res.render(`./customer/${pI.url}`, {
+  res.render(`./staff/${pI.url}`, {
     pI,
     messages,
-    sess,
     o_deds,
     o_dings,
     o_gings,
     o_pings,
     o_ceds,
     huyId,
+    datnId,
+    dacbId,
+    dagiaoId,
     danhanId,
-    shopinfo: await Shopinfo.findOne({}),
-    menubar,
-    cartPrdQuan,
+    pms: await PM.find({}),
+    keyword,
+    sess,
+    // pageNum,
+    // totalO,
+    // totalOP,
+    // PAGE_SIZE,
   });
 };
 
+module.exports.find = async (req, res) => {
+  let cId = req.body.cId;
+  await DA.find({ cId }, async (err, das) => {
+    res.json(das);
+  });
+};
+
+module.exports.add = async (req, res) => {
+  const sess = req.session.user;
+  let cId = req.body.cId;
+  let cFound = await Customer.findById(cId).populate({
+    path: "aId",
+    select: "aUsername",
+  });
+  if (!cFound) res.json({ s: false, m: "Tài khoản không hợp lệ!" });
+  else {
+    //#region tạo Mã hóa đơn
+    let curD = new Date();
+    let oId = `HD${curD.getFullYear()}${
+      curD.getMonth() + 1
+    }${curD.getDate()}${curD.getHours()}${curD.getMinutes()}${curD.getSeconds()}_${
+      cFound.aId.aUsername
+    }`;
+    //#endregion
+    //#region tạo dữ liệu sản phẩm
+    let products = [];
+    let pIds = req.body.pId;
+    let odQuantitys = req.body.odQuantity;
+    let odPrices = req.body.odPrice;
+    if (typeof pIds === "string") {
+      pIds = [pIds];
+      odQuantitys = [odQuantitys];
+      odPrices = [odPrices];
+    }
+    pIds.map((pId, index) => {
+      products.push({
+        pId,
+        odQuantity: odQuantitys[index],
+        odPrice: odPrices[index],
+      });
+    });
+    //#endregion
+    let newOrder = new Order({
+      oId,
+      cId: req.body.cId,
+      adId: req.body.adId,
+      pmId: req.body.pmId,
+      products,
+      oTotal: req.body.oTotal,
+      oAmountPaid: 0,
+      oNote: req.body.oNote.trim(),
+      sdId: await State.findOne({ osName: "Đã tạo đơn hàng" }),
+      scId: sess.sId,
+      createdAt: curD,
+    });
+    await newOrder.save((err) => {
+      redirectFunc(
+        !err,
+        !err
+          ? "Tạo đơn đặt hàng thành công!"
+          : "Tạo đơn đặt hàng thất bại!" + err,
+        rootRoute,
+        req,
+        res
+      );
+    });
+  }
+};
+
 module.exports.updateState = async (req, res) => {
-  await Order.findById(req.body.oId, async (err, o) => {
-    if (!o) redirFunc(false, "Không tìm thấy đơn hàng", rootRoute, req, res);
+  const sess = req.session.user;
+  let oId = req.body.oId;
+  let oRecDate = req.body.oRecDate;
+  await Order.findById(oId, async (err, o) => {
+    if (!o) redirectFunc(false, "Không tìm thấy đơn hàng", rootRoute, req, res);
+    else if (oRecDate && new Date(oRecDate).getTime() < new Date().getTime())
+      redirectFunc(false, "Ngày nhập không hợp lệ!", rootRoute, req, res);
     else {
-      o.sdId = req.body.sdId;
-      o.oNote = req.body.oNote.trim();
+      let sdId = req.body.sdId;
+      let sn = req.body.sn;
+      let nvud = {
+        sId: sess.sId,
+        oNote: req.body.oNote.trim(),
+        ouUpdateAt: new Date(),
+        sdId,
+      };
+      o[sn] = nvud;
+      let enoughPrd = true;
+      if (sn == "sx") {
+        o.products.map(async (p) => {
+          await Product.findById(p.pId, async (err, prd) => {
+            prd.pStock -= p.odQuantity;
+            if (enoughPrd && prd.pStock < 0) enoughPrd = false;
+            else await prd.save();
+          });
+        });
+      }
+      if (enoughPrd)
+        await o.save((err) => {
+          err &&
+            redirectFunc(
+              false,
+              "Cập nhật thất bại!" + err,
+              rootRoute,
+              req,
+              res
+            );
+          redirectFunc(true, "Cập nhật thành công!", rootRoute, req, res);
+        });
+      else redirectFunc(false, "Cập nhật thất bại!" + err, rootRoute, req, res);
+    }
+  });
+};
+
+module.exports.updateMoney = async (req, res) => {
+  const sess = req.session.user;
+  let oId = req.body.oId;
+  await Order.findById(oId, async (err, o) => {
+    if (!o) redirectFunc(false, "Không tìm thấy đơn hàng", rootRoute, req, res);
+    else {
+      o.suId = sess.sId;
+      o.oAmountPaid = req.body.oAmountPaid;
       o.updatedAt = new Date();
       await o.save((err) => {
         err &&
-          redirFunc(false, "Cập nhật thất bại!" + err, rootRoute, req, res);
-        redirFunc(true, "Cập nhật thành công!", rootRoute, req, res);
+          redirectFunc(false, "Cập nhật thất bại!" + err, rootRoute, req, res);
+        redirectFunc(true, "Cập nhật thành công!", rootRoute, req, res);
       });
     }
   });

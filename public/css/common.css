@@ -426,3 +426,7 @@ img {
 .product-detail .sub-img {
   cursor: zoom-in;
 }
+
+.dropdown-menu {
+  box-shadow: 1px 1px 5px #ddd;
+}

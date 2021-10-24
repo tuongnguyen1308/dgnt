@@ -1,0 +1,24 @@
+form#modal-state.needs-validation.modal.fade(method="post" action="/orderM/update-state" tabindex="-1" role="dialog" aria-hidden="true" novalidate)
+    .modal-dialog.modal-dialog-centered.modal-lg
+        .modal-content
+            .modal-header
+                h5.modal-title
+                    span Cập nhật Trạng thái: 
+                    span#modal-state-title
+                button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
+            .modal-body
+                input(name="oId" type="hidden" required)
+                input(name="sdId" type="hidden" required)
+                input(name="sn" type="hidden" required)
+                template#recdate-temp
+                    .form-label-group
+                        input#oRecDate.form-control(name="oRecDate" type="date" placeholder="Ngày nhận hàng dự kiến" required)
+                        label.required(for="oRecDate") Ngày nhận hàng dự kiến
+                        .invalid-feedback Ngày nhận hàng dự kiến là bắt buộc
+                .form-label-group.form-floating
+                    textarea#oNote.form-control(name="oNote" type="text" placeholder="Ghi chú" style="min-height:80px;")
+                    label(for="oNote") Ghi chú
+                    .invalid-feedback Ghi chú là bắt buộc
+            .modal-footer.d-flex.g-2
+                button.btn.btn-outline-secondary(type="button" data-bs-dismiss="modal" aria-label="Close") Đóng
+                button.btn.btn-primary(type="submit") Xác nhận

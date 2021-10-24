@@ -1,6 +1,11 @@
 const router = require("express").Router();
-const controller = require("../../controllers/customer/cOrder");
+const cOrder = require("../../controllers/customer/cOrder");
+const cvnpay = require("../../controllers/customer/cvnpay");
 
-router.get("/", controller.index);
+router.get("/", cOrder.index);
+router.post("/create_payment_url", cvnpay.createPaymentUrl);
+router.post("/update-state", cOrder.updateState);
+router.get("/result", cvnpay.vnpayReturn);
+router.get("/vnpay_ipn", cvnpay.vnpayIpn);
 
 module.exports = router;

@@ -192,7 +192,7 @@ module.exports.delete = async (req, res) => {
 };
 
 module.exports.find = async (req, res) => {
-  let keyword = req.body.keyword;
+  let keyword = req.body.keyword.trim();
   Product.find({ pName: new RegExp(keyword, "i") }, async (err, products) => {
     res.json(products);
   });

@@ -69,7 +69,6 @@ module.exports.auth = async (req, res, next) => {
     let user = {
       _id: accFound._id,
       aUsername: accFound.aUsername.toLowerCase(),
-      aPassword: accFound.aPassword,
       rId: accFound.rId,
       sId: null,
       sState: null,

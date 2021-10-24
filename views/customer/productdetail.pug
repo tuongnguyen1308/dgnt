@@ -14,12 +14,14 @@ block content
 		// product detail
 		.row.row-cols-1.row-cols-md-2.g-0.mb-5
 			.col.product-detail.bg-white.p-3
-				a.main-img.w-100(data-gallery="photoviewer" href=`img/products/${prd.imgMain}`)
-					img(src=`img/products/${prd.imgMain}` width="100%")
+				a.main-img.w-100.position-relative.border-0.overflow-hidden(data-gallery="photoviewer" href=`img/products/${prd.imgMain}`)
+					if (prd.disc > 0)
+						.fs-5.text-white.bg-danger.p-2.position-absolute.end-0= `-${prd.disc}%`
+					img.rounded(src=`img/products/${prd.imgMain}` width="100%")
 				each pi, i in prd.imgSub
 					a.sub-img.h-100.mt-2(data-gallery="photoviewer" href=`img/products/${pi.piImg}` class=`${i==0 ? '' : 'ms-2'} ${i > 4 ? 'd-none': ''}`)
 						if i != 4
-							img.mt-2(src=`img/products/${pi.piImg}` width="100px" style="height:100px;")
+							img.mt-2.rounded(src=`img/products/${pi.piImg}` width="100px" style="height:100px;")
 						else
 							span= `+ ${prd.imgSub.length - 4} ảnh`
 
@@ -32,11 +34,8 @@ block content
 					b Đơn vị tính: 
 					span= prd.unit
 				.mt-2.pb-2.border-bottom
-					b Chú ý: 
-					span Nhận đặt theo kích thước
-				.mt-2.pb-2.border-bottom
 					b Miễn phí: 
-					span Tư vấn, lắp đặt, vận chuyển
+					span Tư vấn, đo đạc, lắp đặt, vận chuyển
 				if prd.stock > 0
 					if sess && sess.rId.rName == "Khách hàng"
 						.mt-2.pb-2
@@ -51,6 +50,7 @@ block content
 									button.btn.btn-light.border.p-1(rel="add-quantity")
 										span(data-feather="plus")
 							button#cart-add-product.btn.btn-brown.ms-2(value=prd._id) Thêm vào giỏ hàng
+						.text-secondary= `SL trong kho: ${prd.stock}`
 						#err-text.text-danger
 					else if sess
 						.mt-2.pb-2 Đăng nhập bằng tài khoản khách hàng để mua hàng

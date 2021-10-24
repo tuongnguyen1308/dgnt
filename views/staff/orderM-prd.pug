@@ -1,0 +1,73 @@
+link(rel="stylesheet" href="css/timeline.css")
+.card.mb-3
+	.card-header.d-flex.justify-content-between.flex-column.flex-lg-row
+		span
+			span Mã đơn: 
+			span.fw-bold= o.oId
+		span
+			span TT Đơn hàng: 
+			span.fw-bold= o.stateName
+	.card-body
+		.hori-timeline(dir="ltr")
+			ul.list-inline.events.mt-3.mb-3
+				li.list-inline-item.event-list
+					.px-4
+						.event-date.bg-success.text-white Đã tạo đơn hàng
+						.fs-6.text-mute= o.createdAt
+						p.text-muted.mb-0= o.scId ? "NV: " + o.scId.sName : "KH: " + o.cId.cName
+				li.list-inline-item.event-list
+					.px-4
+						if o.stateName == "Hủy"
+							.event-date.text-white.bg-danger Hủy
+						else
+							.event-date.text-white(class= o.bh.sdId ? "bg-success" : "bg-soft-secondary") Đã tiếp nhận
+						.fs-6.text-mute= o.bh.sdId ? o.bh.ouUpdateAt : ""
+						p.text-muted.mb-0(rel="tooltip" data-bs-placement="top" title=o.bh.sdId ? o.bh.oNote : "")= o.bh.sdId ? "NV: " + o.bh.sId.sName : "" 
+				li.list-inline-item.event-list
+					.px-4
+						.event-date.text-white(class= o.sx.sdId ? "bg-success" : "bg-soft-secondary") Đã chuẩn bị hàng
+						.fs-6.text-mute= o.sx.sdId ? o.sx.ouUpdateAt : ""
+						p.text-muted.mb-0(rel="tooltip" data-bs-placement="top" title=o.sx.sdId ? o.sx.oNote : "")= o.sx.sdId ? "NV: " + o.sx.sId.sName : "" 
+				li.list-inline-item.event-list
+					.px-4
+						.event-date.text-white(class= o.gh.sdId ? "bg-success" : "bg-soft-secondary") Đã giao hàng
+						.fs-6.text-mute= o.gh.sdId ? o.gh.ouUpdateAt : ""
+						p.text-muted.mb-0(rel="tooltip" data-bs-placement="top" title=o.gh.sdId ? o.gh.oNote : "")= o.gh.sdId ? "NV: " + o.gh.sId.sName : "" 
+		.mb-2= `Danh sách sản phẩm (${o.products.length})`
+		- var enough = true
+		each p in o.products
+			.d-flex.mb-2
+				.me-3
+					a.text-decoration-none.text-brown(href=p.url target="_blank")
+						img.rounded.img-fluid(src=p.img style="height:100px; width: 100px;")
+				.flex-fill
+					a.text-decoration-none.text-brown.fw-bold(href=p.url target="_blank")= p.pname
+					.d-flex.justify-content-between.flex-column.flex-md-row
+						span
+							.div= `${p.priceDisplay} x ${p.quantity}`
+							- if (p.quantity > p.stock) enough = false
+							if (!o.sx.sdId)
+								div(class= p.quantity > p.stock ? "text-danger" : "text-secondary")= `SL trong kho: ${p.stock}`
+								if p.quantity > p.stock
+									a(href="/product-management#nav-prdreq") Yêu cầu bổ sung SP
+						span.ms-auto.text-dark= `Tạm tính: ${p.totalDisplay}`
+		.d-flex.justify-content-between.flex-column.flex-lg-row.py-1
+			span.d-flex.align-items-end
+				span Ghi chú: 
+				span.fw-bold.text-dark= o.oNote
+			span
+				span Tổng tiền: 
+				span.h4.fw-bold.text-dark= o.totalDisplay
+		.d-flex.justify-content-between.flex-column.flex-lg-row.py-1
+			span
+				span Hình thức thanh toán: 
+				span.fw-bold.text-dark= o.pmId.pmName
+			span
+				span TT Thanh toán: 
+				span.fw-bold.text-dark(rel="tooltip" data-bs-placement="top" title=o.suId ? `${o.suId.sName} - ${o.updatedAt}` : "")= `${o.paidState} ${o.amountpaid > 0 ? "(" + o.amountpaidDisplay + ")" : ""}`
+		.text-start.py-1
+			span Thông tin giao hàng: 
+			- var da = o.adId
+			span.fw-bold.text-dark= `${da.adReceiver} - ${da.adNumber}. ${da.adDetail}, ${da.adWard}, ${da.adDistrict}, ${da.adProvince} ${da.adIsDefault ? "(Mặc định)" : ""}`
+		.text-end.py-1
+			span

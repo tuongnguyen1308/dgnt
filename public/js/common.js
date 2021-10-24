@@ -82,7 +82,7 @@ $(document).ready(function () {
   // show current activated tab
   let curTab = localStorage.getItem("cur-tab");
   if (document.getElementById(curTab)) $(`#${curTab}`).click();
-  else $("#nav-tab button:first-child").click();
+  else $("#nav-tab button.nav-link:first-child").click();
   // toast
   const toastElement = document.getElementById("toast");
   if (toastElement) {
@@ -111,15 +111,16 @@ $(document).ready(function () {
   });
 
   // summernote
-  $(".summernote").summernote({
-    toolbar: [
-      // [groupName, [list of button]]
-      ["style", ["bold", "italic", "underline", "clear"]],
-      ["font", ["strikethrough", "superscript", "subscript"]],
-      ["para", ["ul", "ol"]],
-      ["insert", ["hr", "link", "video"]],
-    ],
-  });
+  if ($(".summernote").length > 0) {
+    $(".summernote").summernote({
+      toolbar: [
+        ["style", ["bold", "italic", "underline", "clear"]],
+        ["font", ["strikethrough", "superscript", "subscript"]],
+        ["para", ["ul", "ol"]],
+        ["insert", ["hr", "link", "video"]],
+      ],
+    });
+  }
 
   // logout show
   $(document).click((e) => {
@@ -138,6 +139,11 @@ $(document).ready(function () {
   });
 
   // switch tab
+  let gotoTab = window.location.hash;
+  window.history.replaceState({}, document.title, window.location.pathname);
+  if (gotoTab.length > 0) {
+    $(`${gotoTab}-tab`).click();
+  }
   $("[rel=switch-tab]").on("click", function () {
     $($(this).data("to")).click();
   });

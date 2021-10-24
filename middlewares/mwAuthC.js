@@ -6,7 +6,6 @@ module.exports.Auth = async (req, res, next) => {
       color: state ? "success" : "warning",
       title: state ? "Thành công" : "Thông báo",
       text,
-      text,
     };
     res.redirect(dir);
   };

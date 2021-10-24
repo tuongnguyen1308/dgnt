@@ -76,7 +76,9 @@ module.exports.add = async (req, res) => {
     let cFound = Customer.findOne({ _id: sess.cId }).countDocuments();
     if (cFound == 0) res.json({ s: false, m: "Tài khoản không hợp lệ!" });
     else {
-      let pFound = Product.findOne({ _id: pId, pState: true }).select("pStock");
+      let pFound = await Product.findOne({ _id: pId, pState: true }).select(
+        "pStock"
+      );
       if (!pFound) res.json({ s: false, m: "Sản phẩm không hợp lệ!" });
       else {
         Cart.findOne({ cId: sess.cId }, async function (err, cartF) {
@@ -94,21 +96,24 @@ module.exports.add = async (req, res) => {
               }
             } else {
               let pF = false;
+              let valid = true;
               let products = cartF.products.map((p) => {
                 if (p.pId == pId) {
                   pF = true;
                   p.pQuantity = Number(p.pQuantity) + Number(pQuantity);
                 }
-                if (pFound.pStock < p.pQuantity)
+                if (pFound.pStock < p.pQuantity) {
+                  valid = false;
                   res.json({ s: false, m: "Số lượng không hợp lệ!" });
+                }
                 return p;
               });
-              if (!pF) {
-                products.push({ pId, pQuantity });
+              if (valid) {
+                if (!pF) products.push({ pId, pQuantity });
+                cartF.products = products;
+                cartF.save();
+                res.json({ s: true, d: cartF });
               }
-              cartF.products = products;
-              cartF.save();
-              res.json({ s: true, d: cartF });
             }
           } catch (error) {
             res.json({ s: false, m: error });

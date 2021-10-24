@@ -10,7 +10,7 @@ const Role = require("../../models/mRole");
 const col_states = require("../../data/col_states.json");
 
 const pI = { title: "Mua hàng", url: "prepareorder" };
-const rootRoute = `/`;
+const rootRoute = `/order`;
 
 let redirectFunc = (state, text, dir, req, res) => {
   req.session.messages = {
@@ -33,6 +33,8 @@ const checkDB = async () => {
         });
         let newState = new State({
           osName: s.osName,
+          // stt: s.stt,
+          // forList: s.forList,
           roles,
         });
         await newState.save();
@@ -140,24 +142,36 @@ module.exports.add = async (req, res) => {
                 oId,
                 oTotal,
                 oAmountPaid: 0,
-                oNote: req.body.oNote,
+                oNote: req.body.oNote.trim(),
                 sdId: await State.findOne({ osName: "Đã tạo đơn hàng" }),
                 products,
                 cId: cFound._id,
                 adId: req.body.adId,
                 pmId: req.body.pmId,
+                createdAt: curD,
               });
-              let createOrderStatus = await newOrder.save();
-              if (createOrderStatus) {
-                await Cart.deleteOne({ cId: sess.cId });
+              if (newOrder.oNote.length > 255)
+                redirectFunc(
+                  false,
+                  "Ghi chú tối đa 255 ký tự!",
+                  rootRoute,
+                  req,
+                  res
+                );
+              else {
+                let createOrderStatus = await newOrder.save();
+                if (createOrderStatus) {
+                  await Cart.deleteOne({ cId: sess.cId });
+                }
+                redirectFunc(
+                  true,
+                  "Tạo đơn hàng thành công!",
+                  rootRoute,
+                  req,
+                  res
+                );
               }
-              redirectFunc(
-                true,
-                "Tạo đơn hàng thành công!",
-                rootRoute,
-                req,
-                res
-              );
+
               // res.json({ s: true, m: "Tạo đơn hàng thành công!" });
             }
           }

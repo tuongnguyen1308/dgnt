@@ -1,22 +1,25 @@
 [{
   "osName": "Đã tạo đơn hàng",
-  "rName": ["Khách hàng"]
+  "rName": ["Khách hàng"],
+  "forList": "Chờ xử lý"
 },{
-  "osName": "Hủy",
-  "rName": ["Nhân viên bán hàng","Khách hàng","Quản lý"]
+  "osName": "Đã tiếp nhận",
+  "rName": ["Nhân viên bán hàng","Quản lý"],
+  "forList": "Chờ chuẩn bị hàng"
 },{
-  "osName": "Chờ xử lý",
-  "rName": ["Nhân viên bán hàng","Quản lý"]
-},{
-  "osName": "Chờ lấy hàng",
-  "rName": ["Nhân viên sản xuất","Quản lý"]
-},{
-  "osName": "Đang giao hàng",
-  "rName": ["Nhân viên giao hàng","Quản lý"]
+  "osName": "Đã chuẩn bị hàng",
+  "rName": ["Nhân viên sản xuất","Quản lý"],
+  "forList": "Chờ giao hàng"
 },{
   "osName": "Đã giao hàng",
-  "rName": ["Nhân viên giao hàng","Quản lý"]
+  "rName": ["Nhân viên giao hàng","Quản lý"],
+  "forList": "Đã nhận hàng"
 },{
   "osName": "Đã nhận hàng",
-  "rName": ["Khách hàng"]
+  "rName": ["Khách hàng"],
+  "forList": "Đã nhận hàng"
+},{
+  "osName": "Hủy",
+  "rName": ["Nhân viên bán hàng","Khách hàng","Quản lý"],
+  "forList": "Đã hủy"
 }]

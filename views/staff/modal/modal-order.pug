@@ -1,0 +1,96 @@
+form#modal-order.needs-validation.modal.fade(method="post" action="/orderM/add" tabindex="-1" role="dialog" aria-hidden="true" novalidate)
+    .modal-dialog.modal-dialog-centered.modal-xl
+        .modal-content
+            .modal-header
+                h5.modal-title
+                    span#modal-order-title Tạo đơn đặt hàng
+                button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
+            .modal-body
+                .d-grid.m-auto
+                    .input-group
+                        input#cfind.form-control(type="text" name="cfind" placeholder="Nhập Tên/SĐT khách hàng")
+                        button.btn.btn-outline-success.border-radius-end(type="button" rel="find-customer" role="open-dropdown")
+                            span(data-feather="search")
+                        ul#customers-found.dropdown-menu.p-0.position-absolute.top-100.start-0(style="min-width:unset")
+                        template#customers-found-temp
+                            li(role="button" rel="select-customer" data-id data-cimg data-cname data-cnumber)
+                                .dropdown-item.p-2
+                                    .d-flex
+                                        img.img-fluid.rounded(style="width:100px; max-height:100px;")
+                                        .ms-2
+                                            h4
+                                            span
+                        .invalid-feedback
+                    .row.row-cols-2.g-2.my-2
+                        .col.text-center
+                            img(rel="cimg" width="100px" style="max-height: 100px;")
+                        .col
+                            h4.p-1(rel="cname")
+                            input(type="hidden" name="cId" required)
+                            span.p-1(rel="cnumber")
+                    .form-floating.mb-2
+                        select#adId.form-control(name="adId")
+                        label.required(for="adId") Thông tin giao hàng
+                    .form-control
+                        label.required Hình thức thanh toán
+                        each pm, idx in pms
+                            .form-check.mb-2
+                                input.form-check-input(id=`pm${idx}` type="radio" name="pmId" value= pm._id checked=idx==0 required)
+                                label.form-check-label.fw-bold(for=`pm${idx}`)= pm.pmName
+                                .bg-light.p-2(class=idx==0?"":"d-none" rel="pmDesc" style="border-radius:.5rem; transition: .5s")= pm.pmDesc
+                    span.fs-4 Danh sách sản phẩm
+                    #products-error.text-danger.small.d-none
+                    table.table.table-bordered(width="100%")
+                        thead
+                            tr.text-center
+                                th.align-middle Sản phẩm
+                                th.align-middle Số lượng
+                                th.align-middle Đơn giá
+                                th.align-middle Thành tiền
+                                th.align-middle(width="15%") Tác vụ
+                        tbody#products-list
+                            template#products-item-template
+                                tr.text-center
+                                    td.p-1.text-start.align-middle
+                                        span.p-1(rel="product-name")
+                                        input(type="hidden" name="pId" required)
+                                    td.p-1.align-middle
+                                        input.form-control.p-1(name="odQuantity" type="number" min="1" max="100" required)
+                                        .invalid-feedback Số lượng là bắt buộc
+                                        .text-secondary(rel="stock")
+                                    td.p-1.align-middle
+                                        input(name="odPrice" type="hidden" required)
+                                        span(rel="product-price")
+                                    td.p-1.align-middle.text-end
+                                        .p-1(rel="pTotal")
+                                    td.p-1.align-middle
+                                        button.btn.p-1.btn-white.btn-hover_danger.border-0(value="" role="list-order_delete" type='button' rel="tooltip" data-bs-placement="top" title="Xoá")
+                                            span(data-feather="x")
+                        tfoot
+                            tr
+                                td.fw-bold.text-end(colspan="3") Tổng tiền:
+                                td.text-end
+                                    span(rel="order-total")
+                                    input.form-control.p-1(name="oTotal" type="hidden" min="1" required)
+                                td
+                            tr
+                                td.text-center(colspan="5")
+                                    .input-group
+                                        input.form-control(type="text" name="pfind" placeholder="Nhập tên sản phẩm")
+                                        button.btn.btn-outline-success.border-radius-end(type="button" rel="find-product" role="open-dropdown")
+                                            span(data-feather="search")
+                                        ul#listorderItem.dropdown-menu.p-0.position-absolute.top-100.start-0(style="min-width:unset")
+                                        template#searchp-result-temp
+                                            li(role="list-order_add")
+                                                .dropdown-item.p-2
+                                                    .d-flex
+                                                        img.img-fluid.rounded(style="width:100px; max-height:100px;")
+                                                        .ms-2
+                                                            h5.fs-5
+                                                            p
+                    .form-label-group.form-floating
+                        textarea#oNote.form-control(name="oNote" type="text" placeholder="Ghi chú" style="min-height:80px;")
+                        label(for="oNote") Ghi chú
+                        .invalid-feedback Ghi chú là bắt buộc
+            .modal-footer.d-grid(style="justify-content: unset")
+                button.btn.btn-primary(type="submit") Lưu

@@ -38,6 +38,8 @@ block content
 					.col(class= index%3==0 && index!=0 ? 'offset-3' : '')
 						.card.h-100.product-card.border-0
 							a.position-relative.overflow-hidden(href= p.url)
+								if (p.disc > 0)
+									.fs-5.text-white.bg-danger.p-2.position-absolute.end-0= `-${p.disc}%`
 								img.card-img-top.hover-zoom(src=`img/products/${p.img}`)
 								.bg-blur.position-absolute.w-100.h-100.top-0.bg-dark
 								.btn-detail.position-absolute.top-100.start-50.btn.btn-brown.p-2.d-flex.align-items-center

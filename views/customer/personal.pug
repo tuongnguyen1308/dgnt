@@ -11,6 +11,7 @@ block content
 			button#nav-personal-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-personal' type='button' role='tab' aria-controls='nav-personal' aria-selected='true') Thông tin cá nhân
 			button#nav-changepassword-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-changepassword' type='button' role='tab' aria-controls='nav-changepassword' aria-selected='false') Đổi mật khẩu
 			button#nav-da-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-da' type='button' role='tab' aria-controls='nav-da' aria-selected='false') Thông tin giao hàng
+			button#nav-appointment-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-appointment' type='button' role='tab' aria-controls='nav-appointment' aria-selected='false') Lịch hẹn
 		#nav-tabContent.tab-content
 			#nav-personal.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-personal-tab')
 				form.needs-validation(method="post" action="/personal/update" enctype="multipart/form-data" novalidate)
@@ -51,4 +52,6 @@ block content
 				include ./changepassword.pug
 			#nav-da.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-da-tab')
 				include ./da.pug
+			#nav-appointment.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-appointment-tab')
+				include ./appointment.pug
 

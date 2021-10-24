@@ -179,7 +179,9 @@ else
 								td(rel="mStock").p-1.text-end.align-middle.fw-bold
 					#mcheck-result.text-end.position-relative
 					template#not-enough-template
-						span.text-danger Không đủ NVL, cần bổ sung số lượng NVL
+						span.text-danger
+							span Không đủ NVL, cần 
+							a(href="/material#nav-mtrreq") yêu cầu nhập NVL
 					template#enough-template
 						span.text-success Đủ NVL, có thể hoàn thành yêu cầu bổ sung sản phẩm
 						button.btn.btn-sm.btn-outline-success.d-flex.align-items-center.ms-auto(role="open-dropdown" type='button')

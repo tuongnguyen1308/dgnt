@@ -287,7 +287,7 @@ module.exports.delete = async (req, res) => {
 };
 
 module.exports.find = async (req, res) => {
-  let keyword = req.body.keyword;
+  let keyword = req.body.keyword.trim();
   Material.find({ mName: new RegExp(keyword, "i") }, async (err, materials) => {
     res.json(materials);
   });

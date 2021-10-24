@@ -25,7 +25,7 @@ block content
 					tr
 						th
 							a.text-decoration-none.text-brown(href=p.url)
-								img.rounded.img-fluid(src=p.img style="max-height:100px;")
+								img.rounded.img-fluid(src=p.img style="height:100px; width: 100px;")
 						td.align-middle(scope='row')
 							a.text-decoration-none.text-brown(href=p.url)= p.pname
 						td.align-middle.text-end= p.priceDisplay
@@ -37,6 +37,7 @@ block content
 									input.form-control.p-1.text-center(name="prd-quan" data-pid=p.id type="text" max=p.stock data-price=p.price value= p.quantity style="max-width:40px;")
 									button.btn.btn-light.border.p-1(rel="add-quantity")
 										span(data-feather="plus")
+								.text-secondary= `SL trong kho: ${p.stock}`
 							else
 								span Sản phẩm đã hết hàng
 						td.align-middle.text-end.fw-bold(rel="total-prd-price")= p.totalDisplay

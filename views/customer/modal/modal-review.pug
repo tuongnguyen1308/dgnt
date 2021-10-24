@@ -1,0 +1,27 @@
+form#modal-review.needs-validation.modal.fade(method="post" action="/orderM/add-review" tabindex="-1" role="dialog" aria-hidden="true" novalidate)
+    .modal-dialog.modal-dialog-centered.modal-lg
+        .modal-content
+            .modal-header
+                h5.modal-title
+                    span#modal-review-title Thêm 
+                    span nhận xét
+                button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
+            .modal-body
+                input(name="pId" type="hidden" required)
+                .mb-0
+                    input#reviewImg.form-control(type="file" name="reviewImg" accept="image/png, image/jpeg" multiple required)
+                    .invalid-feedback Ảnh sản phẩm là bắt buộc
+                #reviewImgs.gallery.mt-3.d-flex.flex-wrap
+                template#img-preview-template
+                    .position-relative.mx-2.mb-2
+                        img.sub-img.rounded(style="width:100px; height:100px;")
+                .form-label-group
+                    input#rScore.form-control(name="rScore" type="number" placeholder="Số điểm" min="1" max="5" required)
+                    label.required(for="rScore") Số điểm
+                    .invalid-feedback Số điểm là bắt buộc
+                .form-label-group.form-floating.mb-0
+                    textarea#rContent.form-control(name="rContent" type="text" placeholder="Nội dung" style="min-height:80px;")
+                    label(for="rContent") Nội dung
+                    .invalid-feedback Nội dung là bắt buộc
+            .modal-footer.d-grid(style="justify-content: unset")
+                button.btn.btn-primary(type="submit") Lưu

@@ -1,67 +1,89 @@
 extends ./layout.pug
 block content
-	form.needs-validation.container-fluid.pb-5(style=`max-width: ${maxWidth}px;` action="/prepare-order/add" method="post" novalidate)
-		nav.py-3.mt-3(aria-label="breadcrumb")
+	.container-fluid.pb-5(style=`max-width: ${maxWidth}px;`)
+		nav.py-3(aria-label="breadcrumb")
 			ol.breadcrumb.m-0
 				li.breadcrumb-item
 					a.text-brown.text-decoration-none(href="/") Trang chủ
 				li.breadcrumb-item.active
 					span.text-decoration-none= pI.title
-		#nav-tab.nav.nav-tabs.brown(role='tablist')
-			button#nav-allorder-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-allorder' type='button' role='tab' aria-controls='nav-allorder' aria-selected='true') Thông tin cá nhân
-			button#nav-changepassword-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-changepassword' type='button' role='tab' aria-controls='nav-changepassword' aria-selected='false') Đổi mật khẩu
-			button#nav-da-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-da' type='button' role='tab' aria-controls='nav-da' aria-selected='false') Thông tin giao hàng
+		#nav-tab.nav.nav-tabs(role='tablist')
+			button#nav-o_pings-tab.position-relative.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-o_pings' type='button' role='tab' aria-controls='nav-o_pings' aria-selected='false')
+				span Chờ xử lý
+				span.position-absolute.top-0.start-100.translate-middle.badge.rounded-pill.bg-danger(class= o_pings.length==0 ? "d-none" : '' )= o_pings.length
+			button#nav-o_gings-tab.position-relative.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-o_gings' type='button' role='tab' aria-controls='nav-o_gings' aria-selected='false')
+				span Chờ chuẩn bị hàng
+				span.position-absolute.top-0.start-100.translate-middle.badge.rounded-pill.bg-danger(class= o_gings.length==0 ? "d-none" : '' )= o_gings.length
+			button#nav-o_dings-tab.position-relative.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-o_dings' type='button' role='tab' aria-controls='nav-o_dings' aria-selected='false')
+				span Chờ giao hàng
+				span.position-absolute.top-0.start-100.translate-middle.badge.rounded-pill.bg-danger(class= o_dings.length==0 ? "d-none" : '' )= o_dings.length
+			button#nav-o_deds-tab.position-relative.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-o_deds' type='button' role='tab' aria-controls='nav-o_deds' aria-selected='false') Đã giao hàng
+			button#nav-o_ceds-tab.position-relative.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-o_ceds' type='button' role='tab' aria-controls='nav-o_ceds' aria-selected='true') Đã Hủy
 		#nav-tabContent.tab-content
-			#nav-allorder.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-allorder-tab')
-				each o in allorders
-					form(method="post" action="/order/update")
-						.card.mb-3
-							.card-header.d-flex.justify-content-between
-								span= `Mã đơn: ${o.oId}`
-								span
-									span Trạng thái: 
-									span.fw-bold.text-brown= o.amountpaid > 0 ? o.stateName : o.paidState
-							.card-body.p-2
-								table.table.table-borderless.mb-0
-									thead
-										tr
-											th(scope='col' colspan="2")
-												span Sản phẩm 
-												span#cart-prd-num= `(${o.products.length})`
-											th.text-end(scope='col') Đơn giá
-											th.text-center(scope='col') Số lượng
-											th.text-end(scope='col') Thành tiền
-									tbody
-										each p in o.products
-											tr
-												th
-													a.text-decoration-none.text-brown(href=p.url)
-														img.rounded.img-fluid(src=p.img style="max-height:100px;")
-												td.align-middle(scope='row')
-													a.text-decoration-none.text-brown.fw-bold(href=p.url)= p.pname
-													div= `Kích thước: ${p.size}`
-												td.align-middle.text-end= p.priceDisplay
-												td.align-middle.text-center
-													if p.stock > 0
-														.input-group.justify-content-center
-															.text-center= p.quantity
-													else
-														span Sản phẩm đã hết hàng
-												td.align-middle.text-end.fw-bold(rel="total-prd-price")= p.totalDisplay
-									tfoot
-										tr
-											td.text-end(colspan="5")
-												span Tổng tiền: 
-												span.fs-4.fw-bold= o.totalDisplay
-										if o.amountpaid > 0
-											tr
-												td.text-end(colspan="5")= `Đã thanh toán: ${o.amountDisplay}`
-								.text-end
-									if o.amountpaid != o.total
-										button.btn.btn-brown(type="button" name="thanh-toan") Thanh toán
-									//- if o.stateName == "Đang giao hàng"
-									button.btn.btn-outline-brown.ms-2(type="button" name="update-state") Đã nhận hàng
-
-
-			#nav-changepassword.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-changepassword-tab')
-				include ./changepassword.pug
+			#nav-o_pings.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-o_pings-tab')
+				each o in o_pings
+					include ../staff/orderM-prd.pug
+						.d-flex.justify-content-end
+							if o.amountpaid == 0
+								button.btn.btn-outline-danger.btn-sm.d-flex.align-items-center(role="update-state" type='button' data-id=o._id data-state=huyId data-bs-toggle="modal" data-bs-target="#modal-state")
+									span(data-feather="x")
+									span.title Hủy
+								form.mx-2(action="/order/create_payment_url" method="post")
+									input(name='oId' type="hidden" value=o.oId)
+									input(name='orderType' type="hidden" value='billpayment')
+									input(name='amount' type="hidden" value=o.total*0.3)
+									input(name='orderDescription' type="hidden" value="Thanh toan tien coc")
+									input(name='bankCode' type="hidden" value='NCB')
+									input(name='language' type="hidden" value='vn')
+									button.btn.btn-brown(type="submit") Thanh toán tiền cọc
+							if o.amountpaid != o.total
+								form(action="/order/create_payment_url" method="post")
+									input(name='oId' type="hidden" value=o.oId)
+									input(name='orderType' type="hidden" value='billpayment')
+									input(name='amount' type="hidden" value=o.total-o.amountpaid)
+									input(name='orderDescription' type="hidden" value="Thanh toan toan bo")
+									input(name='bankCode' type="hidden" value='NCB')
+									input(name='language' type="hidden" value='vn')
+									button.btn.btn-brown(type="submit") Thanh toán toàn bộ
+				else
+					i Không có đơn hàng.
+			#nav-o_gings.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-o_gings-tab')
+				each o in o_gings
+					include ../staff/orderM-prd.pug
+				else
+					i Không có đơn hàng.
+			#nav-o_dings.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-o_dings-tab')
+				each o in o_dings
+					include ../staff/orderM-prd.pug
+				else
+					i Không có đơn hàng.
+			#nav-o_deds.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-o_deds-tab')
+				each o in o_deds
+					include ../staff/orderM-prd.pug
+						.d-flex.justify-content-end
+							if o.amountpaid != o.total
+								form(action="/order/create_payment_url" method="post")
+									input(name='oId' type="hidden" value=o.oId)
+									input(name='orderType' type="hidden" value='billpayment')
+									input(name='amount' type="hidden" value=o.total-o.amountpaid)
+									input(name='orderDescription' type="hidden" value="Thanh toan toan bo")
+									input(name='bankCode' type="hidden" value='NCB')
+									input(name='language' type="hidden" value='vn')
+									button.btn.btn-brown(type="submit") Thanh toán toàn bộ
+							if o.sdId.osName != "Đã nhận hàng"
+								button.btn.btn-brown.btn-sm.d-flex.align-items-center.ms-2(role="update-state" type='button' data-id=o._id data-state=danhanId data-bs-toggle="modal" data-bs-target="#modal-state")
+									span(data-feather="check")
+									span.title Đã nhận hàng
+							else
+								button.btn.btn-outline-brown.btn-sm.d-flex.align-items-center.ms-2(role="add-review" type='button' data-id=o._id data-bs-toggle="modal" data-bs-target="#modal-review")
+									span(data-feather="message-square").me-1
+									span.title Nhận xét
+				else
+					i Không có đơn hàng.
+			#nav-o_ceds.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-o_ceds-tab')
+				each o in o_ceds
+					include ../staff/orderM-prd.pug
+				else
+					i Không có đơn hàng.
+		include ../staff/modal/modal-state.pug
+		include ./modal/modal-review.pug

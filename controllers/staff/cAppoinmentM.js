@@ -159,7 +159,7 @@ module.exports.delete = async (req, res) => {
 };
 
 module.exports.find = async (req, res) => {
-  let keyword = req.body.keyword;
+  let keyword = req.body.keyword.trim();
   Customer.find({ cName: new RegExp(keyword, "i") }, async (err, cByName) => {
     if (cByName.length == 0) {
       Customer.find(

@@ -1,0 +1,15 @@
+form#modal-money.needs-validation.modal.fade(method="post" action="/orderM/update-money" tabindex="-1" role="dialog" aria-hidden="true" novalidate)
+    .modal-dialog.modal-dialog-centered.modal-lg
+        .modal-content
+            .modal-header
+                h5.modal-title#modal-money-title Cập nhật số tiền đã thanh toán
+                button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
+            .modal-body
+                input(name="oId" type="hidden" required)
+                input(name="oAmountPaid" type="hidden" required)
+                .h4
+                    span Số tiền thanh toán: 
+                    span(rel="order-money")
+            .modal-footer.d-flex.g-2
+                button.btn.btn-outline-secondary(type="button" data-bs-dismiss="modal" aria-label="Close") Đóng
+                button.btn.btn-primary(type="submit") Xác nhận

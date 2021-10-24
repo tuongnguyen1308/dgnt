@@ -24,7 +24,7 @@ app.use(
     name: process.env.SESS_NAME,
     cookie: {
       maxAge: 86400000,
-      sameSite: true,
+      sameSite: false,
       secure: process.env.NODE_ENV === "production",
     },
     store: MongoStore.create({
@@ -56,11 +56,9 @@ mongoose.connect(
 //#endregion
 
 //#region ROUTERS
-// app.get("/", (req, res) => {
-//   res.render("home", {
-//     title: "Trang chủ",
-//   });
-// });
+app.get("/order-result", (req, res) => {
+  res.redirect("/order");
+});
 
 const sLoginR = require("./routes/staff/rLogin");
 const sDashboardR = require("./routes/staff/rDashboard");
@@ -76,6 +74,7 @@ const sCategoryR = require("./routes/staff/rCategory");
 const sProductRoute = require("./routes/staff/rProduct");
 const sPrdreqRoute = require("./routes/staff/rPrdreq");
 const sAppointmentMR = require("./routes/staff/rAppointmentM");
+const sOrderMR = require("./routes/staff/rOrderM");
 
 const cHomeR = require("./routes/customer/rHome");
 const cCustomerR = require("./routes/customer/rCustomer");
@@ -111,6 +110,8 @@ app.use("/product", mwAuthS.Auth, sProductRoute);
 app.use("/prdreq", mwAuthS.Auth, sPrdreqRoute);
 // quản lý lịch hẹn
 app.use("/appointmentM", mwAuthS.Auth, sAppointmentMR);
+// quản lý đơn hàng
+app.use("/orderM", mwAuthS.Auth, sOrderMR);
 //#endregion
 
 //#region customber

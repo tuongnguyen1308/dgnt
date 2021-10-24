@@ -1,6 +1,7 @@
 const Account = require("../../models/mAccount");
 const Customer = require("../../models/mCustomer");
 const DA = require("../../models/mDeliveryAddress");
+const AM = require("../../models/mAppointment");
 const Category = require("../../models/mCategory");
 const Shopinfo = require("../../models/mShopInfo");
 const Cart = require("../../models/mCart");
@@ -77,6 +78,16 @@ module.exports.index = async (req, res) => {
         0
       );
   });
+  let appointments = await AM.find({ cId: personal._id })
+    .populate({
+      path: "scId",
+      select: "sName",
+    })
+    .populate({
+      path: "suId",
+      select: "sName",
+    })
+    .sort({ apTime: "desc" });
   res.render(`./customer/${pI.url}`, {
     pI,
     messages,
@@ -87,6 +98,7 @@ module.exports.index = async (req, res) => {
     imgPreviewSize,
     personal,
     das,
+    appointments,
   });
 };
 

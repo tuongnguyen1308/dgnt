@@ -1,0 +1,36 @@
+table.table.table-bordered.bg-white(width="100%")
+	thead
+		tr.text-center
+			th.align-middle(width="1%") STT
+			th.align-middle Thời gian
+			th.align-middle Địa điểm
+			th.align-middle Nhân viên tạo
+			th.align-middle Thời gian, Nhân viên cập nhật
+			th.align-middle Kết quả
+	tbody
+		each ap, index in appointments
+			- var at = ap.apTime;
+			- var ua = ap.updatedAt;
+			- var curTime = new Date()
+			- var upComing = curTime.getTime() < at.getTime()
+			- ap.apTime = at.setUTCHours(at.getUTCHours() + 7);
+			- ap.updatedAt = ua.setUTCHours(ua.getUTCHours() + 7);
+			tr(class=`${ap.apResult ? 'text-secondary' : ''}`)
+				td.align-middle.text-center= index+1
+				td.align-middle(class=`${upComing ? 'fw-bold' : ''}`)
+					span= ap.apTime.toISOString().slice(0,10).split('-').reverse().join('/') + ' ' + ap.apTime.toISOString().slice(11,19)
+					if upComing && !ap.apResult
+						span.ms-md-2.badge.bg-danger Sắp tới
+					else if ap.apResult
+						span.ms-md-2.badge.bg-secondary Đã xong
+				td.align-middle.text-start= ap.apLocation
+				td.align-middle= ap.scId.sName
+				td.align-middle
+					if ap.suId
+						div= ap.updatedAt.toISOString().slice(0,10).split('-').reverse().join('/') + ' ' + ap.updatedAt.toISOString().slice(11,19)
+						span= ap.suId.sName
+				td.align-middle= ap.apResult
+		else
+			tr
+				td(colspan="6") Chưa có lịch hẹn!
+
