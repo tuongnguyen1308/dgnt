@@ -145,7 +145,7 @@ module.exports.index = async (req, res) => {
       totalDisplay,
       amountpaid: o.oAmountPaid,
       amountpaidDisplay,
-      recdate: formatDate(o.oRecDate),
+      recdate: o.oRecDate ? formatDate(o.oRecDate) : "",
       note: o.oNote,
       stateName,
       paidState,
@@ -286,7 +286,13 @@ module.exports.updateState = async (req, res) => {
   await Order.findById(oId, async (err, o) => {
     if (!o) redirectFunc(false, "Không tìm thấy đơn hàng", rootRoute, req, res);
     else if (oRecDate && new Date(oRecDate).getTime() < new Date().getTime())
-      redirectFunc(false, "Ngày nhập không hợp lệ!", rootRoute, req, res);
+      redirectFunc(
+        false,
+        "Ngày nhận hàng dự kiến không hợp lệ!",
+        rootRoute,
+        req,
+        res
+      );
     else {
       let sdId = req.body.sdId;
       let sn = req.body.sn;

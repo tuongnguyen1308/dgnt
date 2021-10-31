@@ -129,6 +129,17 @@ $(document).ready(() => {
     validateAddress(this, "wards", false);
   });
 
+  $(document).on("keyup", "input[name=adDetail]", function () {
+    const title = $(this).attr("placeholder");
+    let val = $(this).val();
+    let maxlength = 255;
+    let cases = [
+      { con: val.length == 0, mess: `${title} là bắt buộc` },
+      { con: val.length > 255, mess: `${title} tối đa ${maxlength} ký tự` },
+    ];
+    checkValidate(cases, this, false);
+  });
+
   $("#modal-da").on("submit", function () {
     validateAddress(document.getElementById("adProvince"), "provinces", true);
     validateAddress(document.getElementById("adDistrict"), "districts", true);

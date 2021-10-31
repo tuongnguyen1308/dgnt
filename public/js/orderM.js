@@ -254,5 +254,16 @@ $(document).ready(function () {
     let cases = [{ con: val == "Invalid Date", mess: `${title} không hợp lệ` }];
     checkValidate(cases, this);
   });
+  $(document).on("keyup", "input[name=odQuantity]", function () {
+    const title = $(this).attr("placeholder");
+    let val = $(this).val();
+    let cases = [
+      { con: val.length == 0, mess: `${title} là bắt buộc` },
+      { con: val <= 0, mess: `${title} không hợp lệ` },
+      { con: isNaN(val), mess: `${title} không hợp lệ` },
+      { con: !Number.isInteger(Number(val)), mess: `${title} không hợp lệ` },
+    ];
+    checkValidate(cases, this, false);
+  });
   //#endregion
 });

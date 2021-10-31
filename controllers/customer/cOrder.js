@@ -172,7 +172,7 @@ module.exports.index = async (req, res) => {
       totalDisplay,
       amountpaid: o.oAmountPaid,
       amountpaidDisplay,
-      recdate: formatDate(o.oRecDate),
+      recdate: o.oRecDate ? formatDate(o.oRecDate) : "",
       note: o.oNote,
       stateName,
       paidState,

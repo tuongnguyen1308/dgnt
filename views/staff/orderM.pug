@@ -28,14 +28,15 @@ block content
 						.d-flex.justify-content-end
 							if 'Quản lý, Nhân viên bán hàng'.includes(sess.rId.rName)
 								if o.amountpaid > 0
-									button.btn.btn-outline-danger.d-flex.align-items-center(role="update-state" type='button' data-id=o._id data-state=huyId data-sn="bh" data-bs-toggle="modal" data-bs-target="#modal-state")
-										span(data-feather="x")
-										span.title Hủy đơn hàng
 									button.btn.btn-primary.ms-2.d-flex.align-items-center(role="update-state" type='button' data-id=o._id data-state=datnId data-sn="bh" data-recdate="true" data-bs-toggle="modal" data-bs-target="#modal-state")
 										span(data-feather="check")
 										span.title Xác nhận tiếp nhận đơn hàng
 								else
-									i *Chỉ có thể tiếp nhận đơn hàng sau khi đã thanh toán
+									.flex-fill
+										button.btn.btn-outline-danger.d-flex.align-items-center.ms-auto(role="update-state" type='button' data-id=o._id data-state=huyId data-sn="bh" data-bs-toggle="modal" data-bs-target="#modal-state")
+											span(data-feather="x")
+											span.title Hủy đơn hàng
+										i *Chỉ có thể tiếp nhận đơn hàng sau khi đã thanh toán
 							else if 'Quản lý, Nhân viên kế toán'.includes(sess.rId.rName) && !o.pmId.pmName.includes('NCB')
 								if o.amountpaid == 0
 									button.btn.btn-outline-success.d-flex.align-items-center.me-2(role="update-money" type='button' data-id=o._id data-money=o.total*0.3 data-bs-toggle="modal" data-bs-target="#modal-money")

@@ -56,7 +56,7 @@ form#modal-order.needs-validation.modal.fade(method="post" action="/orderM/add" 
                                         span.p-1(rel="product-name")
                                         input(type="hidden" name="pId" required)
                                     td.p-1.align-middle
-                                        input.form-control.p-1(name="odQuantity" type="number" min="1" max="100" required)
+                                        input.form-control.p-1(name="odQuantity" type="number" min="1" max="100" placeholder="Số lượng" required)
                                         .invalid-feedback Số lượng là bắt buộc
                                         .text-secondary(rel="stock")
                                     td.p-1.align-middle

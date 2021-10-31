@@ -128,6 +128,14 @@ module.exports.update = async (req, res) => {
             req,
             res
           );
+        else if (daFound.adDetail.length > 255)
+          redirectFunc(
+            false,
+            "Địa chỉ cụ thể tối đa 255 ký tự!",
+            rootRoute,
+            req,
+            res
+          );
         else {
           if (daFound.adIsDefault) {
             await DA.findOne({ adIsDefault: true }, async (err, defaultA) => {
