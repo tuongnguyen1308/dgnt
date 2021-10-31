@@ -10,13 +10,18 @@ let menubar = [];
 
 let cartPrdQuan = 0;
 
-let formatDate = (d) => {
+let formatDateTime = (d) => {
   d.setUTCHours(d.getUTCHours() + 7);
   return (
     d.toISOString().slice(0, 10).split("-").reverse().join("/") +
     " " +
     d.toISOString().slice(11, 19)
   );
+};
+
+let formatDate = (d) => {
+  d.setUTCHours(d.getUTCHours() + 7);
+  return d.toISOString().slice(0, 10).split("-").reverse().join("/");
 };
 
 let redirFunc = (state, text, dir, req, res) => {
@@ -146,19 +151,19 @@ module.exports.index = async (req, res) => {
       bh.sId = o.bh.sId;
       bh.sdId = o.bh.sdId;
       bh.oNote = o.bh.oNote;
-      bh.ouUpdateAt = formatDate(o.bh.ouUpdateAt);
+      bh.ouUpdateAt = formatDateTime(o.bh.ouUpdateAt);
     }
     if (o.sx.sdId) {
       sx.sId = o.sx.sId;
       sx.sdId = o.sx.sdId;
       sx.oNote = o.sx.oNote;
-      sx.ouUpdateAt = formatDate(o.sx.ouUpdateAt);
+      sx.ouUpdateAt = formatDateTime(o.sx.ouUpdateAt);
     }
     if (o.gh.sdId) {
       gh.sId = o.gh.sId;
       gh.sdId = o.gh.sdId;
       gh.oNote = o.gh.oNote;
-      gh.ouUpdateAt = formatDate(o.gh.ouUpdateAt);
+      gh.ouUpdateAt = formatDateTime(o.gh.ouUpdateAt);
     }
     return {
       _id: o._id,
@@ -167,7 +172,7 @@ module.exports.index = async (req, res) => {
       totalDisplay,
       amountpaid: o.oAmountPaid,
       amountpaidDisplay,
-      recdate: o.oRecDate,
+      recdate: formatDate(o.oRecDate),
       note: o.oNote,
       stateName,
       paidState,
@@ -181,8 +186,8 @@ module.exports.index = async (req, res) => {
       bh: bh,
       sx: sx,
       gh: gh,
-      createdAt: formatDate(o.createdAt),
-      updatedAt: o.updatedAt && formatDate(o.updatedAt),
+      createdAt: formatDateTime(o.createdAt),
+      updatedAt: o.updatedAt && formatDateTime(o.updatedAt),
     };
   });
   // Đã giao hàng

@@ -5,11 +5,12 @@ if materials.length == 0
 else
 	table.table.table-responsive.table-bordered(width="100%")
 		thead.text-center
-			tr
-				td(colspan="8")
-					button.btn.w-100.btn-outline-success.d-flex.align-items-center.justify-content-center(type="button" role="add-mtrreq" data-bs-toggle="modal" data-bs-target="#modal-mtrreq")
-						span(data-feather="plus")
-						span Thêm yêu cầu
+			if "Quản lý, Nhân viên sản xuất".includes(sess.rId.rName)
+				tr
+					td(colspan="8")
+						button.btn.w-100.btn-outline-success.d-flex.align-items-center.justify-content-center(type="button" role="add-mtrreq" data-bs-toggle="modal" data-bs-target="#modal-mtrreq")
+							span(data-feather="plus")
+							span Thêm yêu cầu
 			tr
 				th.align-middle(rowspan="2") STT
 				th.align-middle(rowspan="2") Thời gian - Nhân viên tạo

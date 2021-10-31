@@ -13,11 +13,12 @@ block content
 			.card-header.fw-bold.text-brown.required Thông tin giao hàng
 			.card-body
 				.input-group
-					select.form-select(name="adId")
+					select.form-select(name="adId" required)
 						each da in das
 							option(value=da._id selected= da.adIsDefault)= `${da.adReceiver} - ${da.adNumber}. ${da.adDetail}, ${da.adWard}, ${da.adDistrict}, ${da.adProvince} ${da.adIsDefault ? '(Mặc định)': ''}`
-					button.btn.btn-outline-brown(type="button" role="add-da" rel="tooltip" data-bs-placement="top" title="Thêm địa chỉ" data-bs-toggle="modal" data-bs-target="#modal-da")
+					button.btn.btn-outline-brown.border-radius-end(type="button" role="add-da" rel="tooltip" data-bs-placement="top" title="Thêm địa chỉ" data-bs-toggle="modal" data-bs-target="#modal-da")
 						span(data-feather="plus")
+					.invalid-feedback Thông tin giao hàng là bắt buộc
 
 		.card.mb-3
 			.card-header.fw-bold.text-brown.required Danh sách sản phẩm

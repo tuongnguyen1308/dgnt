@@ -62,6 +62,7 @@ module.exports.createPaymentUrl = async (req, res) => {
 };
 
 module.exports.vnpayReturn = async (req, res) => {
+  console.log("success!");
   let redirectFunc = (state, text, dir) => {
     req.session.messages = {
       icon: state ? "check-circle" : "alert-circle",

@@ -29,8 +29,9 @@ form#modal-order.needs-validation.modal.fade(method="post" action="/orderM/add" 
                             input(type="hidden" name="cId" required)
                             span.p-1(rel="cnumber")
                     .form-floating.mb-2
-                        select#adId.form-control(name="adId")
+                        select#adId.form-control(name="adId" required)
                         label.required(for="adId") Thông tin giao hàng
+                        .invalid-feedback Thông tin giao hàng là bắt buộc
                     .form-control
                         label.required Hình thức thanh toán
                         each pm, idx in pms

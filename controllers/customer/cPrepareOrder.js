@@ -93,7 +93,7 @@ module.exports.index = async (req, res) => {
       sess,
       shopinfo: await Shopinfo.findOne({}),
       das,
-      pms: await PM.find({}),
+      pms: await PM.find({ pmState: true }),
       prds,
       cartPrdQuan,
       total,

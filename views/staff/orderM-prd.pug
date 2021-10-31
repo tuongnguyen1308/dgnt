@@ -69,5 +69,9 @@ link(rel="stylesheet" href="css/timeline.css")
 			span Thông tin giao hàng: 
 			- var da = o.adId
 			span.fw-bold.text-dark= `${da.adReceiver} - ${da.adNumber}. ${da.adDetail}, ${da.adWard}, ${da.adDistrict}, ${da.adProvince} ${da.adIsDefault ? "(Mặc định)" : ""}`
+		if o.recdate
+			.text-start.py-1
+				span Ngày nhận hàng dự kiến: 
+				span.fw-bold.text-dark= o.recdate
 		.text-end.py-1
 			span
