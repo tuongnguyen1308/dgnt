@@ -3,7 +3,10 @@ link(rel="stylesheet" href="css/timeline.css")
 	.card-header.d-flex.justify-content-between.flex-column.flex-lg-row
 		span
 			span Mã đơn: 
-			a.fw-bold(href=`${pI.url}/view?oId=${o.oId}`)= o.oId
+			if 'Quản lý, Nhân viên bán hàng, Nhân viên kế toán'.includes(sess.rId.rName) && o.paidState == "Đã thanh toán toàn bộ"
+				a.fw-bold(href=`${pI.url}/view?oId=${o.oId}`)= o.oId
+			else
+				span.fw-bold= o.oId
 		span
 			span TT Đơn hàng: 
 			span.fw-bold= o.stateName
