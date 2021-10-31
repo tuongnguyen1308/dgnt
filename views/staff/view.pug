@@ -18,11 +18,13 @@ html(lang="en")
 				tr
 					td(align="center")
 						h4.my-0= `ĐC: ${shopinfo.siAddress}`
-					td
+					td(align="center")
+						h4= `Mã HD: ${order.oId}`
 				tr
 					td(align="center")
 						h4.mt-0= `SĐT: ${shopinfo.siHotline}`
-					td
+					td(align="center")
+						h4= `TT: ${order.paidState}`
 			tfoot
 				tr
 					td(align="left")

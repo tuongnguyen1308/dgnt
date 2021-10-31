@@ -262,7 +262,6 @@ module.exports.view = async (req, res) => {
       stock: p.pId.pStock,
     };
   });
-  let stateName = o.sdId.osName;
   let paidState =
     o.oAmountPaid == 0
       ? "Chờ thanh toán"
@@ -282,25 +281,18 @@ module.exports.view = async (req, res) => {
     currency: "VND",
   });
   let order = {
-    _id: o._id,
     oId: o.oId,
     total: o.oTotal,
     totalDisplay,
     amountpaid: o.oAmountPaid,
     amountpaidDisplay,
     restDisplay,
-    recdate: o.oRecDate ? formatDate(o.oRecDate) : "",
-    note: o.oNote,
-    stateName,
     paidState,
     products: products,
     cName: o.adId.adReceiver,
     cNumber: o.adId.adNumber,
     cAd: `${o.adId.adDetail}, ${o.adId.adWard}, ${o.adId.adDistrict}, ${o.adId.adProvince}`,
-    pmId: o.pmId,
     sName: o.bh?.sId?.sName,
-    suId: o.suId,
-    createdAt: formatDateTime(o.createdAt),
   };
   res.render(`./staff/view`, {
     shopinfo: await Shopinfo.findOne({}),

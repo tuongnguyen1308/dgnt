@@ -231,6 +231,87 @@ module.exports.index = async (req, res) => {
   });
 };
 
+module.exports.view = async (req, res) => {
+  const sess = req.session.user;
+  let o = await Order.findOne({ oId: req.query.oId })
+    .populate("products.pId")
+    .populate("bh.sId")
+    .populate("sdId")
+    .populate("scId")
+    .populate("suId")
+    .populate("pmId")
+    .populate("cId")
+    .populate("adId");
+  // get product-request
+  //#region lọc đơn hàng theo trạng thái
+
+  let products = o.products.map((p) => {
+    return {
+      id: p.pId._id,
+      pname: p.pId.pName,
+      size: p.pId.pSize,
+      price: p.pId.pPrice - (p.pId.pPrice * p.pId.pDiscount) / 100,
+      priceDisplay: (
+        p.pId.pPrice -
+        (p.pId.pPrice * p.pId.pDiscount) / 100
+      ).toLocaleString("vi", {
+        style: "currency",
+        currency: "VND",
+      }),
+      total:
+        (p.pId.pPrice - (p.pId.pPrice * p.pId.pDiscount) / 100) * p.odQuantity,
+      totalDisplay: (
+        (p.pId.pPrice - (p.pId.pPrice * p.pId.pDiscount) / 100) *
+        p.odQuantity
+      ).toLocaleString("vi", {
+        style: "currency",
+        currency: "VND",
+      }),
+      img: "/img/products/" + p.pId.pImgs.find((pi) => pi.piIsMain).piImg,
+      url: "/" + p.pId.slugName,
+      quantity: p.odQuantity,
+      stock: p.pId.pStock,
+    };
+  });
+  let paidState =
+    o.oAmountPaid == 0
+      ? "Chờ thanh toán"
+      : o.oAmountPaid == o.oTotal
+      ? "Đã thanh toán toàn bộ"
+      : "Đã thanh toán tiền cọc";
+  let totalDisplay = o.oTotal.toLocaleString("vi", {
+    style: "currency",
+    currency: "VND",
+  });
+  let amountpaidDisplay = o.oAmountPaid.toLocaleString("vi", {
+    style: "currency",
+    currency: "VND",
+  });
+  let restDisplay = (o.oTotal - o.oAmountPaid).toLocaleString("vi", {
+    style: "currency",
+    currency: "VND",
+  });
+  let order = {
+    oId: o.oId,
+    total: o.oTotal,
+    totalDisplay,
+    amountpaid: o.oAmountPaid,
+    amountpaidDisplay,
+    restDisplay,
+    paidState,
+    products: products,
+    cName: o.adId.adReceiver,
+    cNumber: o.adId.adNumber,
+    cAd: `${o.adId.adDetail}, ${o.adId.adWard}, ${o.adId.adDistrict}, ${o.adId.adProvince}`,
+    sName: o.bh?.sId?.sName,
+  };
+  res.render(`./staff/view`, {
+    shopinfo: await Shopinfo.findOne({}),
+    order,
+    sess,
+  });
+};
+
 module.exports.updateState = async (req, res) => {
   await Order.findById(req.body.oId, async (err, o) => {
     if (!o) redirFunc(false, "Không tìm thấy đơn hàng", rootRoute, req, res);
