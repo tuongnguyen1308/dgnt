@@ -140,6 +140,7 @@ $(document).ready(function () {
 
   // switch tab
   let gotoTab = window.location.hash;
+  console.log(gotoTab);
   window.history.replaceState({}, document.title, window.location.pathname);
   if (gotoTab.length > 0) {
     $(`${gotoTab}-tab`).click();

@@ -29,7 +29,8 @@ html(lang="en")
 			a.navbar-brand.col-md-3.col-lg-2.me-0.px-3(href="#") ĐGNT
 			button.navbar-toggler.position-absolute.d-md-none.collapsed.d-flex.align-middle.my-1(type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation")
 				span.my-1(data-feather="menu")
-			input.form-control.form-control-dark.w-100(type="text" placeholder="Tìm kiếm nhanh đơn hàng" aria-label="Search")
+			form.w-100(action="/orderM" method="get")
+				input.form-control.form-control-dark(name="oId" type="text" placeholder="Tìm kiếm nhanh đơn hàng" aria-label="Search" value=keyword)
 			.navbar-nav
 				.nav-item.text-nowrap
 					a.nav-link.px-3(href="#" role="open-dropdown") Đăng xuất

@@ -1,0 +1,77 @@
+doctype html
+html(lang="en")
+	head
+		meta(charset="UTF-8")
+		meta(http-equiv="X-UA-Compatible" content="IE=edge")
+		meta(name="viewport" content="width=device-width, initial-scale=1.0")
+		title Hóa đơn bán hàng
+		link(rel="stylesheet" href="../css/vieworder.css")
+	body(style="margin:auto;")
+		table(width="100%")
+			thead
+				tr
+					th(width="50%")
+						h2= shopinfo.siName
+					th(width="50%")
+						h2 HÓA ĐƠN BÁN HÀNG
+			tbody
+				tr
+					td(align="center")
+						h4.my-0= `ĐC: ${shopinfo.siAddress}`
+					td
+				tr
+					td(align="center")
+						h4.mt-0= `SĐT: ${shopinfo.siHotline}`
+					td
+			tfoot
+				tr
+					td(align="left")
+						span Khách hàng: 
+						b= order.cName
+					td(align="right")
+						span SĐT: 
+						b= order.cNumber
+				tr
+					td(colspan="2")
+						span Địa chỉ: 
+						b= order.cAd
+		table.all-p(width="100%" border style="border-collapse: collapse;")
+			thead
+				tr
+					th(width="1%") STT
+					th(width="40%") Tên sản phẩm
+					th(width="10 %") Số lượng
+					th(width="20%") Đơn giá
+					th(width="20%") Thành tiền
+			tbody
+				each p, i in order.products
+					tr
+						td(align="center")= i+1
+						td= p.pname
+						td(align="right")= p.quantity
+						td(align="right")= p.priceDisplay
+						td(align="right")= p.totalDisplay
+			tfoot
+				tr
+					th(colspan="4" align="right") Tổng cộng
+					th(align="right")= order.totalDisplay
+				tr
+					th(colspan="4" align="right") Đã thanh toán
+					th(align="right")= order.amountpaidDisplay
+				tr
+					th(colspan="4" align="right") Còn lại
+					th(align="right")= order.restDisplay
+		table(width="100%")
+			thead
+				tr
+					th(width="50%") Khách hàng
+					th(width="50%") Nhân viên bán hàng
+			tbody
+				tr
+					td
+						h1
+					td
+						h1
+				tr
+					td(align="center")= order.cName
+					td(align="center")= order.sName

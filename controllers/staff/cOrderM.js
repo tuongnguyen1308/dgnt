@@ -1,3 +1,4 @@
+const Shopinfo = require("../../models/mShopInfo");
 const Order = require("../../models/mOrder");
 const State = require("../../models/mState");
 const PM = require("../../models/mPaymentMethod");
@@ -187,6 +188,14 @@ module.exports.index = async (req, res) => {
     else if (o.stateName == "Hủy") o_ceds.push(o);
     else o_pings.push(o);
   });
+  let resfound = "";
+  if (keyword.length > 0 && allorders.length > 0) {
+    if (o_ceds.length > 0) resfound = "#nav-o_ceds-tab";
+    if (o_deds.length > 0) resfound = "#nav-o_deds-tab";
+    if (o_dings.length > 0) resfound = "#nav-o_dings-tab";
+    if (o_gings.length > 0) resfound = "#nav-o_gings-tab";
+    if (o_pings.length > 0) resfound = "#nav-o_pings-tab";
+  }
   res.render(`./staff/${pI.url}`, {
     pI,
     messages,
@@ -203,10 +212,100 @@ module.exports.index = async (req, res) => {
     pms: await PM.find({ pmState: true }),
     keyword,
     sess,
+    resfound,
     // pageNum,
     // totalO,
     // totalOP,
     // PAGE_SIZE,
+  });
+};
+
+module.exports.view = async (req, res) => {
+  const sess = req.session.user;
+  let o = await Order.findOne({ oId: req.query.oId })
+    .populate("products.pId")
+    .populate("bh.sId")
+    .populate("sdId")
+    .populate("scId")
+    .populate("suId")
+    .populate("pmId")
+    .populate("cId")
+    .populate("adId");
+  // get product-request
+  //#region lọc đơn hàng theo trạng thái
+
+  let products = o.products.map((p) => {
+    return {
+      id: p.pId._id,
+      pname: p.pId.pName,
+      size: p.pId.pSize,
+      price: p.pId.pPrice - (p.pId.pPrice * p.pId.pDiscount) / 100,
+      priceDisplay: (
+        p.pId.pPrice -
+        (p.pId.pPrice * p.pId.pDiscount) / 100
+      ).toLocaleString("vi", {
+        style: "currency",
+        currency: "VND",
+      }),
+      total:
+        (p.pId.pPrice - (p.pId.pPrice * p.pId.pDiscount) / 100) * p.odQuantity,
+      totalDisplay: (
+        (p.pId.pPrice - (p.pId.pPrice * p.pId.pDiscount) / 100) *
+        p.odQuantity
+      ).toLocaleString("vi", {
+        style: "currency",
+        currency: "VND",
+      }),
+      img: "/img/products/" + p.pId.pImgs.find((pi) => pi.piIsMain).piImg,
+      url: "/" + p.pId.slugName,
+      quantity: p.odQuantity,
+      stock: p.pId.pStock,
+    };
+  });
+  let stateName = o.sdId.osName;
+  let paidState =
+    o.oAmountPaid == 0
+      ? "Chờ thanh toán"
+      : o.oAmountPaid == o.oTotal
+      ? "Đã thanh toán toàn bộ"
+      : "Đã thanh toán tiền cọc";
+  let totalDisplay = o.oTotal.toLocaleString("vi", {
+    style: "currency",
+    currency: "VND",
+  });
+  let amountpaidDisplay = o.oAmountPaid.toLocaleString("vi", {
+    style: "currency",
+    currency: "VND",
+  });
+  let restDisplay = (o.oTotal - o.oAmountPaid).toLocaleString("vi", {
+    style: "currency",
+    currency: "VND",
+  });
+  let order = {
+    _id: o._id,
+    oId: o.oId,
+    total: o.oTotal,
+    totalDisplay,
+    amountpaid: o.oAmountPaid,
+    amountpaidDisplay,
+    restDisplay,
+    recdate: o.oRecDate ? formatDate(o.oRecDate) : "",
+    note: o.oNote,
+    stateName,
+    paidState,
+    products: products,
+    cName: o.adId.adReceiver,
+    cNumber: o.adId.adNumber,
+    cAd: `${o.adId.adDetail}, ${o.adId.adWard}, ${o.adId.adDistrict}, ${o.adId.adProvince}`,
+    pmId: o.pmId,
+    sName: o.bh?.sId?.sName,
+    suId: o.suId,
+    createdAt: formatDateTime(o.createdAt),
+  };
+  res.render(`./staff/view`, {
+    shopinfo: await Shopinfo.findOne({}),
+    order,
+    sess,
   });
 };
 

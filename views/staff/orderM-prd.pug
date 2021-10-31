@@ -3,7 +3,7 @@ link(rel="stylesheet" href="css/timeline.css")
 	.card-header.d-flex.justify-content-between.flex-column.flex-lg-row
 		span
 			span Mã đơn: 
-			span.fw-bold= o.oId
+			a.fw-bold(href=`${pI.url}/view?oId=${o.oId}`)= o.oId
 		span
 			span TT Đơn hàng: 
 			span.fw-bold= o.stateName
