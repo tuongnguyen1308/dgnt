@@ -4,6 +4,8 @@ const Category = require("../../models/mCategory");
 const Product = require("../../models/mProduct");
 const Banner = require("../../models/mBanner");
 const Cart = require("../../models/mCart");
+const Review = require("../../models/mReview");
+const Order = require("../../models/mOrder");
 const PAGE_SIZE = 9;
 
 const pI = { title: "Trang chủ", url: "home" };
@@ -20,6 +22,15 @@ let redirectFunc = (state, text, dir, req, res) => {
   };
   res.redirect(dir);
   return;
+};
+
+let formatDateTime = (d) => {
+  d.setUTCHours(d.getUTCHours() + 7);
+  return (
+    d.toISOString().slice(0, 10).split("-").reverse().join("/") +
+    " " +
+    d.toISOString().slice(11, 19)
+  );
 };
 
 let GetDataDisplay = async () => {
@@ -203,7 +214,55 @@ module.exports.filter = async (req, res) => {
         };
         return pformat;
       });
+      let buyed = false;
+      let reviews = await Review.find({ pId: prd._id }).populate({
+        path: "cId",
+        select: "_id cName cImg",
+      });
+      let reviewed = false;
+      if (sess) {
+        let oFs = await Order.find({
+          "products.pId": prd._id,
+          cId: sess.cId,
+        })
+          .populate("sdId")
+          .populate("bh.sdId");
 
+        if (oFs.length > 0) {
+          buyed =
+            oFs.filter(
+              (o) => o.sdId.osName != "Hủy" && o.bh?.sdId?.osName != "Hủy"
+            ).length > 0;
+        }
+        reviews = reviews.map((r) => {
+          if (r.cId._id == sess.cId) {
+            reviewed = true;
+            return {
+              _id: r._id,
+              rScore: r.rScore,
+              rContent: r.rContent,
+              rState: r.rState,
+              imgs: r.imgs,
+              pId: r.pId,
+              cId: r.cId,
+              rAt: formatDateTime(r.rAt),
+            };
+          }
+          if (r.rState)
+            return {
+              _id: r._id,
+              rScore: r.rScore,
+              rContent: r.rContent,
+              rState: r.rState,
+              imgs: r.imgs,
+              pId: r.pId,
+              cId: r.cId,
+              rAt: formatDateTime(r.rAt),
+            };
+          else return false;
+        });
+        reviews = reviews.filter((r) => r != false);
+      }
       res.render(`./customer/productdetail`, {
         pI,
         messages,
@@ -213,6 +272,9 @@ module.exports.filter = async (req, res) => {
         cartPrdQuan,
         prd,
         relatePrd,
+        reviews,
+        buyed,
+        reviewed,
       });
       return;
       //#endregion
@@ -290,4 +352,51 @@ module.exports.find = async (req, res) => {
   Product.find({ pName: new RegExp(keyword, "i") }, async (err, products) => {
     res.json(products);
   });
+};
+
+module.exports.addReview = async (req, res) => {
+  let prevUrl = req.headers.referer;
+  let prevPage = `/${prevUrl.split("/").pop()}`;
+  let sess = req.session?.user;
+  Review.find({ pId: req.body.pId, cId: sess.cId }, async (err, rFound) => {
+    if (rFound.length > 0) {
+      redirectFunc(false, "Sản phẩm đã được đánh giá!", prevPage, req, res);
+    } else {
+      // review imgs
+      let imgs = [];
+      req.files.riImg.map((img) => {
+        imgs.push({
+          riImg: img.filename,
+        });
+      });
+      let newReview = new Review({
+        rScore: req.body.rScore,
+        rContent: req.body.rContent.trim(),
+        pSize: req.body.pSize,
+        rState: true,
+        imgs,
+        pId: req.body.pId,
+        cId: sess.cId,
+        rAt: new Date(),
+      });
+      try {
+        if (newReview.rContent.length > 255) {
+          redirectFunc(false, "Nội dung tối đa 255 ký tự!", prevPage, req, res);
+        } else {
+          await newReview.save();
+          redirectFunc(true, "Thêm đánh giá thành công!", prevPage, req, res);
+        }
+      } catch (error) {
+        console.log(error);
+        redirectFunc(
+          false,
+          "Thêm đánh giá thất bại!" + error,
+          prevPage,
+          req,
+          res
+        );
+      }
+    }
+  });
+  return;
 };

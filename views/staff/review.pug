@@ -1,0 +1,79 @@
+extends ./layout.pug
+block content
+	- var mainimgsize = 500
+	- var subimgsize = 70
+	main.col-md-9.ms-sm-auto.col-lg-10.px-md-4
+		.d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pt-3.pb-2.mb-3.border-bottom.flex-column.flex-lg-row
+			h1.h3.mb-0= pI.title
+			.btn-toolbar.mt-2.mb-mt-0
+		table.table.table-bordered(width="100%")
+			thead
+				tr.text-center
+					th.align-middle(width="1%") STT
+					th.align-middle Đánh giá
+					th.align-middle Ảnh
+					th.align-middle Tên sản phẩm
+					th.align-middle Trạng thái
+					if sess.rId.rName == "Quản lý"
+						th.align-middle Tác vụ
+			tbody
+				each r, index in reviews
+					- var ca = r.rAt;
+					- r.rAt = ca.setUTCHours(ca.getUTCHours() + 7);
+					tr.text-center
+						td.align-middle= ((pageNum-1)*pageSize) + index+1
+						td.text-start.align-middle(rel="tooltip" data-bs-placement="top" title=`Thời gian: ${r.rAt.toISOString().slice(0,10).split('-').reverse().join('/') + ' ' + r.rAt.toISOString().slice(11,19)}`)
+							- for (var i = 1; i <= r.rScore; i++)
+								svg.review-score(enable-background='new 0 0 15 15' viewBox='0 0 15 15' x='0' y='0')
+									polygon(points='7.5 .8 9.7 5.4 14.5 5.9 10.7 9.1 11.8 14.2 7.5 11.6 3.2 14.2 4.3 9.1 .5 5.9 5.3 5.4' stroke-linecap='round' stroke-linejoin='round' stroke-miterlimit='10')
+							- for (var i = r.rScore + 1; i <= 5; i++)
+								svg.review-score(enable-background='new 0 0 15 15' viewBox='0 0 15 15' x='0' y='0')
+									polygon(fill='none' points='7.5 .8 9.7 5.4 14.5 5.9 10.7 9.1 11.8 14.2 7.5 11.6 3.2 14.2 4.3 9.1 .5 5.9 5.3 5.4' stroke-linecap='round' stroke-linejoin='round' stroke-miterlimit='10')
+							div= r.rContent
+						td.align-middle
+							each ri in r.imgs
+								a(data-gallery="photoviewer" href=`img/reviews/${ri.riImg}`)
+									img.rounded.img-fluid(src=`img/reviews/${ri.riImg}` style="max-height:100px;")
+						td.align-middle= r.pId.pName
+						td.align-middle
+							if r.rState
+								.text-success(rel="tooltip" data-bs-placement="top" title="Hiện")
+									span(data-feather="eye")
+							else
+								.text-secondary(rel="tooltip" data-bs-placement="top" title="Ẩn")
+									span(data-feather="eye-off")
+						if sess.rId.rName == "Quản lý"
+							td.align-middle
+								.btn-group(role="group")
+									button.btn.btn-sm.border-radius-end(class=`btn-outline-${r.rState ? "danger" : "success"}` role="open-dropdown" type='button' rel="tooltip" data-bs-placement="top" title=`${r.rState ? "Ẩn" : "Hiện"} đánh giá`)
+										span(data-feather=r.rState ? "eye-off" : "eye")
+									ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset")
+										li
+											a.dropdown-item.p-2.text-primary(href='#' data-id=r._id data-state=r.rState ? "false" : "true" role="update-state-review") Xác nhận
+										li
+											span.dropdown-item.p-2(role="button" rel="close-dropdown") Huỷ
+				else
+					tr
+						td(colspan="6") Chưa có đánh giá!
+		if reviews.length > 0
+			nav.d-flex.justify-content-between.align-items-center
+				span.me-3 Tổng: #{total} đánh giá
+				ul.pagination.justify-content-end.mb-0
+					li.page-item(class= pageNum==1 ? 'disabled' : '')
+						a.page-link.px-2(href=`/review`)
+							span(data-feather="chevrons-left")
+					li.page-item(class= pageNum==1 ? 'disabled' : '')
+						a.page-link.px-2(href=`/review?pnum=${pageNum-1}`)
+							span(data-feather="chevron-left")
+					- for (var i = 1; i <= totalR; i++)
+						li.page-item(class= pageNum==i ? 'active' : '')
+							a.page-link.h-100.d-flex.align-items-center.px-3(href=`/review?pnum=${i}`)
+								span= i
+					li.page-item(class= pageNum==totalR ? 'disabled' : '')
+						a.page-link.px-2(href=`/review?pnum=${pageNum+1}`)
+							span(data-feather="chevron-right")
+					li.page-item(class= pageNum==totalR ? 'disabled' : '')
+						a.page-link.px-2(href=`/review?pnum=${totalR}`)
+							span(data-feather="chevrons-right")
+
+

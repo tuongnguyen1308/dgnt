@@ -68,51 +68,46 @@ block content
 			#nav-desc.tab-pane.fade.pt-3.active.show.bg-white.p-3(role='tabpanel' aria-labelledby='nav-desc-tab')
 				.desc.d-none(data-desc= prd.desc)
 			#nav-review.tab-pane.fade.pt-3(role='tabpanel' aria-labelledby='nav-review-tab')
-				//- form.needs-validation(method="post" action="/customer/review" tabindex="-1" role="dialog" aria-hidden="true" enctype="multipart/form-data" novalidate)
-				//- input(type="hidden" name="curPage" value=pI.url)
-				//- .form-label-group
-				//- 	input#su_username.form-control(name="su_username" type="text" placeholder="Tên tài khoản" required="true" maxlength="50")
-				//- 	label.required(for="su_username") Tên tài khoản
-				//- 	.invalid-feedback Tên tài khoản là bắt buộc
-				//- .row
-				//- 	.col-12.col-md-6.form-label-group
-				//- 		input#su_password.form-control(name="su_password" type="password" placeholder="Mật khẩu" required="true" maxlength="50")
-				//- 		label.ms-2.ps-3.required(for="su_password") Mật khẩu
-				//- 		.invalid-feedback Mật khẩu là bắt buộc
-				//- 	.col-12.col-md-6.form-label-group
-				//- 		input#su_repassword.form-control(name="su_repassword" type="password" placeholder="Nhập lại mật khẩu" required="true" maxlength="50")
-				//- 		label.ms-2.ps-3.required(for="su_repassword") Nhập lại mật khẩu
-				//- 		.invalid-feedback Nhập lại mật khẩu không đúng
-				//- span Thông tin cá nhân
-				//- .row
-				//- 	.col-12.col-md-6.form-label-group
-				//- 		input#cName.form-control(name="cName" type="text" placeholder="Họ tên" required maxlength="50")
-				//- 		label.ms-2.ps-3.required(for="cName") Họ tên
-				//- 		.invalid-feedback Họ tên là bắt buộc
-				//- 	.col-12.col-md-6.form-label-group
-				//- 		input#cNumber.form-control(name="cNumber" type="text" placeholder="Số điện thoại" required maxlength="10")
-				//- 		label.ms-2.ps-3.required(for="cNumber") Số điện thoại
-				//- 		.invalid-feedback Số điện thoại là bắt buộc
-				//- 	.col-12.col-md-6.form-label-group
-				//- 		input#cDofB.form-control(name="cDofB" type="date")
-				//- 		label.ms-2.ps-3(for="cDofB") Ngày sinh
-				//- 		.invalid-feedback Ngày sinh không hợp lệ
-				//- 	.col-12.col-md-6.form-label-group
-				//- 		input#cEmail.form-control(name="cEmail" type="email" placeholder="Email")
-				//- 		label.ms-2.ps-3(for="cEmail") Email
-				//- 		.invalid-feedback Email không hợp lệ
-				//- .position-relative.mb-3
-				//- 	label#cimg-preview.img-box.w-100.align-middle(for="cImg" style=`height:400px`).d-flex.justify-content-center.align-items-center
-				//- 		input#cImg.btn.btn-success(type="file" name="cImg" accept="image/png, image/jpeg")
-				//- 		.title.h-100.d-flex.justify-content-center.align-items-center
-				//- 			span(data-feather="upload")
-				//- 			span.ms-2 Chọn ảnh
-				//- 		img#img-preview.d-none(src="" height=`400px`)
-				//- 	span.file_remove.d-none(data-feather="x")
-				//- 	.text-danger.d-none(role="errMessage")
-				//- 		span.small
-				.d-grid
-					button.btn.btn-block.btn-brown(type="submit") Gửi đánh giá
+				if buyed && !reviewed
+					form.needs-validation(method="post" action="/add-review" enctype="multipart/form-data" novalidate)
+						input(name="pId" type="hidden" value=prd._id required)
+						.mb-0
+							input#reviewImg.form-control(type="file" name="riImg" accept="image/png, image/jpeg" multiple required)
+							.invalid-feedback Ảnh đánh giá là bắt buộc
+						#reviewImgs.gallery.mt-3.d-flex.flex-wrap
+						template#img-preview-template
+							.position-relative.mx-2.mb-2
+								img.sub-img.rounded(style="width:100px; height:100px;")
+						.form-label-group
+							input#rScore.form-control(name="rScore" type="number" placeholder="Số điểm" min="1" max="5" required)
+							label.required(for="rScore") Số điểm
+							.invalid-feedback Số điểm là bắt buộc
+						.form-label-group.form-floating
+							textarea#rContent.form-control(name="rContent" type="text" placeholder="Nội dung" style="min-height:80px;")
+							label(for="rContent") Nội dung
+							.invalid-feedback Nội dung là bắt buộc
+						.d-grid
+							button.btn.btn-block.btn-brown(type="submit") Thêm đánh giá
+				each r in reviews
+					.d-flex
+						div
+							img.img-fluid.img-circle(src=`/img/users/${r.cId.cImg}` width="80px")
+						.ms-3
+							span.p-1= `${r.cId.cName} - ${r.rAt}`
+							h5.p-1
+								- for (var i = 1; i <= r.rScore; i++)
+									svg.review-score(enable-background='new 0 0 15 15' viewBox='0 0 15 15' x='0' y='0')
+										polygon(points='7.5 .8 9.7 5.4 14.5 5.9 10.7 9.1 11.8 14.2 7.5 11.6 3.2 14.2 4.3 9.1 .5 5.9 5.3 5.4' stroke-linecap='round' stroke-linejoin='round' stroke-miterlimit='10')
+								- for (var i = r.rScore + 1; i <= 5; i++)
+									svg.review-score(enable-background='new 0 0 15 15' viewBox='0 0 15 15' x='0' y='0')
+										polygon(fill='none' points='7.5 .8 9.7 5.4 14.5 5.9 10.7 9.1 11.8 14.2 7.5 11.6 3.2 14.2 4.3 9.1 .5 5.9 5.3 5.4' stroke-linecap='round' stroke-linejoin='round' stroke-miterlimit='10')
+							div.p-1= r.rContent
+							each im in r.imgs
+								a(data-gallery="photoviewer" href=`img/reviews/${im.riImg}`)
+									img.round.me-1(data-gallery="photoviewer" src=`img/reviews/${im.riImg}` width="80px")
+
+				else
+					i Chưa có đánh giá
 		// end desc/review
 
 		h5.bg-white.border-bottom.rounded

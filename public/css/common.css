@@ -430,3 +430,7 @@ img {
 .dropdown-menu {
   box-shadow: 1px 1px 5px #ddd;
 }
+
+.img-circle {
+  border-radius: 50%;
+}

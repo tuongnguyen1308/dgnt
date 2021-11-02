@@ -1,4 +1,14 @@
 $(document).ready(() => {
+  //#region func
+  let generateImg = (src, fname) => {
+    let imgTemp = document.querySelector("#img-preview-template");
+    let imgItem = imgTemp.content.cloneNode(true);
+    let imgEle = imgItem.querySelector("img");
+    imgEle.src = src;
+    imgEle.dataset.fname = fname;
+    $("#reviewImgs").append(imgItem);
+  };
+  //#endregion
   if ($(".desc")) {
     $(".desc").parent().html($(".desc").data("desc"));
   }
@@ -101,4 +111,25 @@ $(document).ready(() => {
     else $("#listPrdFound").html("").removeClass("show");
   });
   //#endregion
+
+  $("#reviewImg").on("change", function (e) {
+    $("#reviewImgs").html("");
+    imgFiles = e.target.files;
+    let isValid = true;
+    Array.from(imgFiles).forEach((f) => {
+      if (isValid) {
+        isValid = f.name.match(/\.(jpg|jpeg|png)$/i);
+        let cases = [{ con: !isValid, mess: `Ảnh không hợp lệ` }];
+        let reviewImg = document.getElementById("reviewImg");
+        checkValidate(cases, reviewImg);
+        if (isValid) {
+          var src = URL.createObjectURL(f);
+          generateImg(src, f.name);
+        } else {
+          $("#reviewImgs").html("");
+          $(this).val("");
+        }
+      }
+    });
+  });
 });

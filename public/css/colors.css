@@ -74,3 +74,8 @@ button.text-brown:hover {
   background-color: var(--brown);
   color: #fff !important;
 }
+
+.review-score {
+  width: 1rem;
+  stroke: #000;
+}

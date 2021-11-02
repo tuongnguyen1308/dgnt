@@ -71,15 +71,11 @@ block content
 									input(name='bankCode' type="hidden" value='NCB')
 									input(name='language' type="hidden" value='vn')
 									button.btn.btn-brown(type="submit") Thanh toán toàn bộ
-							else
+							else if o.amountpaid == o.total
 								if o.sdId.osName != "Đã nhận hàng"
 									button.btn.btn-brown.btn-sm.d-flex.align-items-center.ms-2(role="update-state" type='button' data-id=o._id data-state=danhanId data-bs-toggle="modal" data-bs-target="#modal-state")
 										span(data-feather="check")
 										span.title Đã nhận hàng
-								else
-									button.btn.btn-outline-brown.btn-sm.d-flex.align-items-center.ms-2(role="add-review" type='button' data-id=o._id data-bs-toggle="modal" data-bs-target="#modal-review")
-										span(data-feather="message-square").me-1
-										span.title Nhận xét
 				else
 					i Không có đơn hàng.
 			#nav-o_ceds.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-o_ceds-tab')
@@ -88,4 +84,3 @@ block content
 				else
 					i Không có đơn hàng.
 		include ../staff/modal/modal-state.pug
-		include ./modal/modal-review.pug

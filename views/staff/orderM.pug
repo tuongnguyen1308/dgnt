@@ -57,7 +57,7 @@ block content
 								button.btn.btn-outline-primary(role="update-state" type='button' data-id=o._id data-state=dacbId data-sn="sx" data-bs-toggle="modal" data-bs-target="#modal-state")
 									span(data-feather="check")
 									span.title Xác nhận đã chuẩn bị hàng
-							else if 'Nhân viên kế toán' == sess.rId.rName && !o.pmId.pmName.includes('NCB')
+							else if 'Quản lý, Nhân viên kế toán'.includes(sess.rId.rName) && !o.pmId.pmName.includes('NCB')
 								if o.amountpaid < o.total
 									button.btn.btn-outline-success.d-flex.align-items-center(role="update-money" type='button' data-id=o._id data-money=o.total-o.amountpaid data-bs-toggle="modal" data-bs-target="#modal-money")
 										span(data-feather="dollar-sign")
@@ -73,7 +73,7 @@ block content
 								button.btn.btn-outline-primary(role="update-state" type='button' data-id=o._id data-state=dagiaoId data-sn="gh" data-bs-toggle="modal" data-bs-target="#modal-state")
 									span(data-feather="check")
 									span.title Xác nhận đã giao hàng
-							else if 'Nhân viên kế toán' == sess.rId.rName && !o.pmId.pmName.includes('NCB')
+							else if 'Quản lý, Nhân viên kế toán'.includes(sess.rId.rName) && !o.pmId.pmName.includes('NCB')
 								if o.amountpaid < o.total
 									button.btn.btn-outline-success.d-flex.align-items-center(role="update-money" type='button' data-id=o._id data-money=o.total-o.amountpaid data-bs-toggle="modal" data-bs-target="#modal-money")
 										span(data-feather="dollar-sign")
@@ -83,7 +83,7 @@ block content
 			#nav-o_deds.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-o_deds-tab')
 				each o in o_deds
 					include ./orderM-prd.pug
-						if 'Nhân viên kế toán' == sess.rId.rName && !o.pmId.pmName.includes('NCB')
+						if 'Quản lý, Nhân viên kế toán'.includes(sess.rId.rName) && !o.pmId.pmName.includes('NCB')
 							if o.amountpaid < o.total
 								.d-flex.justify-content-end
 									button.btn.btn-outline-success.d-flex.align-items-center(role="update-money" type='button' data-id=o._id data-money=o.total-o.amountpaid data-bs-toggle="modal" data-bs-target="#modal-money")
