@@ -414,6 +414,7 @@ module.exports.updReview = async (req, res) => {
     }
     rFound.rScore = req.body.rScore;
     rFound.rContent = req.body.rContent.trim();
+    rFound.rAt = new Date();
     if (rFound.rContent.length > 255)
       redirectFunc(false, "Nội dung tối đa 255 ký tự!", prevPage, req, res);
     else {
