@@ -68,26 +68,38 @@ block content
 			#nav-desc.tab-pane.fade.pt-3.active.show.bg-white.p-3(role='tabpanel' aria-labelledby='nav-desc-tab')
 				.desc.d-none(data-desc= prd.desc)
 			#nav-review.tab-pane.fade.pt-3(role='tabpanel' aria-labelledby='nav-review-tab')
-				if buyed && !reviewed
-					form.needs-validation(method="post" action="/add-review" enctype="multipart/form-data" novalidate)
+				if buyed
+					form.needs-validation.mb-3(method="post" action=reviewed ? "/upd-review" : "/add-review" enctype="multipart/form-data" novalidate)
 						input(name="pId" type="hidden" value=prd._id required)
+						if reviewed
+							input(name="_id" type="hidden" value=reviewed._id required)
 						.mb-0
-							input#reviewImg.form-control(type="file" name="riImg" accept="image/png, image/jpeg" multiple required)
+							if reviewed
+								input#reviewImg.form-control(type="file" name="riImg" accept="image/png, image/jpeg" multiple)
+							else
+								input#reviewImg.form-control(type="file" name="riImg" accept="image/png, image/jpeg" multiple required)
 							.invalid-feedback Ảnh đánh giá là bắt buộc
 						#reviewImgs.gallery.mt-3.d-flex.flex-wrap
+							if reviewed
+								each im in reviewed.imgs
+									.position-relative.mx-2.mb-2
+										img.sub-img.rounded(src=`img/reviews/${im.riImg}` style="width:100px; height:100px;")
 						template#img-preview-template
 							.position-relative.mx-2.mb-2
 								img.sub-img.rounded(style="width:100px; height:100px;")
 						.form-label-group
-							input#rScore.form-control(name="rScore" type="number" placeholder="Số điểm" min="1" max="5" required)
+							input#rScore.form-control(name="rScore" value=reviewed ? reviewed.rScore : "" type="number" placeholder="Số điểm" min="1" max="5" required)
 							label.required(for="rScore") Số điểm
 							.invalid-feedback Số điểm là bắt buộc
 						.form-label-group.form-floating
 							textarea#rContent.form-control(name="rContent" type="text" placeholder="Nội dung" style="min-height:80px;")
+								if reviewed
+									= reviewed.rContent
 							label(for="rContent") Nội dung
 							.invalid-feedback Nội dung là bắt buộc
 						.d-grid
-							button.btn.btn-block.btn-brown(type="submit") Thêm đánh giá
+							button.btn.btn-block.btn-brown(type="submit")= `${reviewed ? "Sửa" : "Thêm"} đánh giá`
+					hr
 				each r in reviews
 					.d-flex
 						div

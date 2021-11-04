@@ -235,30 +235,21 @@ module.exports.filter = async (req, res) => {
             ).length > 0;
         }
         reviews = reviews.map((r) => {
+          let rv = {
+            _id: r._id,
+            rScore: r.rScore,
+            rContent: r.rContent,
+            rState: r.rState,
+            imgs: r.imgs,
+            pId: r.pId,
+            cId: r.cId,
+            rAt: formatDateTime(r.rAt),
+          };
           if (r.cId._id == sess.cId) {
-            reviewed = true;
-            return {
-              _id: r._id,
-              rScore: r.rScore,
-              rContent: r.rContent,
-              rState: r.rState,
-              imgs: r.imgs,
-              pId: r.pId,
-              cId: r.cId,
-              rAt: formatDateTime(r.rAt),
-            };
+            reviewed = rv;
+            return rv;
           }
-          if (r.rState)
-            return {
-              _id: r._id,
-              rScore: r.rScore,
-              rContent: r.rContent,
-              rState: r.rState,
-              imgs: r.imgs,
-              pId: r.pId,
-              cId: r.cId,
-              rAt: formatDateTime(r.rAt),
-            };
+          if (r.rState) return rv;
           else return false;
         });
         reviews = reviews.filter((r) => r != false);
@@ -372,7 +363,6 @@ module.exports.addReview = async (req, res) => {
       let newReview = new Review({
         rScore: req.body.rScore,
         rContent: req.body.rContent.trim(),
-        pSize: req.body.pSize,
         rState: true,
         imgs,
         pId: req.body.pId,
@@ -399,4 +389,30 @@ module.exports.addReview = async (req, res) => {
     }
   });
   return;
+};
+
+module.exports.updReview = async (req, res) => {
+  let prevUrl = req.headers.referer;
+  let prevPage = `/${prevUrl.split("/").pop()}`;
+  let rFound = await Review.findById(req.body._id);
+  if (!rFound) redirectFunc(false, "Chưa tạo đánh giá!", prevPage, req, res);
+  else {
+    if (req.files?.riImg) {
+      let imgs = [];
+      req.files.riImg.map((img) => {
+        imgs.push({
+          riImg: img.filename,
+        });
+      });
+      rFound.imgs = imgs;
+    }
+    rFound.rScore = req.body.rScore;
+    rFound.rContent = req.body.rContent.trim();
+    if (rFound.rContent.length > 255)
+      redirectFunc(false, "Nội dung tối đa 255 ký tự!", prevPage, req, res);
+    else {
+      await rFound.save();
+      redirectFunc(true, "Cập nhật thành công!", prevPage, req, res);
+    }
+  }
 };

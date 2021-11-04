@@ -16,5 +16,6 @@ router.get("/", controller.index);
 router.get("/:keyword", controller.filter);
 router.post("/find-product", controller.find);
 router.post("/add-review", multipleUpload, controller.addReview);
+router.post("/upd-review", multipleUpload, controller.updReview);
 
 module.exports = router;
