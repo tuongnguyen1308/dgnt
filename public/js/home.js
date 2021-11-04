@@ -132,4 +132,15 @@ $(document).ready(() => {
       }
     });
   });
+  $("#rScore").on("keyup", function () {
+    const title = "Số điểm";
+    let val = $(this).val();
+    let minV = 1;
+    let maxV = 5;
+    let cases = [
+      { con: val == "", mess: `${title} là bắt buộc` },
+      { con: val < minV || val > maxV, mess: `${title} không hợp lệ` },
+    ];
+    checkValidate(cases, this);
+  });
 });

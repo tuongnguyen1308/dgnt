@@ -16,15 +16,6 @@ let redirectFunc = (state, text, dir, req, res) => {
   return;
 };
 
-let formatDateTime = (d) => {
-  d.setUTCHours(d.getUTCHours() + 7);
-  return (
-    d.toISOString().slice(0, 10).split("-").reverse().join("/") +
-    " " +
-    d.toISOString().slice(11, 19)
-  );
-};
-
 module.exports.index = async (req, res) => {
   const messages = req.session?.messages || null;
   const sess = req.session.user;
@@ -63,12 +54,14 @@ module.exports.patch = async (req, res) => {
   let hideR = {
     rState: req.body.rState,
   };
+  let title = hideR.rState == "true" ? "Hiện đánh giá" : "Ẩn đánh giá";
+  // let title = req.body.rState ? "Hiện đánh giá" : "Ẩn đánh giá";
   await Review.findByIdAndUpdate(req.params.id, { $set: hideR }, (err) => {
     req.session.messages = {
       icon: !err ? "check-circle" : "alert-circle",
       color: !err ? "success" : "danger",
       title: !err ? "Thành công!" : "Thất bại",
-      text: !err ? "Cập nhật thành công!" : "Cập nhật thất bại!",
+      text: !err ? `${title} thành công!` : `${title} thất bại!`,
     };
     res.json(!err);
   });

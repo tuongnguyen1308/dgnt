@@ -374,7 +374,13 @@ module.exports.addReview = async (req, res) => {
           redirectFunc(false, "Nội dung tối đa 255 ký tự!", prevPage, req, res);
         } else {
           await newReview.save();
-          redirectFunc(true, "Thêm đánh giá thành công!", prevPage, req, res);
+          redirectFunc(
+            true,
+            "Đánh giá sản phẩm thành công!",
+            prevPage,
+            req,
+            res
+          );
         }
       } catch (error) {
         console.log(error);

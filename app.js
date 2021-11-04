@@ -28,7 +28,7 @@ app.use(
       secure: process.env.NODE_ENV === "production",
     },
     store: MongoStore.create({
-      mongoUrl: process.env.DB_CONNECTION,
+      mongoUrl: process.env.DB_CONNECTION2,
       ttl: 14 * 24 * 60 * 60,
     }),
     secret: process.env.SESS_SECRET,
@@ -40,9 +40,9 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 //#endregion
 
-//#region DB_CONNECTION
+//#region DB_CONNECTION2
 mongoose.connect(
-  process.env.DB_CONNECTION,
+  process.env.DB_CONNECTION2,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
