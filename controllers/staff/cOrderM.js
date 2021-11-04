@@ -429,7 +429,7 @@ module.exports.updateMoney = async (req, res) => {
     if (!o) redirectFunc(false, "Không tìm thấy đơn hàng", rootRoute, req, res);
     else {
       o.suId = sess.sId;
-      o.oAmountPaid = req.body.oAmountPaid;
+      o.oAmountPaid = Number(o.oAmountPaid) + Number(req.body.oAmountPaid);
       o.updatedAt = new Date();
       await o.save((err) => {
         err &&
