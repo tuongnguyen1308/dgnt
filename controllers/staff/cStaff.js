@@ -23,11 +23,13 @@ module.exports.index = async (req, res) => {
   const roles = await Role.find({ rName: { $ne: "Khách hàng" } });
   const sess = req.session.user;
   req.session.messages = null;
-  let staff = await Staff.find({}).populate({
-    path: "aId",
-    select: "aUsername rId",
-    populate: { path: "rId" },
-  });
+  let staff = await Staff.find({})
+    .sort({ sName: "asc" })
+    .populate({
+      path: "aId",
+      select: "aUsername rId",
+      populate: { path: "rId" },
+    });
   let grpByRole = staff.reduce((grpByRole, s) => {
     (grpByRole[!s.sState ? "Đã nghỉ làm" : s.aId.rId.rName] =
       grpByRole[!s.sState ? "Đã nghỉ làm" : s.aId.rId.rName] || []).push(s);

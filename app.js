@@ -76,6 +76,7 @@ const sPrdreqRoute = require("./routes/staff/rPrdreq");
 const sAppointmentMR = require("./routes/staff/rAppointmentM");
 const sOrderMR = require("./routes/staff/rOrderM");
 const sReviewR = require("./routes/staff/rReview");
+const sStatisticR = require("./routes/staff/rStatistic");
 
 const cHomeR = require("./routes/customer/rHome");
 const cCustomerR = require("./routes/customer/rCustomer");
@@ -115,6 +116,8 @@ app.use("/appointmentM", mwAuthS.Auth, sAppointmentMR);
 app.use("/orderM", mwAuthS.Auth, sOrderMR);
 // quản lý đánh giá
 app.use("/review", mwAuthS.Auth, sReviewR);
+// báo cáo thống kê
+app.use("/statistic", mwAuthS.Auth, sStatisticR);
 //#endregion
 
 //#region customber

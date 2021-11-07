@@ -56,7 +56,7 @@ $(document).on("keydown", "[max]", function (e) {
   }
 });
 
-$(document).on("keydown", "input[type=number]", function (e) {
+$(document).on("keydown", "input[type=number], [name=o_year]", function (e) {
   if ([69, 231].includes(e.keyCode)) {
     e.preventDefault();
     e.stopPropagation();
@@ -140,7 +140,6 @@ $(document).ready(function () {
 
   // switch tab
   let gotoTab = window.location.hash;
-  console.log(gotoTab);
   window.history.replaceState({}, document.title, window.location.pathname);
   if (gotoTab.length > 0) {
     $(`${gotoTab}-tab`).click();
@@ -258,15 +257,14 @@ $(document).ready(function () {
     ];
     checkValidate(cases, this, false);
   });
-  $("#cNumber, #sNumber, #siHotline, #adNumber, [name=prd-quan]").on(
-    "keydown",
-    function (e) {
-      if (!/^[0-9]$/i.test(e.key) && !listKeyAllow.includes(e.key)) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
+  $(
+    "#cNumber, #sNumber, #siHotline, #adNumber, [name=prd-quan], [name=o_year]"
+  ).on("keydown", function (e) {
+    if (!/^[0-9]$/i.test(e.key) && !listKeyAllow.includes(e.key)) {
+      e.preventDefault();
+      e.stopPropagation();
     }
-  );
+  });
 
   $("#sDofB").on("change", function () {
     const title = "Ngày sinh";

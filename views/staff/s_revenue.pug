@@ -1,0 +1,34 @@
+.card.mb-3
+	.card-header.fw-bold.text-brown.required Chọn kiểu thống kê
+	.card-body
+		.row.row-cols-lg-auto.g-3.align-items-center.mt-0
+			.col.mt-0
+				.form-check
+					input.form-check-input(id=`r_year` type="radio" name="r_type" value="number")
+					label.form-check-label.fw-bold(for=`r_year`) Theo năm
+			.col.mt-0
+				.form-check
+					input.form-check-input(id=`r_month` type="radio" name="r_type" value="month")
+					label.form-check-label.fw-bold(for=`r_month`) Theo tháng
+			.col.mt-0
+				input.form-control.d-none(name="r_year" list="year")
+				input.form-control.d-none(type="month" name="r_month")
+			.col.mt-0
+				button.btn.btn-primary(type="button" name="r_submit") Thống kê
+			.text-danger.m-0(rel="r_err")
+.card.mb-3
+	.card-header.fw-bold.text-brown Bảng thống kê doanh thu
+	.card-body.p-0.border-0
+		table#r_y_list.table.table-bordered.m-0(width="100%")
+			tr.text-center
+				th(rel="r_type").align-middle Tháng
+				th.align-middle Thu
+				th.align-middle Chi
+				th.align-middle Lãi
+			tbody#r_list
+			template#r_temp
+				tr.text-center
+					td(rel="r_month").align-middle
+					td(rel="r_ded").align-middle
+					td(rel="r_ced").align-middle
+					td(rel="r_total").align-middle
