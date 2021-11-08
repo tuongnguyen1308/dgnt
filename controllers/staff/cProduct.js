@@ -197,3 +197,15 @@ module.exports.find = async (req, res) => {
     res.json(products);
   });
 };
+
+module.exports.statistic = async (req, res) => {
+  let pMin = req.body.pMin;
+  let pMax = req.body.pMax;
+
+  let products = await Product.find({
+    pStock: { $gte: pMin, $lte: pMax },
+  }).sort({
+    pStock: "asc",
+  });
+  res.json(products);
+};

@@ -1,48 +1,33 @@
 .card.mb-3
-	.card-header.fw-bold.text-brown.required Chọn kiểu thống kê
+	.card-header.fw-bold.text-brown.required Thống kê NVL theo số lượng
 	.card-body
 		.row.row-cols-lg-auto.g-3.align-items-center.mt-0
 			.col.mt-0
-				.form-check
-					input.form-check-input(id=`o_year` type="radio" name="o_type" value="number")
-					label.form-check-label.fw-bold(for=`o_year`) Theo năm
+				input.form-control(name="m_min" type="number" placeholder="Từ")
 			.col.mt-0
-				.form-check
-					input.form-check-input(id=`o_month` type="radio" name="o_type" value="month")
-					label.form-check-label.fw-bold(for=`o_month`) Theo tháng
+				input.form-control(name="m_max" type="number" placeholder="Đến")
 			.col.mt-0
-				input#adProvince.form-control.d-none(name="o_year" list="year")
-				datalist#year
-					- var n = 2020
-					- var currentYear = new Date().getFullYear()
-					ul
-					while n <= currentYear
-						option(value=n++)
-					div.hello=cy
-				input.form-control.d-none(type="month" name="o_month")
-			.col.mt-0
-				button.btn.btn-primary(type="button" name="o_submit") Thống kê
-			.text-danger.m-0(rel="o_err")
+				button.btn.btn-primary(type="button" name="m_submit") Thống kê
+			.text-danger.m-0(rel="m_err")
 .card.mb-3
-	.card-header.fw-bold.text-brown Bảng thống kê đơn đặt hàng
+	.card-header.fw-bold.text-brown Bảng thống kê nguyên vật liệu
 	.card-body.p-0.border-0
-		table#o_y_list.table.table-bordered.m-0(width="100%")
+		table#m_y_list.table.table-bordered.m-0(width="100%")
 			thead
 				tr.text-center
-					th(rel="o_type").align-middle Tháng
-					th.align-middle Số đơn chờ xử lý
-					th.align-middle Số đơn chờ chuẩn bị
-					th.align-middle Số đơn chờ giao
-					th.align-middle Số đơn đã giao
-					th.align-middle Số đơn hủy
-					th.align-middle Tổng số đơn hàng
-			tbody#o_list
-			template#o_temp
+					th.align-middle(width="1%") STT
+					th.align-middle(width="10%") Ảnh NVL
+					th.align-middle(width="20%") Tên NVL
+					th.align-middle(width="5%") ĐVT
+					th.align-middle(width="") Số lượng
+					th.align-middle(width="") Mô tả
+			tbody#m_list
+			template#m_temp
 				tr.text-center
-					td(rel="o_month").align-middle
-					td(rel="o_ping").align-middle
-					td(rel="o_ging").align-middle
-					td(rel="o_ding").align-middle
-					td(rel="o_ded").align-middle
-					td(rel="o_ced").align-middle
-					td(rel="o_total").align-middle
+					td(rel="m_stt").align-middle
+					td.align-middle
+						img(rel="m_img").rounded.img-fluid(style="max-height:100px;")
+					td(rel="m_name").text-start.align-middle
+					td(rel="m_unit").align-middle
+					td(rel="m_stock").align-middle
+					td(rel="m_desc").text-start.align-middle

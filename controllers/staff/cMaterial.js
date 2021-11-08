@@ -292,3 +292,13 @@ module.exports.find = async (req, res) => {
     res.json(materials);
   });
 };
+
+module.exports.statistic = async (req, res) => {
+  let mMin = req.body.mMin;
+  let mMax = req.body.mMax;
+
+  let mtrs = await Material.find({ mStock: { $gte: mMin, $lte: mMax } }).sort({
+    mStock: "asc",
+  });
+  res.json(mtrs);
+};

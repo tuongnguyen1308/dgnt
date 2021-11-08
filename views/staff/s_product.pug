@@ -1,0 +1,37 @@
+.card.mb-3
+	.card-header.fw-bold.text-brown.required Thống kê Sản phẩm theo số lượng
+	.card-body
+		.row.row-cols-lg-auto.g-3.align-items-center.mt-0
+			.col.mt-0
+				input.form-control(name="p_min" type="number" placeholder="Từ")
+			.col.mt-0
+				input.form-control(name="p_max" type="number" placeholder="Đến")
+			.col.mt-0
+				button.btn.btn-primary(type="button" name="p_submit") Thống kê
+			.text-danger.m-0(rel="p_err")
+.card.mb-3
+	.card-header.fw-bold.text-brown Bảng thống kê nguyên vật liệu
+	.card-body.p-0.border-0
+		table#p_y_list.table.table-bordered.m-0(width="100%")
+			thead
+				tr.text-center
+					th.align-middle(width="1%") STT
+					th.align-middle(width="10%") Ảnh sản phẩm
+					th.align-middle(width="20%") Tên sản phẩm
+					th.align-middle(width="5%") ĐVT
+					th.align-middle Giá
+					th.align-middle Trạng thái
+					th.align-middle Số lượng
+			tbody#p_list
+			template#p_temp
+				tr.text-center
+					td(rel="p_stt").align-middle
+					td.align-middle
+						img(rel="p_img").rounded.img-fluid(style="max-height:100px;")
+					td(rel="p_name").text-start.align-middle
+					td(rel="p_unit").align-middle
+					td(rel="p_price").align-middle
+					td(rel="p_state").align-middle
+						.state(rel="tooltip" data-bs-placement="top" title="Hiện")
+							span(data-feather="eye")
+					td(rel="p_stock").align-middle

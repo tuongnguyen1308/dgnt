@@ -17,5 +17,6 @@ router.post("/add", multipleUpload, controller.add);
 router.post("/update", multipleUpload, controller.update);
 router.delete("/:id", controller.delete);
 router.post("/find", controller.find);
+router.post("/statistic", controller.statistic);
 
 module.exports = router;

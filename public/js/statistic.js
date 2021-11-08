@@ -104,7 +104,6 @@ $(document).ready(() => {
           url: "/orderM/statistic-revenue",
           data,
           success: function (res) {
-            console.log(res);
             $("#r_list").html("");
             if (res.length > 0) {
               let temp = document.querySelector("#r_temp");
@@ -155,6 +154,108 @@ $(document).ready(() => {
           },
         });
       }
+    }
+  });
+  //#endregion
+
+  //#region material
+  $("button[name=m_submit]").on("click", function () {
+    let mMin = $("input[name=m_min]").val();
+    let mMax = $("input[name=m_max]").val();
+    if (mMin > mMax) {
+      $("[rel=m_err]").text("Dữ liệu không hợp lệ");
+    } else {
+      $("[rel=m_err]").text("");
+      let data = {
+        mMin,
+        mMax,
+      };
+      $.ajax({
+        type: "POST",
+        url: "/material/statistic",
+        data,
+        success: function (res) {
+          $("#m_list").html("");
+          if (res.length > 0) {
+            let temp = document.querySelector("#m_temp");
+            res.map((line, index) => {
+              let m_line = temp.content.cloneNode(true);
+              $(m_line)
+                .find("[rel=m_stt]")
+                .text(index + 1);
+              $(m_line)
+                .find("[rel=m_img]")
+                .attr("src", `img/materials/${line.mImg}`);
+              $(m_line).find("[rel=m_name]").text(line.mName);
+              $(m_line).find("[rel=m_unit]").text(line.mUnit);
+              $(m_line).find("[rel=m_stock]").text(line.mStock);
+              $(m_line).find("[rel=m_desc]").text(line.mDesc);
+              $("#m_list").append(m_line);
+            });
+          }
+        },
+        error: function (err) {
+          console.error(err);
+        },
+      });
+    }
+  });
+  //#endregion
+
+  //#region product
+  $("button[name=p_submit]").on("click", function () {
+    let pMin = $("input[name=p_min]").val();
+    let pMax = $("input[name=p_max]").val();
+    if (pMin > pMax) {
+      $("[rel=p_err]").text("Dữ liệu không hợp lệ");
+    } else {
+      $("[rel=p_err]").text("");
+      let data = {
+        pMin,
+        pMax,
+      };
+      $.ajax({
+        type: "POST",
+        url: "/product/statistic",
+        data,
+        success: function (res) {
+          $("#p_list").html("");
+          if (res.length > 0) {
+            let temp = document.querySelector("#p_temp");
+            res.map((line, index) => {
+              let p_line = temp.content.cloneNode(true);
+              $(p_line)
+                .find("[rel=p_stt]")
+                .text(index + 1);
+              $(p_line)
+                .find("[rel=p_img]")
+                .attr(
+                  "src",
+                  `img/products/${line.pImgs.find((pi) => pi.piIsMain).piImg}`
+                );
+              $(p_line).find("[rel=p_name]").text(line.pName);
+              $(p_line).find("[rel=p_unit]").text(line.pUnit);
+              let price = (
+                line.pPrice -
+                (line.pPrice * line.pDiscount) / 100
+              ).toLocaleString("vi", { style: "currency", currency: "VND" });
+              $(p_line).find("[rel=p_price]").text(price);
+              $(p_line)
+                .find("state")
+                .addClass(`text-${line.pState ? "success" : "secondary"}`)
+                .find("span")
+                .data("feather", `eye${line.pState ? "" : "-off"}`);
+              $(p_line).find("[rel=p_stock]").text(line.pStock);
+              $("#p_list").append(p_line);
+            });
+            feather.replace({ "aria-hidden": "true" });
+            $('[rel="tooltip"]').tooltip({ trigger: "hover" });
+          }
+        },
+        error: function (err) {
+          console.error(err);
+        },
+      });
     }
   });
   //#endregion
