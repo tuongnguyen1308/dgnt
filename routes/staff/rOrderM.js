@@ -9,5 +9,6 @@ router.post("/update-state", controller.updateState);
 router.post("/update-money", controller.updateMoney);
 
 router.post("/statistic", controller.statistic);
+router.post("/statistic-revenue", controller.revenue);
 
 module.exports = router;

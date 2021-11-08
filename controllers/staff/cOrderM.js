@@ -5,6 +5,7 @@ const PM = require("../../models/mPaymentMethod");
 const DA = require("../../models/mDeliveryAddress");
 const Customer = require("../../models/mCustomer");
 const Product = require("../../models/mProduct");
+const Mtrbatch = require("../../models/mMtrbatch");
 const pI = { title: "Đơn đặt hàng", url: "orderM" };
 const rootRoute = `/${pI.url}`;
 const PAGE_SIZE = 10;
@@ -654,6 +655,58 @@ module.exports.statisticMonth = async (req, res) => {
     else if (o.stateName == "Đã tiếp nhận") result.o_gings.push(o);
     else if (o.stateName == "Hủy") result.o_ceds.push(o);
     else result.o_pings.push(o);
+  });
+  res.json(result);
+};
+
+module.exports.revenue = async (req, res) => {
+  let y = req.body.year;
+  let m = req.body.month;
+  let choseYear;
+  let con = {};
+  if (!!y) {
+    con = {
+      $gt: new Date(y, 0, 1),
+      $lte: new Date(y, 11, 31),
+    };
+    choseYear = true;
+  } else {
+    m = m.split("-");
+    con = {
+      $gt: new Date(m[0], m[1] - 1, 1),
+      $lte: new Date(m[0], m[1] - 1, 31),
+    };
+    choseYear = false;
+  }
+  let orders = await Order.find({ createdAt: con }).sort({ createdAt: "desc" });
+  let mtrbatchs = await Mtrbatch.find({ mbBatchAt: con }).sort({
+    mbBatchAt: "desc",
+  });
+  let result = [];
+  let len = choseYear ? 11 : 31;
+  for (let i = 0; i <= len; i++) {
+    result[i] = {
+      income: 0,
+      outcome: 0,
+      revenue: 0,
+    };
+  }
+  //#region lọc đơn hàng theo trạng thái
+  orders.map((o) => {
+    let month = choseYear ? o.createdAt.getMonth() : o.createdAt.getDate() - 1;
+    result[month].income += o.oAmountPaid;
+    result[month].revenue += o.oAmountPaid;
+  });
+  mtrbatchs.map((mb) => {
+    let month = choseYear
+      ? mb.mbBatchAt.getMonth()
+      : mb.mbBatchAt.getDate() - 1;
+    let outcome = 0;
+    mb.mbDetail.map((m) => {
+      outcome += m.mQuantity * m.mPrice;
+    });
+    result[month].outcome += outcome;
+    result[month].revenue -= outcome;
   });
   res.json(result);
 };

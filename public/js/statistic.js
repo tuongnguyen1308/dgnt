@@ -1,6 +1,11 @@
 $(document).ready(() => {
   const curPage = "product";
   let o_typeChoosen, r_typeChoosen;
+  let formatCurrency = (money) =>
+    money.toLocaleString("vi", {
+      style: "currency",
+      currency: "VND",
+    });
 
   const changeInput = (typeC, typeS) => {
     switch (typeC) {
@@ -99,23 +104,50 @@ $(document).ready(() => {
           url: "/orderM/statistic-revenue",
           data,
           success: function (res) {
+            console.log(res);
             $("#r_list").html("");
             if (res.length > 0) {
+              let temp = document.querySelector("#r_temp");
+              let totalIncome = 0;
+              let totalOutcome = 0;
+              let totalRevenue = 0;
               res.map((line, index) => {
-                if (line.total > 0) {
+                if (
+                  line.income != 0 ||
+                  line.outcome != 0 ||
+                  line.revenue != 0
+                ) {
                   let mon = index + 1;
-                  let temp = document.querySelector("#r_temp");
                   let r_line = temp.content.cloneNode(true);
                   $(r_line).find("[rel=r_month]").text(mon);
-                  $(r_line).find("[rel=r_ping]").text(line.ping);
-                  $(r_line).find("[rel=r_ging]").text(line.ging);
-                  $(r_line).find("[rel=r_ding]").text(line.ding);
-                  $(r_line).find("[rel=r_ded]").text(line.ded);
-                  $(r_line).find("[rel=r_ced]").text(line.ced);
-                  $(r_line).find("[rel=r_total]").text(line.total);
-                  $("#r_list").append(o_line);
+                  $(r_line)
+                    .find("[rel=r_income]")
+                    .text(formatCurrency(line.income));
+                  $(r_line)
+                    .find("[rel=r_outcome]")
+                    .text(formatCurrency(line.outcome));
+                  $(r_line)
+                    .find("[rel=r_revenue]")
+                    .text(formatCurrency(line.revenue));
+                  totalIncome += line.income;
+                  totalOutcome += line.outcome;
+                  totalRevenue += line.revenue;
+                  $("#r_list").append(r_line);
                 }
               });
+              let r_line = temp.content.cloneNode(true);
+              $(r_line).find("tr").addClass("fw-bold");
+              $(r_line).find("[rel=r_month]").addClass("text-end").text("Tổng");
+              $(r_line)
+                .find("[rel=r_income]")
+                .text(formatCurrency(totalIncome));
+              $(r_line)
+                .find("[rel=r_outcome]")
+                .text(formatCurrency(totalOutcome));
+              $(r_line)
+                .find("[rel=r_revenue]")
+                .text(formatCurrency(totalRevenue));
+              $("#r_list").append(r_line);
             }
           },
           error: function (err) {
