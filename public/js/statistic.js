@@ -162,9 +162,14 @@ $(document).ready(() => {
   $("button[name=m_submit]").on("click", function () {
     let mMin = $("input[name=m_min]").val();
     let mMax = $("input[name=m_max]").val();
-    if (mMin > mMax) {
-      $("[rel=m_err]").text("Dữ liệu không hợp lệ");
-    } else {
+    if (mMin == "") $("[rel=p_err]").text("Số lượng nhỏ nhất là bắt buộc");
+    else if (mMin < 0) $("[rel=p_err]").text("Số lượng nhỏ nhất không hợp lệ");
+    else if (mMax == "") $("[rel=p_err]").text("Số lượng lớn nhất là bắt buộc");
+    else if (mMax > Math.floor(mMax))
+      $("[rel=p_err]").text("Số lượng lớn nhất không hợp lệ");
+    else if (mMin > mMax)
+      $("[rel=p_err]").text("Số lượng lớn nhất không hợp lệ");
+    else {
       $("[rel=m_err]").text("");
       let data = {
         mMin,
@@ -206,9 +211,14 @@ $(document).ready(() => {
   $("button[name=p_submit]").on("click", function () {
     let pMin = $("input[name=p_min]").val();
     let pMax = $("input[name=p_max]").val();
-    if (pMin > pMax) {
-      $("[rel=p_err]").text("Dữ liệu không hợp lệ");
-    } else {
+    if (pMin == "") $("[rel=p_err]").text("Số lượng nhỏ nhất là bắt buộc");
+    else if (pMin < 0) $("[rel=p_err]").text("Số lượng nhỏ nhất không hợp lệ");
+    else if (pMax == "") $("[rel=p_err]").text("Số lượng lớn nhất là bắt buộc");
+    else if (pMax > Math.floor(pMax))
+      $("[rel=p_err]").text("Số lượng lớn nhất không hợp lệ");
+    else if (pMin > pMax)
+      $("[rel=p_err]").text("Số lượng lớn nhất không hợp lệ");
+    else {
       $("[rel=p_err]").text("");
       let data = {
         pMin,
