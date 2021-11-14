@@ -160,15 +160,15 @@ $(document).ready(() => {
 
   //#region material
   $("button[name=m_submit]").on("click", function () {
-    let mMin = $("input[name=m_min]").val();
-    let mMax = $("input[name=m_max]").val();
-    if (mMin == "") $("[rel=p_err]").text("Số lượng nhỏ nhất là bắt buộc");
-    else if (mMin < 0) $("[rel=p_err]").text("Số lượng nhỏ nhất không hợp lệ");
-    else if (mMax == "") $("[rel=p_err]").text("Số lượng lớn nhất là bắt buộc");
+    let mMin = Number($("input[name=m_min]").val());
+    let mMax = Number($("input[name=m_max]").val());
+    if (mMin == "") $("[rel=m_err]").text("Số lượng nhỏ nhất là bắt buộc");
+    else if (mMin < 0) $("[rel=m_err]").text("Số lượng nhỏ nhất không hợp lệ");
+    else if (mMax == "") $("[rel=m_err]").text("Số lượng lớn nhất là bắt buộc");
     else if (mMax > Math.floor(mMax))
-      $("[rel=p_err]").text("Số lượng lớn nhất không hợp lệ");
+      $("[rel=m_err]").text("Số lượng lớn nhất không hợp lệ");
     else if (mMin > mMax)
-      $("[rel=p_err]").text("Số lượng lớn nhất không hợp lệ");
+      $("[rel=m_err]").text("Số lượng lớn nhất không hợp lệ");
     else {
       $("[rel=m_err]").text("");
       let data = {
@@ -209,8 +209,8 @@ $(document).ready(() => {
 
   //#region product
   $("button[name=p_submit]").on("click", function () {
-    let pMin = $("input[name=p_min]").val();
-    let pMax = $("input[name=p_max]").val();
+    let pMin = Number($("input[name=p_min]").val());
+    let pMax = Number($("input[name=p_max]").val());
     if (pMin == "") $("[rel=p_err]").text("Số lượng nhỏ nhất là bắt buộc");
     else if (pMin < 0) $("[rel=p_err]").text("Số lượng nhỏ nhất không hợp lệ");
     else if (pMax == "") $("[rel=p_err]").text("Số lượng lớn nhất là bắt buộc");

@@ -35,7 +35,7 @@ block content
 							a.text-decoration-none.rounded(href= pc.url)
 								li.list-group-item.bg-hover-brown_light.text-brown.border-0= pc.title
 				each p,index in rt.ps
-					.col(class= index%3==0 && index!=0 ? 'offset-3' : '')
+					.col(class= index%3==0 && index!=0 ? 'offset-md-3' : '')
 						.card.h-100.product-card.border-0
 							a.position-relative.overflow-hidden(href= p.url)
 								if (p.disc > 0)
