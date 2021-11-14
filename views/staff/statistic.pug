@@ -17,46 +17,6 @@ block content
 					include ./s_material.pug
 				#nav-product.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-product-tab')
 					include ./s_product.pug
-					//- table.table.table-bordered(width="100%")
-					//- 	thead
-					//- 		tr.text-center
-					//- 			th.align-middle(width="1%") STT
-					//- 			th.align-middle(width="10%") Ảnh sản phẩm
-					//- 			th.align-middle(width="20%") Tên sản phẩm
-					//- 			th.align-middle Số lượng
-					//- 			th.align-middle ĐVT
-					//- 			th.align-middle Giá
-					//- 			th.align-middle Trạng thái
-					//- 			if sess.rId.rName == "Quản lý"
-					//- 				th.align-middle Tác vụ
-					//- 	tbody
-					//- 		each p, index in products
-					//- 			- var ca = p.createdAt;
-					//- 			- var ua = p.updatedAt;
-					//- 			- p.createdAt = ca.setUTCHours(ca.getUTCHours() + 7);
-					//- 			- p.updatedAt = ua.setUTCHours(ua.getUTCHours() + 7);
-					//- 			tr.text-center
-					//- 				td.align-middle= ((pageNumP-1)*pageSize) + index+1
-					//- 				td.align-middle
-					//- 					each pi in p.pImgs
-					//- 						if pi.piIsMain
-					//- 							img.rounded.img-fluid(src=`img/products/${pi.piImg}` style="max-height:100px;")
-					//- 				td.text-start.align-middle(rel="tooltip" data-bs-placement="top" title=`Ngày tạo: ${p.createdAt.toISOString().slice(0,10).split('-').reverse().join('/') + ' ' + p.createdAt.toISOString().slice(11,19)} - ${p.sId.sName}`)= p.pName
-					//- 				td.align-middle= p.pStock
-					//- 				td.align-middle= p.pUnit
-					//- 				td.text-end.align-middle
-					//- 					del.text-secondary.fs-6= p.pPrice.toLocaleString("vi", {style: "currency",currency: "VND",})
-					//- 					span (-#{p.pDiscount}%)
-					//- 					.fs-4 #{(p.pPrice - p.pPrice*p.pDiscount/100).toLocaleString("vi", {style: "currency",currency: "VND",})}
-					//- 				td.align-middle
-					//- 					if p.pState
-					//- 						.text-success(rel="tooltip" data-bs-placement="top" title="Hiện")
-					//- 							span(data-feather="eye")
-					//- 					else
-					//- 						.text-secondary(rel="tooltip" data-bs-placement="top" title="Ẩn")
-					//- 							span(data-feather="eye-off")
-
-
 				#nav-order.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-order-tab')
 					include ./s_order.pug
 				#nav-revenue.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-revenue-tab')
