@@ -11,6 +11,7 @@ block content
 				tr.text-center
 					th.align-middle(width="1%") STT
 					th.align-middle Đánh giá
+					th.align-middle Khách hàng
 					th.align-middle Ảnh
 					th.align-middle Tên sản phẩm
 					th.align-middle Trạng thái
@@ -30,6 +31,9 @@ block content
 								svg.review-score(enable-background='new 0 0 15 15' viewBox='0 0 15 15' x='0' y='0')
 									polygon(fill='none' points='7.5 .8 9.7 5.4 14.5 5.9 10.7 9.1 11.8 14.2 7.5 11.6 3.2 14.2 4.3 9.1 .5 5.9 5.3 5.4' stroke-linecap='round' stroke-linejoin='round' stroke-miterlimit='10')
 							div= r.rContent
+						td.align-middle
+							img.rounded.img-fluid(src=`img/users/${r.cId.cImg}` style="max-height:100px;")
+							div= r.cId.cName
 						td.align-middle
 							each ri in r.imgs
 								a(data-gallery="photoviewer" href=`img/reviews/${ri.riImg}`)

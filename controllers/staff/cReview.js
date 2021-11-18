@@ -33,7 +33,7 @@ module.exports.index = async (req, res) => {
     .limit(PAGE_SIZE)
     .populate({
       path: "cId",
-      select: "cName",
+      select: "cName cImg",
     })
     .populate("pId");
   res.render(`./staff/${pI.url}`, {
