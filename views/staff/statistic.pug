@@ -8,10 +8,14 @@ block content
 			.btn-toolbar.mt-2.mb-mt-0
 		nav
 			#nav-tab.nav.nav-tabs(role='tablist')
-				button#nav-material-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-material' type='button' role='tab') Thống kê nguyên vật liệu
-				button#nav-product-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-product' type='button' role='tab') Thống kê sản phẩm
-				button#nav-order-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-order' type='button' role='tab') Thống kê đơn đặt hàng
-				button#nav-revenue-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-revenue' type='button' role='tab') Thống kê doanh thu
+				if "Quản lý, Nhân viên sản xuất, Nhân viên kế toán, Nhân viên bán hàng".includes(sess.rId.rName)
+					button#nav-material-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-material' type='button' role='tab') Thống kê nguyên vật liệu
+				if "Quản lý, Nhân viên sản xuất, Nhân viên kế toán, Nhân viên bán hàng".includes(sess.rId.rName)
+					button#nav-product-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-product' type='button' role='tab') Thống kê sản phẩm
+				if "Quản lý, Nhân viên kế toán, Nhân viên bán hàng".includes(sess.rId.rName)
+					button#nav-order-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-order' type='button' role='tab') Thống kê đơn đặt hàng
+				if "Quản lý, Nhân viên kế toán, Nhân viên bán hàng".includes(sess.rId.rName)
+					button#nav-revenue-tab.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-revenue' type='button' role='tab') Thống kê doanh thu
 			#nav-tabContent.tab-content
 				#nav-material.tab-pane.fade.p-3(role='tabpanel' aria-labelledby='nav-material-tab')
 					include ./s_material.pug
