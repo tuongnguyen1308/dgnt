@@ -1,6 +1,6 @@
 extends ./layout.pug
 block content
-	.container-fluid.pb-5(style=`max-width: ${maxWidth}px;`)
+	#cart-prds.container-fluid.pb-5(style=`max-width: ${maxWidth}px;`)
 		nav.py-3.mt-3(aria-label="breadcrumb")
 			ol.breadcrumb.m-0
 				li.breadcrumb-item
@@ -10,28 +10,20 @@ block content
 		// cart
 		.h4.text-brown= pI.title
 		#err-text.text-danger
-		table.table
-			thead
-				tr
-					th(scope='col' colspan="2")
-						span Sản phẩm 
-						span#cart-prd-num= `(${prds.length})`
-					th.text-end(scope='col') Đơn giá
-					th.text-center(scope='col') Số lượng
-					th.text-end(scope='col') Thành tiền
-					th(scope='col')
-			tbody#cart-prds
-				each p in prds
-					tr
-						th
-							a.text-decoration-none.text-brown(href=p.url)
-								img.rounded.img-fluid(src=p.img style="height:100px; width: 100px;")
-						td.align-middle(scope='row')
-							a.text-decoration-none.text-brown(href=p.url)= p.pname
-						td.align-middle.text-end= p.priceDisplay
-						td.align-middle.text-center
+		- var enough = true
+		each p in prds
+			.prd.d-flex.mb-2
+				.me-3.d-flex.align-items-center
+					a.text-decoration-none.text-brown(href=p.url target="_blank")
+						img.rounded.img-fluid(src=p.img style="height:100px; width: 100px;")
+				.flex-fill
+					a.text-decoration-none.text-brown.fw-bold(href=p.url target="_blank")= p.pname
+					.d-flex.justify-content-between.flex-column.flex-md-row
+						span
+							.div=p.priceDisplay
+							- if (p.quantity > p.stock) enough = false
 							if p.stock > 0
-								.input-group.justify-content-center
+								.input-group.justify-content-start
 									button.btn.btn-light.border.p-1(rel="sub-quantity")
 										span(data-feather="minus")
 									input.form-control.p-1.text-center(name="prd-quan" data-pid=p.id type="text" max=p.stock data-price=p.price value= p.quantity style="max-width:40px;")
@@ -40,9 +32,11 @@ block content
 								.text-secondary= `SL trong kho: ${p.stock}`
 							else
 								span Sản phẩm đã hết hàng
-						td.align-middle.text-end.fw-bold(rel="total-prd-price")= p.totalDisplay
-						td.align-middle.text-center
-							.wrap.position-relative
+						span.d-flex.justify-content-between.align-items-center
+							span.ms-md-auto.text-dark.me-md-3
+								span Tạm tính:
+								span(rel="total-prd-price")= p.totalDisplay
+							.wrap.position-relative.ms-md-0
 								button.btn.btn-sm.btn-outline-danger.border-0(role="open-dropdown" type='button' rel="tooltip" data-bs-placement="top" title="Xoá")
 									span(data-feather="trash")
 								ul.dropdown-menu.p-0.position-absolute.top-100(style="min-width:unset; left:50%; transform: translate(-50%,0%)")
@@ -52,9 +46,8 @@ block content
 									li
 										span.dropdown-item.p-2(role="button" rel="tooltip" data-bs-placement="right" title="Hủy")
 											span(data-feather="x")
-				else
-					tr
-						td(colspan="6") Chưa có sản phẩm nào trong giỏ hàng
+		else
+			span Chưa có sản phẩm nào trong giỏ hàng
 		.h4.fw-bold.text-end.text-brown(rel="total-cart-price")= total
 		.text-end
 			a.btn.btn-brown.fs-4.px-4(href="prepare-order") Mua hàng

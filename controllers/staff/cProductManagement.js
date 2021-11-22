@@ -95,6 +95,7 @@ module.exports.index = async (req, res) => {
     roomtypes,
     categories,
     products,
+    mlength: await Material.countDocuments(),
     rtSelected,
     pcSelected,
     keyword,

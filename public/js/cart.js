@@ -78,7 +78,7 @@ $(document).ready(() => {
   });
   // add product to cart
   $("[role=remove-product]").on("click", function () {
-    $tr = $(this).parentsUntil("tbody").last();
+    $tr = $(this).parentsUntil(".prd").parent();
     let pId = $(this).data("pid");
     $.ajax({
       type: "PATCH",
@@ -86,7 +86,6 @@ $(document).ready(() => {
       data: { pId },
       success: function (res) {
         if (!res.s) {
-          console.log(res.m);
           $("#err-text").text(res.m);
         } else {
           $("#cart-prd-num").text(`(${res.d.products.length})`);

@@ -177,7 +177,7 @@ module.exports.delete = async (req, res) => {
     icon: "check-circle",
     color: "success",
     title: "Thành công!",
-    text: "Xóa lịch hẹn thành công!",
+    text: "Xóa thành công!",
   };
   res.json(true);
 };
