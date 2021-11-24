@@ -17,12 +17,26 @@ block content
 							a(href="#" rel="switch-tab" data-to="#nav-mtrbatch-tab") Đợt nhật NVL
 					table.table.table-bordered(width="100%")
 						thead
-							if sess.rId.rName == "Quản lý"
+							form(action="material" method="get")
 								tr
-									td(colspan="7")
-										button.btn.w-100.btn-outline-success.d-flex.align-items-center.justify-content-center(type="button" role="add-material" data-bs-toggle="modal" data-bs-target="#modal-material")
-											span(data-feather="plus")
-											span Thêm NVL
+									td(colspan="3")
+										if sess.rId.rName == "Quản lý"
+											button.btn.w-100.btn-outline-success.d-flex.align-items-center.justify-content-center(type="button" role="add-material" data-bs-toggle="modal" data-bs-target="#modal-material")
+												span(data-feather="plus")
+												span Thêm NVL
+									td.border-end-0(colspan="2")
+										select.form-select(name="mUnit")
+											option(value='-1' hidden) -- Chọn ĐVT --
+											each mu in mUnits
+												option(value=mu selected= muSelected==mu)= mu
+									td.border-start-0(colspan="2")
+										.input-group
+											input.form-control(type="text" name="mName" placeholder="Nhập tên nguyên vật liệu" value=mName)
+											button.btn.btn-outline-success(type="submit")
+												span(data-feather="search")
+											if muSelected != -1
+												a.btn.btn-danger(href="/material" rel="tooltip" data-bs-placement="top" title="Hủy bộ lọc")
+													span(data-feather="x")
 							tr.text-center
 								th.align-middle(width="1%") STT
 								th.align-middle(width="10%") Ảnh NVL

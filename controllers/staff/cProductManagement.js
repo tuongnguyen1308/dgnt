@@ -56,8 +56,8 @@ module.exports.index = async (req, res) => {
       .map((c) => c._id);
     con.pcId = { $in: pcIds };
   } else if (pcSelected != -1) con.pcId = pcSelected;
-  let keyword = req.query?.productName || "";
-  if (keyword) con.pName = new RegExp(keyword, "i");
+  let pName = req.query?.productName || "";
+  if (pName) con.pName = new RegExp(pName, "i");
   // find products with condition
   totalP = await Product.find(con).countDocuments();
   let products = await Product.find(con)
@@ -98,7 +98,7 @@ module.exports.index = async (req, res) => {
     mlength: await Material.countDocuments(),
     rtSelected,
     pcSelected,
-    keyword,
+    pName,
     prdreqs,
     sess,
     pageNumP,

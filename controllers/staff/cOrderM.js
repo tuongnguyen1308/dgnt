@@ -47,6 +47,8 @@ module.exports.index = async (req, res) => {
   let con = {};
   let keyword = req.query?.oId || "";
   if (keyword) con.oId = new RegExp(keyword, "i");
+  let sdt = req.query?.sdt || "";
+  if (sdt) con.cId = new RegExp(keyword, "i");
   // find products with condition
   // let totalO = await Order.countDocuments();
   // let totalOP = Math.ceil(totalO / PAGE_SIZE);
@@ -509,6 +511,13 @@ module.exports.statistic = async (req, res) => {
   });
   res.json(result);
 };
+
+// module.exports.findCustomer = async (req, res) => {
+//   let sdt = req.body.sdt.trim().split(" ");
+//   Product.find({ pName: new RegExp(sdt, "i") }, async (err, products) => {
+//     res.json(products);
+//   });
+// };
 
 module.exports.revenue = async (req, res) => {
   let y = req.body.year;

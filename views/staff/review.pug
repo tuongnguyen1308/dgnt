@@ -8,6 +8,15 @@ block content
 			.btn-toolbar.mt-2.mb-mt-0
 		table.table.table-bordered(width="100%")
 			thead
+				form(action="review" method="get")
+					tr
+						td(colspan="3").border-end-0.align-middle Lọc đánh giá theo sản phẩm: 
+						td.border-start-0(colspan="4")
+							.input-group
+								input#pName.form-control(name="pName" list="products" placeholder="Nhập tên sản phẩm" autocomplete="off" rel="find-product" value=pName)
+								datalist#products
+								button.btn.btn-outline-success(type="submit" rel="find")
+									span(data-feather="filter")
 				tr.text-center
 					th.align-middle(width="1%") STT
 					th.align-middle Đánh giá

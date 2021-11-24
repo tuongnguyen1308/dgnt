@@ -41,7 +41,7 @@ block content
 													option(value=pc._id selected= pcSelected==pc._id hidden= (rtSelected!=pc.rtId._id && rtSelected!=-1)||(rtSelected==-1&&pcSelected==-1) rel=pc.rtId._id)= pc.pcName
 										td.border-start-0(colspan="4")
 											.input-group
-												input.form-control(type="text" name="productName" placeholder="Nhập tên sản phẩm" value=keyword)
+												input.form-control(type="text" name="productName" placeholder="Nhập tên sản phẩm" value=pName)
 												button.btn.btn-outline-success(type="submit")
 													span(data-feather="search")
 												if pcSelected != -1 || rtSelected != -1

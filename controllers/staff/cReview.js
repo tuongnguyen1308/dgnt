@@ -1,5 +1,6 @@
 const Review = require("../../models/mReview");
 const pI = { title: "Quản lý đánh giá", url: "review" };
+const Product = require("../../models/mProduct");
 const rootRoute = `/${pI.url}`;
 const imgViewSize = 300;
 const imgPreviewSize = 465;
@@ -20,14 +21,17 @@ module.exports.index = async (req, res) => {
   const messages = req.session?.messages || null;
   const sess = req.session.user;
   req.session.messages = null;
+  // filter/search
+  let pName = req.query?.pName || "";
+  let pIds = await Product.find({ pName: new RegExp(pName, "i") });
   //#region pagination
   let pageNum = Math.max(req.query.pnum || 1, 1);
   let skipPage = (pageNum - 1) * PAGE_SIZE;
-  let total = await Review.countDocuments();
+  let total = await Review.countDocuments({ pId: { $in: pIds } });
   let totalR = Math.ceil(total / PAGE_SIZE);
   //#endregion
 
-  let reviews = await Review.find({})
+  let reviews = await Review.find({ pId: { $in: pIds } })
     .sort({ rAt: "desc" })
     .skip(skipPage)
     .limit(PAGE_SIZE)
@@ -40,6 +44,7 @@ module.exports.index = async (req, res) => {
     pI,
     messages,
     reviews,
+    pName,
     imgViewSize,
     imgPreviewSize,
     sess,

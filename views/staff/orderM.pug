@@ -3,7 +3,12 @@ block content
 	main.col-md-9.ms-sm-auto.col-lg-10.px-md-4
 		.d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pt-3.pb-2.mb-3.border-bottom.flex-column.flex-lg-row
 			h1.h3.mb-0= pI.title
-			.btn-toolbar.mt-2.mb-mt-0
+		//- form.mb-3(action="orderM" method="get")
+		//- 	.input-group
+		//- 		input#sdt.form-control(name="sdt" list="sdts" placeholder="Lọc đơn hàng theo SĐT khách hàng" autocomplete="off" rel="find-customer" value=sdt)
+		//- 		datalist#sdts
+		//- 		button.btn.btn-outline-success(type="submit" rel="find")
+		//- 			span(data-feather="filter")
 		span#resfound(data-val=resfound)
 		#nav-tab.nav.nav-tabs(role='tablist')
 			button#nav-o_pings-tab.position-relative.nav-link.text-secondary(data-bs-toggle='tab' data-bs-target='#nav-o_pings' type='button' role='tab' aria-controls='nav-o_pings' aria-selected='false')

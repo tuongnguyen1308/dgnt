@@ -22,12 +22,19 @@ module.exports.index = async (req, res) => {
   const messages = req.session?.messages || null;
   const sess = req.session.user;
   req.session.messages = null;
+
+  // filter/search
+  let con = {};
+  let muSelected = req.query?.mUnit || -1;
+  if (muSelected != -1) con.mUnit = muSelected;
+  let mName = req.query?.mName || "";
+  if (mName) con.mName = new RegExp(mName, "i");
   //#region pagination
   let pageNum = Math.max(req.query.pnum || 1, 1);
   // mtr
   let pageNumM = 1;
   let skipPageM = (pageNumM - 1) * PAGE_SIZE;
-  let totalM = await Material.countDocuments();
+  let totalM = await Material.countDocuments(con);
   let totalMP = Math.ceil(totalM / PAGE_SIZE);
   // req
   let pageNumR = 1;
@@ -54,8 +61,7 @@ module.exports.index = async (req, res) => {
       break;
   }
   //#endregion
-
-  let materials = await Material.find({})
+  let materials = await Material.find(con)
     .sort({ createdAt: "desc" })
     .skip(skipPageM)
     .limit(PAGE_SIZE)
@@ -63,6 +69,7 @@ module.exports.index = async (req, res) => {
       path: "sId",
       select: "sName",
     });
+  let mUnits = await Material.find().distinct("mUnit");
   let mtrreqs = await Mtrreq.find({})
     .sort({ createdAt: "desc" })
     .skip(skipPageR)
@@ -110,6 +117,9 @@ module.exports.index = async (req, res) => {
     pI,
     messages,
     materials,
+    muSelected,
+    mName,
+    mUnits,
     mtrreqs,
     mtrreqs_ongoing,
     mtrbatchs,
