@@ -23,32 +23,19 @@ block content
 		.card.mb-3
 			.card-header.fw-bold.text-brown.required Danh sách sản phẩm
 			.card-body.py-2
-				table.table.table-borderless
-					thead
-						tr
-							th(scope='col' colspan="2")
-								span Sản phẩm 
-								span#cart-prd-num= `(${prds.length})`
-							th.text-end(scope='col') Đơn giá
-							th.text-center(scope='col') Số lượng
-							th.text-end(scope='col') Thành tiền
-					tbody#cart-prds
-						each p in prds
-							tr
-								th
-									a.text-decoration-none.text-brown(href=p.url)
-										img.rounded.img-fluid(src=p.img style="max-height:100px;")
-								td.align-middle(scope='row')
-									a.text-decoration-none.text-brown(href=p.url)= p.pname
-								td.align-middle.text-end= p.priceDisplay
-								td.align-middle.text-center
-									if p.stock > 0
-										.input-group.justify-content-center
-											.text-center= p.quantity
-									else
-										span Sản phẩm đã hết hàng
-								td.align-middle.text-end.fw-bold(rel="total-prd-price")= p.totalDisplay
-
+				each p in prds
+					.prd.d-flex.mb-2
+						.me-3.d-flex.align-items-center(style="min-width:90px;")
+							a.text-decoration-none.text-brown(href=p.url target="_blank")
+								img.rounded.img-fluid(src=p.img style="height:100px; width: 100px;")
+						.flex-fill
+							a.text-decoration-none.text-brown.fw-bold(href=p.url target="_blank")= p.pname
+							.d-flex.justify-content-between.flex-column.flex-md-row
+								span
+									.div= `${p.priceDisplay} x ${p.quantity}`
+								span.ms-md-auto.text-dark.me-md-3
+									span Tạm tính: 
+									span(rel="total-prd-price")= p.totalDisplay
 		.card.mb-3
 			.card-header.fw-bold.text-brown.required Hình thức thanh toán
 			.card-body
@@ -63,8 +50,8 @@ block content
 			.card-body
 				textarea#oNote.form-control(name="oNote" type="text" placeholder="Ghi chú cho đơn hàng" style="min-height:80px;")
 		.h4.fw-bold.text-end.text-brown(rel="total-cart-price")= 'Tổng tiền: ' + total
-		.text-end
-			button.btn.btn-brown.fs-4.px-4(type="submit") Đặt hàng
+		.text-end.mb-3.d-grid.d-md-block
+			button.btn.btn-brown.px-4(type="submit") Đặt hàng
 
 	include da-modal.pug
 	script(src="/js/da.js" defer) 

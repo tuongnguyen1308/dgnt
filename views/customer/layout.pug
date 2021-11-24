@@ -25,7 +25,7 @@ html(lang="en")
     body.position-relative.bg-light(style="min-height: 100vh; padding-bottom: 10rem;")
         nav.navbar.navbar-expand-md.fixed-top.bg-white
             .container-fluid(style=`max-width: ${maxWidth}px;`)
-                a.navbar-brand.p-0(href='/')
+                a.navbar-brand.p-0.m-0.me-md-3(href='/')
                     img.img-fluid(src=`img/logo/${(shopinfo)?shopinfo.siLogo:'logo.png'}` style="height:42px;")
                 if shopinfo
                     ul.navbar-nav.me-auto.collapse.navbar-collapse
@@ -95,14 +95,14 @@ html(lang="en")
             footer.position-absolute.bottom-0.w-100.bg-black-brown.py-3
                 .container-fluid.mx-auto(style="max-width:1200px")
                     .row
-                        .col-6
+                        .col-12.col-md-6
                             h5.text-light= (shopinfo)? shopinfo.siName : "Đồ gỗ nội thất"
                             if !total
                                 ul.list-unstyled.text-small.mb-0
                                     each rt in menubar
                                         li
                                             a.link-secondary.text-decoration-none(href= rt.url)= rt.title
-                        .col-6
+                        .col-12.col-md-6
                             h5.text-light Về cửa hàng
                             ul.list-unstyled.text-small.mb-0
                                 if shopinfo

@@ -1,5 +1,6 @@
 const DA = require("../../models/mDeliveryAddress");
 const Customer = require("../../models/mCustomer");
+const Order = require("../../models/mOrder");
 
 const pI = { title: "Thông tin giao hoàng", url: "personal" };
 const rootRoute = `/${pI.url}`;
@@ -169,15 +170,28 @@ module.exports.update = async (req, res) => {
 
 module.exports.delete = async (req, res) => {
   let id = req.params.id;
-  await DA.findByIdAndDelete(
-    id,
-    (err) => err && res.json({ s: false, m: err })
-  );
-  req.session.messages = {
-    icon: "check-circle",
-    color: "success",
-    title: "Thành công!",
-    text: "Xóa thành công!",
-  };
-  res.json(true);
+  let orders_in_used = await Order.find({
+    adId: id,
+  }).countDocuments();
+  if (mtr_in_used == 0) {
+    await DA.findByIdAndDelete(
+      id,
+      (err) => err && res.json({ s: false, m: err })
+    );
+    req.session.messages = {
+      icon: "check-circle",
+      color: "success",
+      title: "Thành công!",
+      text: "Xóa thành công!",
+    };
+    res.json(true);
+  } else {
+    req.session.messages = {
+      icon: "alert-circle",
+      color: "danger",
+      title: "Thất bại",
+      text: "Không thể xóa Thông tin giao hàng đã có đơn đặt hàng sử dụng!",
+    };
+    res.json(false);
+  }
 };
