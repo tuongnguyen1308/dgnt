@@ -229,10 +229,7 @@ module.exports.filter = async (req, res) => {
           .populate("bh.sdId");
 
         if (oFs.length > 0) {
-          buyed =
-            oFs.filter(
-              (o) => o.sdId.osName != "Hủy" && o.bh?.sdId?.osName != "Hủy"
-            ).length > 0;
+          buyed = oFs.filter((o) => o.sdId.osName == "Đã nhận hàng").length > 0;
         }
         reviews = reviews.map((r) => {
           let rv = {
